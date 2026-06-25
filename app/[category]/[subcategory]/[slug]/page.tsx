@@ -9,6 +9,8 @@ import HeroSection from "@/app/components/HeroSection";
 import PostCover from "@/app/components/PostCover";
 import AuthorBox from "@/app/components/AuthorBox";
 import RelatedPosts from "@/app/components/RelatedPosts";
+import AskAiButtons from "@/app/components/AskAiButtons";
+import ShareButtons from "@/app/components/ShareButtons";
 import JsonLd from "@/app/components/JsonLd";
 import { getPostMetas, getPostBySlug, formatDate, postUrl } from "@/lib/posts";
 import { getSubcategory } from "@/lib/taxonomy";
@@ -55,6 +57,9 @@ export default async function PostPage({
 
   const found = getSubcategory(category, subcategory);
   const path = postUrl(post);
+  // Separamos el primer bloque (gancho) del resto para insertar el CTA de Gemini.
+  const [firstBlock, ...restBlocks] = post.content.split(/\n\n+/);
+  const restContent = restBlocks.join("\n\n");
 
   return (
     <article className="pb-20">
@@ -117,8 +122,19 @@ export default async function PostPage({
         />
         <div className="prose">
           <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSlug]}>
-            {post.content}
+            {firstBlock}
           </ReactMarkdown>
+        </div>
+        <AskAiButtons path={path} chatgpt={false} className="my-8" />
+        {restContent && (
+          <div className="prose">
+            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSlug]}>
+              {restContent}
+            </ReactMarkdown>
+          </div>
+        )}
+        <div className="mt-12 pt-8 border-t border-border">
+          <ShareButtons path={path} title={post.title} />
         </div>
         <AuthorBox />
       </div>

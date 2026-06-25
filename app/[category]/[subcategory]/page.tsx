@@ -5,6 +5,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import Reveal from "@/app/components/Reveal";
 import PostCard from "@/app/components/PostCard";
 import ColabCard from "@/app/components/ColabCard";
+import AskAiButtons from "@/app/components/AskAiButtons";
 import HeroSection from "@/app/components/HeroSection";
 import JsonLd from "@/app/components/JsonLd";
 import { categories, getSubcategory } from "@/lib/taxonomy";
@@ -97,6 +98,10 @@ export default async function SubcategoryPage({
               ))}
             </div>
           )}
+          <AskAiButtons
+            path={`/${cat.slug}/${sub.slug}`}
+            className="mt-9 max-w-2xl"
+          />
         </Reveal>
       </HeroSection>
 
