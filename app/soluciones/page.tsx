@@ -4,6 +4,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import HeroSection from "@/app/components/HeroSection";
 import Reveal from "@/app/components/Reveal";
 import SolutionsSearch from "@/app/components/SolutionsSearch";
+import AskAiButtons from "@/app/components/AskAiButtons";
 import JsonLd from "@/app/components/JsonLd";
 import { solutions } from "@/lib/solutions";
 import { site } from "@/lib/site";
@@ -49,6 +50,11 @@ export default function SolucionesPage() {
             ciencia de datos, machine learning y automatización. Si algo de esto te
             suena familiar, escribime.
           </p>
+          <AskAiButtons
+            path="/soluciones"
+            prompt="qué soluciones de datos e IA ofrece Nicolás Bargioni"
+            className="mt-9 max-w-2xl"
+          />
         </Reveal>
       </HeroSection>
 
