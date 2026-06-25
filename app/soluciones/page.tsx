@@ -15,6 +15,12 @@ export const metadata: Metadata = {
   description:
     "Soluciones concretas de ciencia de datos e IA aplicada para tu negocio: predecir demanda, retener clientes, detectar anomalías, automatizar tareas y más.",
   alternates: { canonical: `${site.url}/soluciones` },
+  openGraph: {
+    title: "Soluciones — Qué resuelvo con datos e IA",
+    description:
+      "Soluciones concretas de ciencia de datos e IA aplicada para tu negocio.",
+    images: ["/og/soluciones.png"],
+  },
 };
 
 export default function SolucionesPage() {

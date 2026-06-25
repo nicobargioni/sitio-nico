@@ -33,7 +33,12 @@ export async function generateMetadata({
     title: `${s.titulo} — Soluciones con datos e IA`,
     description: s.resumen,
     alternates: { canonical: `${site.url}/soluciones/${s.slug}` },
-    openGraph: { title: s.titulo, description: s.resumen, type: "article" },
+    openGraph: {
+      title: s.titulo,
+      description: s.resumen,
+      type: "article",
+      images: [`/og/sol-${s.slug}.png`],
+    },
   };
 }
 

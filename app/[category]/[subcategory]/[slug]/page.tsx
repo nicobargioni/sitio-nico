@@ -54,6 +54,7 @@ export async function generateMetadata({
       description: post.excerpt,
       type: "article",
       publishedTime: post.date,
+      images: [`/og/post-${slug}.png`],
     },
   };
 }

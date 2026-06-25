@@ -42,13 +42,13 @@ export const metadata: Metadata = {
     siteName: site.name,
     locale: "es_AR",
     type: "website",
-    images: ["/nico.jpg"],
+    images: ["/og/home.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: site.title,
     description: site.description,
-    images: ["/nico.jpg"],
+    images: ["/og/home.png"],
   },
   ...(site.googleSiteVerification
     ? { verification: { google: site.googleSiteVerification } }

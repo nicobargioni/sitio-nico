@@ -21,6 +21,7 @@ export const metadata: Metadata = {
       "Data Scientist y AI & Automations Analyst en Nomadic. Trayectoria, formación y enfoque.",
     type: "profile",
     url: `${site.url}/nico-bargioni`,
+    images: ["/og/nico-bargioni.png"],
   },
 };
 

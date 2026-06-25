@@ -14,6 +14,12 @@ export const metadata: Metadata = {
   description:
     "Notas y curiosidades sobre data science, machine learning, IA aplicada, automatización y cloud, por Nicolás Bargioni.",
   alternates: { canonical: `${site.url}/blog` },
+  openGraph: {
+    title: "Blog — Datos, IA y automatización",
+    description:
+      "Notas y curiosidades sobre data science, machine learning, IA aplicada y automatización.",
+    images: ["/og/blog.png"],
+  },
 };
 
 export default function BlogPage() {
