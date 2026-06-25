@@ -12,8 +12,11 @@ export type Solution = {
   dolor: string; // el problema en 1 línea (gancho de la card)
   resumen: string; // 1-2 líneas para la card / meta
   problema: string; // párrafo en lenguaje de negocio
+  ejemplo: string; // un caso concreto y cotidiano
   queHago: string; // párrafo, en llano
+  proceso: { paso: string; detalle: string }[]; // cómo es el trabajo, paso a paso
   resultados: string[]; // qué obtenés
+  senales: string[]; // señales de que tu negocio lo necesita
   paraQuien: string;
   prueba?: { label: string; href: string };
 };
@@ -35,6 +38,18 @@ export const solutions: Solution[] = [
       "Compras y producción planificadas con anticipación",
       "Una proyección que se actualiza sola con tus ventas nuevas",
     ],
+    ejemplo:
+      "Pensá en una tienda de indumentaria: cada cambio de temporada compra “a ojo” y termina liquidando lo que no salió o quedándose corta con lo que voló. Con una proyección por producto sabe cuánto pedir de cada talle antes de que arranque la temporada.",
+    proceso: [
+      { paso: "Reviso tus datos", detalle: "Miramos tu historial de ventas y qué tenés cargado: fechas, productos, promociones." },
+      { paso: "Encuentro el patrón", detalle: "Entreno un modelo que separa la tendencia, la estacionalidad y el efecto de promos o feriados." },
+      { paso: "Te lo dejo usable", detalle: "La proyección queda en un tablero claro y se recalcula sola con cada venta nueva." },
+    ],
+    senales: [
+      "Comprás stock “por intuición” o copiando el año pasado",
+      "Te quedás sin lo que más se vende justo en temporada alta",
+      "Tenés capital dormido en productos que no rotan",
+    ],
     paraQuien: "Comercios, e-commerce y producción con historial de ventas.",
     prueba: { label: "Cómo modelo esto", href: "/data-ml/estadistica" },
   },
@@ -53,6 +68,18 @@ export const solutions: Solution[] = [
       "Una lista priorizada de clientes en riesgo",
       "Acciones de retención antes de perderlos",
       "Entender qué dispara el abandono",
+    ],
+    ejemplo:
+      "Un gimnasio con cuota mensual: la mayoría de las bajas se ven venir —el socio que dejó de ir hace tres semanas casi seguro no renueva—. Detectarlo a tiempo es poder llamarlo antes, no después.",
+    proceso: [
+      { paso: "Defino qué es “irse”", detalle: "Acordamos qué cuenta como abandono en tu negocio: no renovar, dejar de comprar por X meses, etc." },
+      { paso: "Leo el comportamiento", detalle: "El modelo aprende las señales que anticipan la baja: caída de frecuencia, menor gasto, menos interacción." },
+      { paso: "Te doy la lista accionable", detalle: "Cada semana tenés a los clientes en riesgo, ordenados por prioridad, para actuar con tiempo." },
+    ],
+    senales: [
+      "Te enterás de las bajas cuando ya pasaron",
+      "No sabés qué clientes están “tibios”",
+      "Gastás más en captar que en retener",
     ],
     paraQuien: "Negocios con clientes recurrentes, suscripciones o cartera.",
     prueba: { label: "Cómo lo predigo", href: "/data-ml/mineria-de-datos" },
@@ -73,6 +100,18 @@ export const solutions: Solution[] = [
       "Menos pérdidas por cosas que se detectan tarde",
       "Un umbral ajustado a tu costo real",
     ],
+    ejemplo:
+      "Un e-commerce con cientos de operaciones por día: un patrón raro de devoluciones o un pico de contracargos se pierde entre el ruido hasta que el daño ya está hecho. Un detector lo levanta el mismo día.",
+    proceso: [
+      { paso: "Aprendo tu normalidad", detalle: "El modelo estudia cómo se comportan tus datos cuando todo está en orden." },
+      { paso: "Marco lo que se aparta", detalle: "Cualquier cosa que se sale del patrón queda señalada automáticamente." },
+      { paso: "Ajustamos el umbral", detalle: "Calibramos cuán sensible es, según cuánto te cuesta una falsa alarma frente a dejar pasar una real." },
+    ],
+    senales: [
+      "Los problemas se detectan tarde y a mano",
+      "Tenés mucho volumen y poca gente para mirarlo",
+      "Un error o fraude no detectado te sale caro",
+    ],
     paraQuien: "Finanzas, operaciones, e-commerce y mantenimiento.",
     prueba: { label: "Cómo detecto anomalías", href: "/data-ml/deteccion-anomalias" },
   },
@@ -91,6 +130,18 @@ export const solutions: Solution[] = [
       "Segmentos claros y accionables de tu base",
       "Campañas y precios diferenciados por grupo",
       "Saber dónde está tu cliente más valioso",
+    ],
+    ejemplo:
+      "Una marca que le manda el mismo mail a toda su base: el que compra todas las semanas recibe lo mismo que el que compró una vez hace un año. Con segmentos reales, a cada uno le hablás distinto.",
+    proceso: [
+      { paso: "Junto el comportamiento", detalle: "Reúno qué, cuánto y cada cuánto compra cada cliente." },
+      { paso: "Encuentro los grupos", detalle: "El modelo separa los grupos naturales de tu base, sin que yo los invente de antemano." },
+      { paso: "Te los explico", detalle: "Te cuento quién es cada grupo y qué acción concreta conviene para cada uno." },
+    ],
+    senales: [
+      "Le hablás igual a toda tu base",
+      "No sabés quién es tu cliente más valioso",
+      "Tus campañas rinden parejo y bajo",
     ],
     paraQuien: "Marketing, ventas y e-commerce con base de clientes.",
     prueba: { label: "Cómo segmento", href: "/data-ml/clustering-pca" },
@@ -111,6 +162,18 @@ export const solutions: Solution[] = [
       "Menos horas del equipo en preguntas repetidas",
       "Cada respuesta cita su fuente: nada de inventos",
     ],
+    ejemplo:
+      "Un equipo de soporte que responde 200 veces por mes “¿cómo configuro X?”: la respuesta está en el manual, pero nadie lo abre. Un asistente conectado a ese manual responde al instante y muestra de dónde lo sacó.",
+    proceso: [
+      { paso: "Reúno tu material", detalle: "Juntamos tus documentos, manuales, FAQs y políticas." },
+      { paso: "Conecto el asistente", detalle: "El modelo busca primero en TU material y responde sobre eso, citando la fuente." },
+      { paso: "Lo ponés a trabajar", detalle: "Queda disponible para tu equipo o tus clientes, donde lo necesites." },
+    ],
+    senales: [
+      "Tu equipo responde siempre lo mismo",
+      "La información está, pero dispersa y nadie la lee",
+      "Probaste un bot genérico y te inventaba respuestas",
+    ],
     paraQuien: "Soporte, atención al cliente y equipos con mucha documentación.",
     prueba: { label: "Cómo funciona (RAG)", href: "/ia-agentes/rag-embeddings" },
   },
@@ -129,6 +192,18 @@ export const solutions: Solution[] = [
       "Horas del equipo liberadas para lo que importa",
       "Procesos sin errores de tipeo ni olvidos",
       "Tareas que corren 24/7 sin que nadie las dispare",
+    ],
+    ejemplo:
+      "Cada mañana alguien baja un reporte, copia los números a una planilla, arma un resumen y lo manda por mail. Media hora, todos los días, siempre igual. Eso puede correr solo.",
+    proceso: [
+      { paso: "Mapeo el proceso", detalle: "Miramos paso a paso cómo se hace hoy y dónde se va el tiempo." },
+      { paso: "Armo el flujo", detalle: "Conecto tus herramientas con la pieza que mejor encaje: n8n, Make, APIs o agentes de IA." },
+      { paso: "Lo dejo corriendo", detalle: "El proceso pasa a ejecutarse solo, con avisos si algo falla." },
+    ],
+    senales: [
+      "Hay tareas repetitivas entre sistemas todos los días",
+      "Aparecen errores por carga manual",
+      "Tenés gente capaz haciendo trabajo de copy-paste",
     ],
     paraQuien: "Cualquier equipo con tareas manuales repetidas entre sistemas.",
     prueba: { label: "Sobre hiperautomatización", href: "/hiperautomatizacion" },
@@ -149,6 +224,18 @@ export const solutions: Solution[] = [
       "Menos errores y menos horas de data-entry",
       "Tus PDFs convertidos en datos usables",
     ],
+    ejemplo:
+      "Una administración que recibe 300 facturas de proveedores por mes y las carga a mano, una por una. El pipeline lee cada factura, saca proveedor, fecha, total e ítems, y los deja en el sistema.",
+    proceso: [
+      { paso: "Definimos qué extraer", detalle: "Acordamos qué campos te importan de cada tipo de documento." },
+      { paso: "Armo el lector", detalle: "El pipeline entiende el texto y la estructura —dónde está cada dato—, no solo transcribe." },
+      { paso: "Con red de seguridad", detalle: "Donde la confianza es baja, lo deriva a revisión humana antes de cargar." },
+    ],
+    senales: [
+      "Alguien carga datos de PDFs o facturas a mano",
+      "Tenés mucho papeleo repetitivo",
+      "Los errores de tipeo te cuestan tiempo y plata",
+    ],
     paraQuien: "Administración, contabilidad y operaciones con papeleo.",
     prueba: { label: "Sobre documentos inteligentes", href: "/hiperautomatizacion/idp" },
   },
@@ -167,6 +254,18 @@ export const solutions: Solution[] = [
       "Respuestas a las preguntas que te importan",
       "Un tablero claro en lugar de planillas sueltas",
       "Una base sólida para decidir (y para modelos futuros)",
+    ],
+    ejemplo:
+      "Un negocio con las ventas en un sistema, los gastos en una planilla y las métricas web en otro lado, que no puede responder “¿qué producto me deja más margen?”. Junto todo y esa pregunta pasa a tener respuesta.",
+    proceso: [
+      { paso: "Junto y ordeno", detalle: "Reúno tus fuentes y las dejo limpias y consistentes." },
+      { paso: "Hago las preguntas", detalle: "Analizo qué pasó, por qué y qué se repite, enfocado en lo que te mueve la aguja." },
+      { paso: "Te lo dejo claro", detalle: "Conclusiones accionables en un tablero que entendés de un vistazo." },
+    ],
+    senales: [
+      "Tenés datos pero no decisiones",
+      "Vivís pidiendo reportes que tardan en llegar",
+      "Decidís “a sentimiento” por falta de claridad",
     ],
     paraQuien: "Dueños y equipos que tienen datos pero no claridad.",
     prueba: { label: "Cómo encaro el análisis", href: "/data-ml/eda" },

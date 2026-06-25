@@ -87,13 +87,39 @@ export default async function SolutionPage({
           </Reveal>
         </section>
 
+        <section className="mt-10">
+          <Reveal>
+            <div className="rounded-2xl border-l-2 border-coral bg-surface/40 px-6 py-5">
+              <p className="font-mono text-[0.62rem] uppercase tracking-widest text-coral mb-2">
+                Un ejemplo
+              </p>
+              <p className="text-fg/90 leading-relaxed">{s.ejemplo}</p>
+            </div>
+          </Reveal>
+        </section>
+
         <section className="mt-12">
           <Reveal>
             <h2 className="font-display text-2xl font-medium tracking-tight mb-4">
-              Qué hago
+              Cómo lo resuelvo
             </h2>
-            <p className="text-muted leading-relaxed">{s.queHago}</p>
+            <p className="text-muted leading-relaxed mb-8">{s.queHago}</p>
           </Reveal>
+          <ol className="space-y-5">
+            {s.proceso.map((p, i) => (
+              <Reveal key={p.paso} delay={i * 70}>
+                <li className="flex gap-4">
+                  <span className="shrink-0 grid place-items-center w-8 h-8 rounded-full border border-cyan/40 text-cyan font-mono text-sm">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="font-medium text-fg">{p.paso}</p>
+                    <p className="text-muted leading-relaxed mt-0.5">{p.detalle}</p>
+                  </div>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
         </section>
 
         <section className="mt-12">
@@ -114,7 +140,21 @@ export default async function SolutionPage({
 
         <section className="mt-12">
           <Reveal>
-            <div className="rounded-2xl border border-border bg-surface/40 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h2 className="font-display text-2xl font-medium tracking-tight mb-4">
+              ¿Es para vos?
+            </h2>
+            <p className="text-muted leading-relaxed mb-5">
+              Probablemente te sirva si te pasa alguna de estas:
+            </p>
+            <ul className="space-y-3">
+              {s.senales.map((r) => (
+                <li key={r} className="flex gap-3">
+                  <FiCheck className="shrink-0 mt-1 text-coral" size={18} />
+                  <span className="text-muted leading-relaxed">{r}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-7 rounded-2xl border border-border bg-surface/40 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <p className="font-mono text-[0.62rem] uppercase tracking-widest text-muted-2 mb-1.5">
                   Para quién
