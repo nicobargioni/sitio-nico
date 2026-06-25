@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
 import { FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
 import Hero from "./components/Hero";
+import AskAiButtons from "./components/AskAiButtons";
 import Reveal from "./components/Reveal";
 import ColabCard from "./components/ColabCard";
 import PostCard from "./components/PostCard";
@@ -444,6 +445,29 @@ export default function Home() {
                 </Reveal>
               ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── LLMs (preguntale a una IA) ── */}
+      <section className="px-6 py-24 border-t border-border">
+        <div className="max-w-6xl mx-auto">
+          <Reveal>
+            <p className="eyebrow mb-4">Pregúntale a una IA</p>
+            <h2 className="font-display text-3xl md:text-5xl font-medium tracking-tight mb-6">
+              LLMs
+            </h2>
+            <p className="text-muted leading-relaxed max-w-2xl mb-10">
+              ¿Preferís un resumen al toque? Pedile a tu asistente que te explique
+              de qué va este sitio y quién soy.
+            </p>
+          </Reveal>
+          <Reveal>
+            <AskAiButtons
+              path="/"
+              prompt="explica el contenido de esta url y quien es Nicolás Bargioni"
+              className="max-w-2xl"
+            />
+          </Reveal>
         </div>
       </section>
 
