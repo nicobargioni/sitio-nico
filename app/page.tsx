@@ -9,7 +9,7 @@ import PostCard from "./components/PostCard";
 import SolutionCard from "./components/SolutionCard";
 import JsonLd from "./components/JsonLd";
 import { getPostMetasByCategory } from "@/lib/posts";
-import { solutions } from "@/lib/solutions";
+import { featuredSolutions } from "@/lib/solutions";
 import { categories } from "@/lib/taxonomy";
 import { site } from "@/lib/site";
 import { profilePageLd, itemListLd } from "@/lib/jsonld";
@@ -282,19 +282,19 @@ export default function Home() {
           </Reveal>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {solutions.map((s, i) => (
+            {featuredSolutions.map((s, i) => (
               <Reveal key={s.slug} delay={i * 60}>
                 <SolutionCard s={s} />
               </Reveal>
             ))}
           </div>
 
-          <Reveal className="mt-8">
+          <Reveal className="mt-10">
             <Link
               href="/soluciones"
-              className="inline-flex items-center gap-1 text-sm font-medium text-coral hover:text-cyan transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-border text-sm font-medium hover:border-cyan/50 hover:text-cyan transition-colors"
             >
-              Ver todas las soluciones <FiArrowUpRight size={15} />
+              Ver más soluciones <FiArrowUpRight size={15} />
             </Link>
           </Reveal>
         </div>

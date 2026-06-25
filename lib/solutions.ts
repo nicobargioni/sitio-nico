@@ -1304,3 +1304,23 @@ export const solutions: Solution[] = [
 export function getSolution(slug: string): Solution | undefined {
   return solutions.find((s) => s.slug === slug);
 }
+
+/** Soluciones destacadas para el home: las más relevantes y de mayor ROI. */
+export const featuredSlugs = [
+  "prediccion-de-demanda",
+  "retencion-de-clientes",
+  "automatizacion-de-procesos",
+  "asistente-con-tu-conocimiento",
+  "lectura-de-documentos",
+  "deteccion-de-anomalias",
+  "pricing-dinamico",
+  "lead-scoring",
+  "analisis-de-datos",
+  "segmentacion-de-clientes",
+  "recomendador-de-productos",
+  "agente-que-actua",
+];
+
+export const featuredSolutions: Solution[] = featuredSlugs
+  .map((slug) => solutions.find((s) => s.slug === slug))
+  .filter((s): s is Solution => Boolean(s));

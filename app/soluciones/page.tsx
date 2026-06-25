@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
 import HeroSection from "@/app/components/HeroSection";
 import Reveal from "@/app/components/Reveal";
-import SolutionCard from "@/app/components/SolutionCard";
+import SolutionsSearch from "@/app/components/SolutionsSearch";
 import JsonLd from "@/app/components/JsonLd";
 import { solutions } from "@/lib/solutions";
 import { site } from "@/lib/site";
@@ -53,13 +53,7 @@ export default function SolucionesPage() {
       </HeroSection>
 
       <div className="px-6 max-w-6xl mx-auto mt-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {solutions.map((s, i) => (
-            <Reveal key={s.slug} delay={i * 60}>
-              <SolutionCard s={s} />
-            </Reveal>
-          ))}
-        </div>
+        <SolutionsSearch solutions={solutions} />
 
         <Reveal>
           <div className="mt-16 pt-10 border-t border-border">
