@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
 import { categories } from "@/lib/taxonomy";
 import { getPostMetas } from "@/lib/posts";
+import { solutions } from "@/lib/solutions";
 
 export const dynamic = "force-static";
 
@@ -10,7 +11,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/nico-bargioni/`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/soluciones/`, changeFrequency: "monthly", priority: 0.9 },
   ];
+
+  // Soluciones (páginas de negocio)
+  for (const s of solutions) {
+    entries.push({
+      url: `${base}/soluciones/${s.slug}/`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    });
+  }
 
   // Categorías y subcategorías (silos)
   for (const cat of categories) {

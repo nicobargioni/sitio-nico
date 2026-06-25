@@ -74,6 +74,20 @@ export function profilePageLd() {
   };
 }
 
+/** Service — una solución de negocio que ofrece Nico. */
+export function serviceLd(s: { titulo: string; resumen: string; slug: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: s.titulo,
+    description: s.resumen,
+    url: `${site.url}/soluciones/${s.slug}`,
+    provider: { "@id": PERSON_ID },
+    areaServed: "AR",
+    serviceType: "Ciencia de datos e IA aplicada",
+  };
+}
+
 type Crumb = { name: string; path: string };
 
 /** BreadcrumbList a partir de una lista de {name, path}. */

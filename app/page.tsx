@@ -6,8 +6,10 @@ import AskAiButtons from "./components/AskAiButtons";
 import Reveal from "./components/Reveal";
 import ColabCard from "./components/ColabCard";
 import PostCard from "./components/PostCard";
+import SolutionCard from "./components/SolutionCard";
 import JsonLd from "./components/JsonLd";
 import { getPostMetasByCategory } from "@/lib/posts";
+import { solutions } from "@/lib/solutions";
 import { categories } from "@/lib/taxonomy";
 import { site } from "@/lib/site";
 import { profilePageLd, itemListLd } from "@/lib/jsonld";
@@ -262,6 +264,39 @@ export default function Home() {
               </ul>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Soluciones ── */}
+      <section id="soluciones" className="px-6 py-24 border-t border-border">
+        <div className="max-w-6xl mx-auto">
+          <Reveal>
+            <p className="eyebrow mb-4">Soluciones</p>
+            <h2 className="font-display text-3xl md:text-5xl font-medium tracking-tight mb-4">
+              Qué puedo resolver
+            </h2>
+            <p className="text-muted max-w-xl mb-14">
+              Sin tecnicismos: problemas concretos de negocio que la ciencia de
+              datos y la IA resuelven. Si alguno te suena, escribime.
+            </p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {solutions.map((s, i) => (
+              <Reveal key={s.slug} delay={i * 60}>
+                <SolutionCard s={s} />
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal className="mt-8">
+            <Link
+              href="/soluciones"
+              className="inline-flex items-center gap-1 text-sm font-medium text-coral hover:text-cyan transition-colors"
+            >
+              Ver todas las soluciones <FiArrowUpRight size={15} />
+            </Link>
+          </Reveal>
         </div>
       </section>
 
