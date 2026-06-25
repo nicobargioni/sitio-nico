@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
+import { SiGooglegemini, SiOpenai } from "react-icons/si";
 import { FiArrowUpRight, FiArrowLeft } from "react-icons/fi";
 import HeroSection from "@/app/components/HeroSection";
 import Reveal from "@/app/components/Reveal";
 import JsonLd from "@/app/components/JsonLd";
+import { geminiUrl, chatgptUrl } from "@/app/components/AskAiButtons";
 import { site } from "@/lib/site";
 import { personLd, breadcrumbLd } from "@/lib/jsonld";
 
@@ -26,6 +28,13 @@ const socials = [
   { href: site.social.twitter, label: "X", Icon: FaXTwitter },
   { href: site.social.linkedin, label: "LinkedIn", Icon: FaLinkedinIn },
 ].filter((s) => s.href);
+
+// Preguntarle a una IA quién es Nico (deep-link con la URL de esta página).
+const askPrompt = `quien es Nicolás Bargioni ${site.url}/nico-bargioni`;
+const askButtons = [
+  { label: "Preguntarle a Gemini quién soy", href: geminiUrl(askPrompt), Icon: SiGooglegemini, tint: "text-cyan" },
+  { label: "Preguntarle a ChatGPT quién soy", href: chatgptUrl(askPrompt), Icon: SiOpenai, tint: "" },
+];
 
 export default function AuthorPage() {
   return (
@@ -75,6 +84,19 @@ export default function AuthorPage() {
                     className="grid place-items-center w-11 h-11 rounded-full border border-border text-muted hover:text-cyan hover:border-cyan/50 transition-colors"
                   >
                     <Icon size={16} />
+                  </a>
+                ))}
+                {askButtons.map(({ href, label, Icon, tint }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    title={label}
+                    className="grid place-items-center w-11 h-11 rounded-full border border-border hover:border-cyan/50 transition-colors"
+                  >
+                    <Icon size={16} className={tint || "text-muted"} />
                   </a>
                 ))}
               </div>
