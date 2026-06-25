@@ -14,8 +14,10 @@ function askQuery(pageUrl: string): string {
   return `describe+el+contenido+de+esta+pagina+${encodeURIComponent(pageUrl)}`;
 }
 
+// La app de Gemini (gemini.google.com/app) NO prefilla el prompt vía URL.
+// Google AI Mode (udm=50) sí toma el ?q= y lo ejecuta, y corre sobre Gemini.
 export function geminiUrl(pageUrl: string): string {
-  return `https://gemini.google.com/app?q=${askQuery(pageUrl)}`;
+  return `https://www.google.com/search?q=${askQuery(pageUrl)}&udm=50`;
 }
 
 export function chatgptUrl(pageUrl: string): string {
