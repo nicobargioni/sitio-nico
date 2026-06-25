@@ -5,7 +5,7 @@
 export const site = {
   name: "Nico Bargioni",
   // Aparece en la pestaña del navegador y en <title>
-  title: "Nico Bargioni · Datos, SEO e IA",
+  title: "Nicolás Bargioni — Data Scientist · IA aplicada y machine learning",
   shortName: "Nico Bargioni",
   // Bajada principal del hero
   tagline: "Data Scientist · IA aplicada",

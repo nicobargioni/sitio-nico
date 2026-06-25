@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import JsonLd from "./components/JsonLd";
 import Analytics from "./components/Analytics";
+import AnalyticsEvents from "./components/AnalyticsEvents";
 import { personLd, websiteLd } from "@/lib/jsonld";
 
 const geistSans = Geist({
@@ -63,6 +64,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Analytics />
+        <AnalyticsEvents />
         <JsonLd data={personLd()} />
         <JsonLd data={websiteLd()} />
         <Header />
