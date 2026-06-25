@@ -27,7 +27,7 @@ export function chatgptUrl(prompt: string): string {
 
 export default function AskAiButtons({
   path,
-  prompt = "describe el contenido de esta pagina",
+  prompt = "describe el contenido de esta pagina de Nicolás Bargioni",
   gemini = true,
   chatgpt = true,
   className = "",

@@ -197,7 +197,7 @@ export default async function SolutionPage({
         {/* Preguntar a una IA + compartir */}
         <AskAiButtons
           path={path}
-          prompt="explica esta solución de datos e IA y para qué sirve"
+          prompt="explica esta solución de datos e IA que ofrece Nicolás Bargioni y para qué sirve"
           className="mt-10 max-w-2xl"
         />
         <div className="mt-8 pt-8 border-t border-border">
