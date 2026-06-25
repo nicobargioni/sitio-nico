@@ -49,12 +49,12 @@ export default function Hero() {
               {site.intro}
             </h2>
             <div className="flex flex-wrap items-center gap-5">
-              <a
-                href={`mailto:${site.email}`}
+              <Link
+                href="/#soluciones"
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-coral text-coral font-medium hover:bg-coral hover:text-white transition-colors"
               >
-                Contactame
-              </a>
+                Soluciones
+              </Link>
               <Link
                 href="/#use-cases"
                 className="text-sm text-muted hover:text-cyan transition-colors inline-flex items-center gap-1"
