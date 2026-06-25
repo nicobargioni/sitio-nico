@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Tokens de marca — tema CLARO, data-science / IA
+   Doble acento: cian (#0891b2) + coral (#f0521f)
+   ============================================================ */
+:root {
+  --bg: #ffffff;
+  --surface: #f7f7f8;
+  --surface-2: #efeff1;
+  --border: rgba(10, 10, 15, 0.1);
+  --border-strong: rgba(10, 10, 15, 0.17);
+
+  --fg: #0a0a0a;
+  --muted: #565f6b;
+  --muted-2: #9aa3af;
+
+  --cyan: #0891b2;
+  --cyan-soft: #06b6d4;
+  --coral: #f0521f;
+  --coral-soft: #ff6b3d;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-cyan: var(--cyan);
+  --color-cyan-soft: var(--cyan-soft);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--fg);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* Glow sutil azul (arriba-izq) + ámbar (arriba-der) sobre blanco */
+  background:
+    radial-gradient(1100px 720px at 6% -8%, rgba(8, 145, 178, 0.07), transparent 55%),
+    radial-gradient(950px 680px at 104% 0%, rgba(240, 82, 31, 0.06), transparent 52%),
+    var(--bg);
+  background-attachment: fixed;
+  min-height: 100%;
+}
+
+/* ── Tipografía display ── */
+.font-display {
+  font-family: var(--font-space-grotesk), var(--font-geist-sans), sans-serif;
+}
+.accent-cyan {
+  color: var(--cyan);
+}
+.eyebrow {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+/* ── Animaciones de entrada (fade + translateY) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@keyframes scroll-dot {
+  0% { transform: translateY(0); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translateY(9px); opacity: 0; }
+}
+
+/* ── Prosa del blog (tema claro) ── */
+.prose {
+  color: #1f2733;
+  line-height: 1.78;
+}
+.prose > * + * { margin-top: 1.25rem; }
+.prose h2 {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2.5rem;
+  color: var(--fg);
+}
+.prose h3 {
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  color: var(--fg);
+}
+.prose a {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose strong { color: var(--fg); }
+.prose ul, .prose ol { padding-left: 1.5rem; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li::marker { color: var(--coral); }
+.prose blockquote {
+  border-left: 3px solid var(--cyan);
+  padding-left: 1rem;
+  color: var(--muted);
+  font-style: italic;
+}
+.prose code {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.875em;
+  background: var(--surface-2);
+  color: #0e7490;
+  padding: 0.15em 0.4em;
+  border-radius: 0.3rem;
+}
+.prose pre {
+  background: #0c1118;
+  border: 1px solid var(--border);
+  color: #e3e8f0;
+  padding: 1.1rem 1.25rem;
+  border-radius: 0.6rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+.prose pre code { background: transparent; padding: 0; color: inherit; }
+.prose img { border-radius: 0.6rem; border: 1px solid var(--border); }
+
+/* ── Accesibilidad: respetar reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
+}

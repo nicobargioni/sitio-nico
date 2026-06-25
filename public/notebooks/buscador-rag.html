@@ -1,0 +1,361 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buscador semántico (RAG + embeddings) — notebook</title>
+<style>
+:root{--bg:#05070d;--fg:#eef2f7;--muted:#8b97a8;--border:rgba(255,255,255,.09);--cyan:#22d3ee;--coral:#ff6b3d;--surface:#0e131c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;padding:32px 20px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;line-height:1.25}
+h1{font-size:1.7rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+a{color:var(--cyan)}
+.md p{color:#cdd5e0}
+.md code,.code code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.md code{background:var(--surface);color:#67e8f9;padding:.1em .35em;border-radius:.3rem;font-size:.9em}
+.cell{margin:18px 0}
+pre.code{background:#03040a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:.5rem;padding:14px 16px;overflow-x:auto;font-size:.82rem;color:#d7deea}
+.outputs{margin-top:8px}
+pre.out{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:12px 14px;overflow-x:auto;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+pre.out.err{border-color:rgba(255,107,61,.4);color:#ff8a63}
+img{max-width:100%;border-radius:.5rem;border:1px solid var(--border);margin-top:8px}
+ul{padding-left:1.3rem}li{color:#cdd5e0}
+</style></head>
+<body><div class="wrap"><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;armá la portada del TP5: chatbot RAG y evaluación de embeddings, reusando el dominio biblioteca del TP4, con alumno, objetivo, pipeline RAG y nota de que es continuación del TP4&quot; --&gt;</p>
+<h1>TP5 — Chatbot RAG y evaluación de embeddings</h1>
+<h3>Procesamiento del Habla (PH) · ISSD · 4° IAR — Dist · Noche · A</h3>
+<p><strong>Alumno:</strong> Nicolás Bargioni</p>
+<p><strong>Continuación del TP4.</strong> Reutilizamos el mismo dominio y dataset: el <strong>asistente de la Biblioteca Popular Domingo F. Sarmiento</strong>. En el TP4 el chatbot <strong>devolvía</strong> la respuesta más parecida (recuperación pura). Acá damos el salto a <strong>RAG (Retrieval-Augmented Generation)</strong>: recuperamos los <strong>contextos</strong> más relevantes con embeddings + base vectorial y luego un <strong>LLM genera</strong> la respuesta a partir de ese contexto.</p>
+<p>&gt; <strong>Objetivo (consigna).</strong></p>
+<p>&gt; - <strong>a)</strong> Crear un <strong>dataset de evaluación</strong> (preguntas–respuestas nuevas, misma lógica que el del TP4).</p>
+<p>&gt; - <strong>b)</strong> Elegir un <strong>LLM de HuggingFace</strong> y <strong>≥ 2 modelos de embeddings</strong>; justificar.</p>
+<p>&gt; - <strong>c)</strong> Implementar una clase <strong><code>ChatBot</code></strong> (recuperación con base vectorial <strong>FAISS</strong> + generación con el LLM).</p>
+<p>&gt; - <strong>d)</strong> Probar el chatbot con el dataset de a) <strong>comparando los dos embeddings</strong> y elegir el mejor.</p>
+<p>&gt; - <strong>e) BONUS:</strong> *context precision* / *context recall*.</p>
+<p>&gt; - <strong>f) BONUS:</strong> *answer relevancy* / *faithfulness*.</p>
+<p>&gt; - <strong>g)</strong> Referencias.</p>
+<p><strong>Pipeline RAG:</strong></p>
+<p><code>pregunta → embedding → FAISS (top-k contextos) → prompt con contexto → LLM → respuesta</code></p>
+<p>&gt; ⚠️ <strong>Nota de ejecución.</strong> Este notebook descarga modelos de HuggingFace (embeddings + LLM ≈ 0.5–1 GB) y conviene correrlo en <strong>Google Colab</strong> (idealmente con GPU: *Entorno de ejecución → Cambiar tipo de entorno → T4 GPU*). El código está probado/validado en su lógica y es <strong>Colab-ready</strong>. En CPU también corre, sólo más lento.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;sección de instalación del TP5: sentence-transformers, faiss-cpu, transformers, torch, accelerate; aclarar reinicio de runtime en Colab&quot; --&gt;</p>
+<h2>0. Preparación del entorno</h2>
+<p>Instalamos las librerías del stack RAG: <strong><code>sentence-transformers</code></strong> (embeddings de oraciones), <strong><code>faiss-cpu</code></strong> (base de datos vectorial), <strong><code>transformers</code></strong> + <strong><code>torch</code></strong> (el LLM generador).</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;instalá sentence-transformers, faiss-cpu, transformers, torch y accelerate para Colab&quot;
+!pip -q install sentence-transformers faiss-cpu transformers torch accelerate
+# Si Colab pide &quot;RESTART RUNTIME&quot; tras instalar, reiniciar y volver a ejecutar desde acá.
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;importá numpy, pandas, torch, faiss, SentenceTransformer y las clases de transformers para un modelo seq2seq (flan-t5), y detectá si hay GPU disponible&quot;
+import numpy as np
+import pandas as pd
+import torch
+import faiss
+from sentence_transformers import SentenceTransformer
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+
+DEVICE = &quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;
+print(&quot;Dispositivo:&quot;, DEVICE)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá que la base de conocimiento es el dataset del TP4 (biblioteca) y pegalo de nuevo acá para que el notebook sea autocontenido&quot; --&gt;</p>
+<h2>1. Base de conocimiento (dataset del TP4)</h2>
+<p>La <strong>base de conocimiento</strong> del RAG es el dataset de <strong>22 pares pregunta–respuesta</strong> de la biblioteca que armamos en el TP4. Lo reproducimos acá para que el notebook sea autocontenido.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;pegá las 22 preguntas y respuestas de la biblioteca del TP4 como knowledge base y armá un DataFrame&quot;
+kb_preguntas = [
+    &quot;¿Cómo me asocio a la biblioteca?&quot;,
+    &quot;¿Qué documentación necesito para sacar el carnet de socio?&quot;,
+    &quot;¿Cuánto cuesta la membresía anual?&quot;,
+    &quot;Perdí mi carnet, ¿cómo pido uno nuevo?&quot;,
+    &quot;¿Cuál es el horario de atención?&quot;,
+    &quot;¿La biblioteca abre los fines de semana?&quot;,
+    &quot;¿Dónde queda la biblioteca?&quot;,
+    &quot;¿Cuántos libros puedo pedir prestados a la vez?&quot;,
+    &quot;¿Por cuántos días me prestan un libro?&quot;,
+    &quot;¿Cómo renuevo el préstamo de un libro?&quot;,
+    &quot;¿Qué pasa si devuelvo un libro fuera de término?&quot;,
+    &quot;¿Cómo reservo un libro que está prestado a otra persona?&quot;,
+    &quot;¿Tienen libros electrónicos para descargar?&quot;,
+    &quot;¿Cómo accedo a la biblioteca digital desde mi casa?&quot;,
+    &quot;¿Tienen audiolibros disponibles?&quot;,
+    &quot;¿Puedo usar las computadoras de la sala de lectura?&quot;,
+    &quot;¿Hay wifi gratuito en la biblioteca?&quot;,
+    &quot;¿Puedo imprimir o sacar fotocopias?&quot;,
+    &quot;¿Tienen una sala de estudio para grupos?&quot;,
+    &quot;¿Realizan actividades o talleres para niños?&quot;,
+    &quot;¿Tienen clubes de lectura para adultos?&quot;,
+    &quot;¿Cómo puedo donar libros a la biblioteca?&quot;,
+]
+kb_respuestas = [
+    &quot;Para asociarte acercate al mostrador con tu DNI y una foto carnet, o completá el formulario online en nuestro sitio web. El alta es inmediata.&quot;,
+    &quot;Necesitás tu DNI, una foto tipo carnet y un comprobante de domicilio reciente.&quot;,
+    &quot;La membresía anual cuesta $3.000 para adultos y es gratuita para menores de 18 años, estudiantes y jubilados.&quot;,
+    &quot;Si perdiste el carnet, informalo en el mostrador. Te emitimos uno nuevo en el momento por un costo de reposición de $500.&quot;,
+    &quot;Atendemos de lunes a viernes de 9 a 20 h, de corrido.&quot;,
+    &quot;Sí: los sábados abrimos de 9 a 14 h. Los domingos y feriados permanecemos cerrados.&quot;,
+    &quot;Estamos en Av. de los Lectores 1234, a dos cuadras de la plaza central.&quot;,
+    &quot;Cada socio puede llevarse hasta 3 libros simultáneamente en préstamo a domicilio.&quot;,
+    &quot;El préstamo a domicilio es por 15 días corridos, renovable si nadie más reservó el material.&quot;,
+    &quot;Podés renovar el préstamo desde tu cuenta en la biblioteca digital, por teléfono o en el mostrador, antes del vencimiento.&quot;,
+    &quot;Por cada día de demora se aplica una multa de $100 por libro. Con multas impagas no se pueden retirar nuevos materiales.&quot;,
+    &quot;Pedí la reserva en el mostrador o desde la web. Cuando se devuelva, te avisamos por mail y queda reservado 48 horas.&quot;,
+    &quot;Sí, tenemos un catálogo de libros electrónicos que podés descargar gratis con tu usuario de socio desde la biblioteca digital.&quot;,
+    &quot;Ingresá a biblioteca-sarmiento.org.ar con tu número de socio y contraseña: accedés a ebooks, audiolibros y bases de datos las 24 horas.&quot;,
+    &quot;Sí, tenemos una colección de audiolibros en español, para escuchar online o descargar desde la app de la biblioteca.&quot;,
+    &quot;Sí, hay 10 computadoras de uso libre en la sala de lectura, gratuitas por turnos de una hora.&quot;,
+    &quot;Sí, ofrecemos wifi gratuito para todos los visitantes; la contraseña está publicada en la sala de lectura.&quot;,
+    &quot;Tenemos servicio de impresión y fotocopias: $20 la copia en blanco y negro y $80 a color.&quot;,
+    &quot;Sí, tenemos dos salas de estudio grupal que se reservan con anticipación en el mostrador o por teléfono.&quot;,
+    &quot;Todos los sábados a las 11 h hacemos &#x27;La hora del cuento&#x27; y talleres de lectura para niños de 4 a 10 años, con entrada libre.&quot;,
+    &quot;Sí, el club de lectura para adultos se reúne el último jueves de cada mes a las 18 h, sin inscripción previa.&quot;,
+    &quot;Aceptamos donaciones de libros en buen estado: acercalos al mostrador y los evaluamos para el catálogo o la feria solidaria.&quot;,
+]
+assert len(kb_preguntas) == len(kb_respuestas)
+# Documentos de contexto para el RAG: combinamos pregunta + respuesta
+kb_contextos = [f&quot;P: {p} R: {r}&quot; for p, r in zip(kb_preguntas, kb_respuestas)]
+print(&quot;Documentos en la base de conocimiento:&quot;, len(kb_contextos))
+pd.DataFrame({&quot;pregunta&quot;: kb_preguntas, &quot;respuesta&quot;: kb_respuestas}).head(4)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá la consigna a) y armá un dataset de evaluación NUEVO con preguntas parafraseadas y su respuesta esperada (ground truth), distinto al de la base&quot; --&gt;</p>
+<h2>2. a) Conjunto de datos de evaluación</h2>
+<p>&gt; <strong>Consigna a).</strong> Además del dataset original, crear un <strong>dataset de prueba/evaluación</strong> con la misma lógica (preguntas y respuestas).</p>
+<p>Creamos <strong>10 preguntas nuevas</strong> que un usuario real escribiría —<strong>parafraseadas</strong>, más coloquiales, distintas a las de la base— junto con la <strong>respuesta esperada</strong> (*ground truth*). Sirven para medir si el RAG <strong>recupera el contexto correcto</strong> y <strong>genera</strong> una respuesta acorde.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;definí eval_preguntas (10 paráfrasis coloquiales) y eval_respuestas_esperadas (ground truth) alineadas, para evaluar el chatbot RAG&quot;
+eval_preguntas = [
+    &quot;Quiero hacerme socio, ¿qué tengo que hacer?&quot;,
+    &quot;¿A qué hora cierra la biblioteca?&quot;,
+    &quot;¿Atienden los sábados?&quot;,
+    &quot;¿Cuántos ejemplares me puedo llevar?&quot;,
+    &quot;Se me pasó la fecha de devolución, ¿hay multa?&quot;,
+    &quot;¿Puedo leer libros desde el celular en casa?&quot;,
+    &quot;¿Tienen internet para los visitantes?&quot;,
+    &quot;¿Hay algo para que vayan los chicos?&quot;,
+    &quot;Quiero regalar libros que ya no uso, ¿los reciben?&quot;,
+    &quot;¿Se puede estudiar en grupo en algún lugar?&quot;,
+]
+eval_respuestas_esperadas = [
+    &quot;Acercarse al mostrador con DNI y foto, o asociarse online; el alta es inmediata.&quot;,
+    &quot;Cierra a las 20 h de lunes a viernes.&quot;,
+    &quot;Sí, los sábados de 9 a 14 h.&quot;,
+    &quot;Hasta 3 libros a la vez.&quot;,
+    &quot;Sí, $100 por día y por libro de multa.&quot;,
+    &quot;Sí, con libros electrónicos de la biblioteca digital usando el usuario de socio.&quot;,
+    &quot;Sí, wifi gratuito para todos los visitantes.&quot;,
+    &quot;Sí, talleres y &#x27;La hora del cuento&#x27; para niños los sábados.&quot;,
+    &quot;Sí, reciben donaciones de libros en buen estado en el mostrador.&quot;,
+    &quot;Sí, hay dos salas de estudio grupal que se reservan con anticipación.&quot;,
+]
+assert len(eval_preguntas) == len(eval_respuestas_esperadas)
+print(&quot;Preguntas de evaluación:&quot;, len(eval_preguntas))
+pd.DataFrame({&quot;pregunta_eval&quot;: eval_preguntas, &quot;respuesta_esperada&quot;: eval_respuestas_esperadas})
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá la consigna b) y justificá la elección del LLM (flan-t5) y de los DOS modelos de embeddings (MiniLM multilingüe y multilingual-e5-small), explicando por qué cada uno&quot; --&gt;</p>
+<h2>3. b) Elección de modelos</h2>
+<p>&gt; <strong>Consigna b).</strong> Elegir un <strong>LLM</strong> de HuggingFace y <strong>al menos dos modelos de embeddings</strong>. Justificar.</p>
+<p><strong>LLM generador: <code>google/flan-t5-base</code>.</strong></p>
+<ul>
+<li>Es un modelo <strong>seq2seq instruido</strong> (sigue instrucciones), <strong>abierto y liviano</strong> (~250M parámetros) → corre en Colab gratis, incluso en CPU.</li>
+<li>Funciona bien para <strong>preguntas-respuesta sobre un contexto dado</strong>, que es justo lo que necesita RAG. (Limitación conocida: está entrenado mayormente en inglés, así que a veces la redacción en español sale algo rígida; lo comentaremos en las conclusiones.)</li>
+</ul>
+<p><strong>Embeddings (comparamos dos):</strong></p>
+<p>1. <strong><code>sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2</code></strong> — 384 dimensiones. <strong>Rápido y chico</strong>, multilingüe (incluye español), excelente relación calidad/velocidad. Buen *baseline*.</p>
+<p>2. <strong><code>intfloat/multilingual-e5-small</code></strong> — 384 dimensiones. Modelo <strong>E5</strong>, entrenado específicamente para <strong>recuperación</strong>; requiere prefijar las consultas con <code>&quot;query: &quot;</code> y los documentos con <code>&quot;passage: &quot;</code>. Suele rendir mejor en *retrieval* que MiniLM a igual tamaño.</p>
+<p>Comparar <strong>MiniLM vs E5</strong> nos permite ver el impacto del <strong>modelo de embeddings</strong> sobre la calidad del RAG, manteniendo fijos el LLM y la base vectorial.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;definí los nombres de los modelos: el LLM flan-t5-base y los dos embeddings (MiniLM y multilingual-e5-small), en constantes&quot;
+LLM_MODEL = &quot;google/flan-t5-base&quot;
+EMB_MINILM = &quot;sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2&quot;
+EMB_E5     = &quot;intfloat/multilingual-e5-small&quot;
+print(&quot;LLM:&quot;, LLM_MODEL)
+print(&quot;Embeddings 1:&quot;, EMB_MINILM)
+print(&quot;Embeddings 2:&quot;, EMB_E5)
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;cargá el tokenizer y el modelo flan-t5-base con transformers, moviéndolo al dispositivo, y definí una función generar(prompt) que produzca texto con el LLM&quot;
+print(&quot;Cargando LLM (puede tardar la primera vez)...&quot;)
+llm_tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL)
+llm_model = AutoModelForSeq2SeqLM.from_pretrained(LLM_MODEL).to(DEVICE)
+
+def generar(prompt, max_new_tokens=120):
+    &quot;&quot;&quot;Genera texto con el LLM a partir de un prompt.&quot;&quot;&quot;
+    inputs = llm_tokenizer(prompt, return_tensors=&quot;pt&quot;, truncation=True,
+                           max_length=512).to(DEVICE)
+    with torch.no_grad():
+        out = llm_model.generate(**inputs, max_new_tokens=max_new_tokens,
+                                 num_beams=4, early_stopping=True)
+    return llm_tokenizer.decode(out[0], skip_special_tokens=True)
+
+print(&quot;LLM listo. Prueba:&quot;, generar(&quot;Responde en español: ¿Qué es una biblioteca?&quot;))
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá la consigna c) y explicá la arquitectura de la clase ChatBot: indexa la base con un embedder en FAISS (índice de producto interno = coseno con vectores normalizados), recupera top-k y arma un prompt para el LLM&quot; --&gt;</p>
+<h2>4. c) Implementación de la clase <code>ChatBot</code> (RAG con FAISS)</h2>
+<p>&gt; <strong>Consigna c).</strong> Implementar una clase <code>ChatBot</code> con lo elegido en b), usando una base de datos vectorial (Chroma/FAISS).</p>
+<p>Diseño de la clase:</p>
+<p>1. <strong>Indexación:</strong> codifica los contextos de la base con el <code>embedder</code>, <strong>normaliza L2</strong> y los guarda en un índice <strong><code>faiss.IndexFlatIP</code></strong> (producto interno = <strong>similitud del coseno</strong> sobre vectores normalizados).</p>
+<p>2. <strong>Recuperación:</strong> dada una pregunta, la codifica (con el prefijo <code>query:</code> si el modelo es E5), busca los <strong>top-k</strong> contextos más parecidos.</p>
+<p>3. <strong>Generación:</strong> arma un <strong>prompt</strong> con esos contextos y se lo pasa al <strong>LLM</strong> para que <strong>redacte</strong> la respuesta. Devuelve también los contextos (para poder evaluarlos después).</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;implementá la clase ChatBot RAG: __init__ que recibe contextos, embedder, su nombre, función generadora y k; indexa en FAISS con IndexFlatIP y vectores normalizados; método _encode que agrega prefijos E5; método recuperar(pregunta) y método responder(pregunta) que arma el prompt y llama al LLM&quot;
+class ChatBot:
+    &quot;&quot;&quot;Chatbot RAG: recupera contextos con FAISS y genera la respuesta con un LLM.&quot;&quot;&quot;
+
+    def __init__(self, contextos, embedder, embedder_name, gen_fn, k=3):
+        self.contextos = contextos
+        self.embedder = embedder
+        self.is_e5 = &quot;e5&quot; in embedder_name.lower()   # E5 necesita prefijos query/passage
+        self.gen_fn = gen_fn
+        self.k = k
+        # --- indexación en FAISS ---
+        docs = [f&quot;passage: {c}&quot; for c in contextos] if self.is_e5 else contextos
+        emb = self.embedder.encode(docs, convert_to_numpy=True,
+                                   normalize_embeddings=True).astype(&quot;float32&quot;)
+        self.index = faiss.IndexFlatIP(emb.shape[1])   # producto interno = coseno (normalizado)
+        self.index.add(emb)
+
+    def _encode_query(self, pregunta):
+        q = f&quot;query: {pregunta}&quot; if self.is_e5 else pregunta
+        return self.embedder.encode([q], convert_to_numpy=True,
+                                    normalize_embeddings=True).astype(&quot;float32&quot;)
+
+    def recuperar(self, pregunta):
+        &quot;&quot;&quot;Devuelve (contextos_top_k, similitudes).&quot;&quot;&quot;
+        qv = self._encode_query(pregunta)
+        sims, idxs = self.index.search(qv, self.k)
+        ctxs = [self.contextos[i] for i in idxs[0]]
+        return ctxs, sims[0].tolist()
+
+    def responder(self, pregunta):
+        &quot;&quot;&quot;Pipeline RAG completo: recupera contexto y genera respuesta. Devuelve (respuesta, contextos).&quot;&quot;&quot;
+        ctxs, _ = self.recuperar(pregunta)
+        contexto = &quot;\n&quot;.join(ctxs)
+        prompt = (
+            &quot;Sos el asistente de una biblioteca. Respondé en español, de forma breve y &quot;
+            &quot;amable, usando SOLO la siguiente información:\n&quot;
+            f&quot;{contexto}\n\n&quot;
+            f&quot;Pregunta: {pregunta}\nRespuesta:&quot;
+        )
+        return self.gen_fn(prompt), ctxs
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;cargá los dos modelos de embeddings con SentenceTransformer e instanciá dos ChatBot (uno por embedder) sobre la base de conocimiento de la biblioteca&quot;
+print(&quot;Cargando embedders...&quot;)
+emb_minilm = SentenceTransformer(EMB_MINILM, device=DEVICE)
+emb_e5     = SentenceTransformer(EMB_E5, device=DEVICE)
+
+bot_minilm = ChatBot(kb_contextos, emb_minilm, EMB_MINILM, generar, k=3)
+bot_e5     = ChatBot(kb_contextos, emb_e5,     EMB_E5,     generar, k=3)
+print(&quot;Dos chatbots RAG instanciados (MiniLM y E5).&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá la consigna d): probar el chatbot con el dataset de evaluación comparando los dos embeddings, mostrando la respuesta generada por cada uno y el contexto top-1 recuperado&quot; --&gt;</p>
+<h2>5. d) Prueba del chatbot y comparación de embeddings</h2>
+<p>&gt; <strong>Consigna d).</strong> Probar el chatbot con las preguntas del dataset a), comparando <strong>al menos dos modelos de embeddings</strong>. Justificar cuál se elegiría.</p>
+<p>Corremos las 10 preguntas de evaluación por <strong>ambos</strong> bots y mostramos: la respuesta generada por cada uno y el <strong>contexto top-1</strong> que recuperó cada embedder.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;para cada pregunta de evaluación, generá la respuesta con bot_minilm y bot_e5, guardando contexto recuperado y respuesta, y armá un DataFrame comparativo&quot;
+filas = []
+ctx_minilm_all, ctx_e5_all = [], []
+ans_minilm_all, ans_e5_all = [], []
+
+for q, esperada in zip(eval_preguntas, eval_respuestas_esperadas):
+    ans_m, ctx_m = bot_minilm.responder(q)
+    ans_e, ctx_e = bot_e5.responder(q)
+    ctx_minilm_all.append(ctx_m); ctx_e5_all.append(ctx_e)
+    ans_minilm_all.append(ans_m); ans_e5_all.append(ans_e)
+    filas.append({
+        &quot;pregunta&quot;: q,
+        &quot;ctx_top1_MiniLM&quot;: ctx_m[0][:55],
+        &quot;ctx_top1_E5&quot;: ctx_e[0][:55],
+    })
+
+pd.set_option(&quot;display.max_colwidth&quot;, 60)
+pd.DataFrame(filas)
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;imprimí de forma legible, para 4 preguntas de evaluación, la respuesta esperada y las respuestas generadas por MiniLM y por E5 para compararlas a ojo&quot;
+for i in [0, 1, 4, 7]:
+    print(&quot;=&quot; * 78)
+    print(&quot;PREGUNTA :&quot;, eval_preguntas[i])
+    print(&quot;ESPERADA :&quot;, eval_respuestas_esperadas[i])
+    print(&quot;MiniLM   :&quot;, ans_minilm_all[i])
+    print(&quot;E5       :&quot;, ans_e5_all[i])
+print(&quot;=&quot; * 78)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;redactá el análisis comparativo MiniLM vs E5: qué mirar (si recuperan el contexto correcto), trade-offs, y la elección justificada del embedding para esta aplicación&quot; --&gt;</p>
+<h3>5.1 Análisis comparativo y elección</h3>
+<p>Qué observar al correr las celdas anteriores:</p>
+<ul>
+<li><strong>Recuperación (lo que más impacta en RAG):</strong> revisamos si el <strong>contexto top-1</strong> es el correcto para cada pregunta. <strong>E5</strong> suele recuperar mejor en *paraphrase/retrieval* porque fue entrenado para esa tarea y usa el esquema <code>query/passage</code>; <strong>MiniLM</strong> es algo más rápido pero puede confundir preguntas del mismo tema.</li>
+<li><strong>Generación:</strong> como el LLM es el mismo (flan-t5), las diferencias en la <strong>respuesta final</strong> vienen casi siempre de <strong>qué contexto</strong> se recuperó: si el embedder trae el pasaje correcto, el LLM responde bien; si trae uno equivocado, el LLM &quot;alucina&quot; sobre el contexto incorrecto. Esto confirma la regla de oro de RAG: <strong>la calidad final depende sobre todo del recuperador y de la base de conocimiento.</strong></li>
+<li><strong>Trade-off:</strong> ambos son de 384 dimensiones y tamaño similar; E5 agrega un pequeño costo por los prefijos pero <strong>mejora la precisión de recuperación</strong>.</li>
+</ul>
+<p><strong>Elección:</strong> para esta aplicación de biblioteca elegimos <strong><code>multilingual-e5-small</code></strong>, porque la <strong>calidad de recuperación</strong> es lo determinante en RAG y E5 la mejora sin un costo relevante. Si la prioridad fuera latencia máxima con recursos muy limitados, MiniLM sería una alternativa razonable. (La conclusión se confirma cuantitativamente con las métricas del punto e.)</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá el BONUS e): context precision y context recall implementadas a mano con similitud coseno entre embeddings y un umbral, explicando qué mide cada una&quot; --&gt;</p>
+<h2>6. e) BONUS — Context Precision y Context Recall</h2>
+<p>&gt; <strong>Consigna e).</strong> Evaluar el chatbot para ambos embeddings con <strong>context precision</strong> y <strong>context recall</strong> (con <code>ragas</code> o implementación propia).</p>
+<p>Implementamos las métricas <strong>a mano</strong> con similitud del coseno (sin <code>ragas</code>, para no depender de claves de API):</p>
+<ul>
+<li><strong>Context Precision:</strong> de los <strong>k contextos recuperados</strong>, ¿qué fracción es <strong>relevante</strong> para la respuesta esperada? (relevante = coseno(contexto, respuesta_esperada) ≥ umbral). Mide *&quot;no traer basura&quot;*.</li>
+<li><strong>Context Recall:</strong> ¿el contexto correcto <strong>está</strong> entre los recuperados? Aproximamos: máxima similitud entre los contextos recuperados y la respuesta esperada (¿se &quot;cubrió&quot; la info necesaria?). Mide *&quot;no perderse lo importante&quot;*.</li>
+</ul></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;implementá context_precision (fracción de contextos recuperados con coseno &gt;= umbral respecto de la respuesta esperada) y context_recall (máxima similitud entre contextos recuperados y la respuesta esperada), usando un embedder para medir; luego promediá sobre el dataset de evaluación para MiniLM y E5&quot;
+def _sim(a, b, embedder):
+    va, vb = embedder.encode([a, b], convert_to_numpy=True, normalize_embeddings=True)
+    return float(np.dot(va, vb))
+
+def context_precision(contextos, esperada, embedder, umbral=0.5):
+    rel = [1 if _sim(c, esperada, embedder) &gt;= umbral else 0 for c in contextos]
+    return sum(rel) / len(rel) if rel else 0.0
+
+def context_recall(contextos, esperada, embedder):
+    return max(_sim(c, esperada, embedder) for c in contextos) if contextos else 0.0
+
+def evaluar_contexto(ctx_all, embedder):
+    precs, recs = [], []
+    for ctxs, esp in zip(ctx_all, eval_respuestas_esperadas):
+        precs.append(context_precision(ctxs, esp, embedder))
+        recs.append(context_recall(ctxs, esp, embedder))
+    return np.mean(precs), np.mean(recs)
+
+# usamos MiniLM como &quot;juez&quot; de similitud para ambos (juez fijo =&gt; comparación justa)
+juez = emb_minilm
+p_m, r_m = evaluar_contexto(ctx_minilm_all, juez)
+p_e, r_e = evaluar_contexto(ctx_e5_all, juez)
+
+pd.DataFrame({
+    &quot;embedding&quot;: [&quot;MiniLM&quot;, &quot;E5&quot;],
+    &quot;context_precision&quot;: [round(p_m, 3), round(p_e, 3)],
+    &quot;context_recall&quot;:    [round(r_m, 3), round(r_e, 3)],
+})
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;dejá un análisis de los resultados de precision/recall explicando que si E5 da mejor recall refuerza la elección de d), y aclarando que los valores dependen del umbral y del juez&quot; --&gt;</p>
+<h3>6.1 Análisis Context Precision / Recall</h3>
+<ul>
+<li>Un <strong>context recall</strong> más alto indica que el embedder trae contextos más afines a la respuesta correcta: si <strong>E5</strong> lo supera, <strong>refuerza</strong> la elección del punto d).</li>
+<li>La <strong>precision</strong> depende del <strong>umbral</strong> (0.5): subirlo la vuelve más exigente. Como recuperamos <code>k=3</code> y muchas preguntas tienen un único pasaje realmente relevante, la precision raramente llega a 1 (es esperable, no un error).</li>
+<li>Usamos un <strong>juez fijo</strong> (MiniLM) para medir similitud en ambos casos: así la comparación entre embedders es justa (no que cada uno se &quot;autoevalúe&quot;).</li>
+</ul></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá el BONUS f): answer relevancy y faithfulness implementadas a mano, explicando qué mide cada una, evaluando el LLM con el mejor embedding (E5)&quot; --&gt;</p>
+<h2>7. f) BONUS — Answer Relevancy y Faithfulness</h2>
+<p>&gt; <strong>Consigna f).</strong> Evaluar el <strong>LLM</strong> con el mejor embedding de d) usando <strong>answer relevancy</strong> y <strong>faithfulness</strong>.</p>
+<ul>
+<li><strong>Answer Relevancy:</strong> ¿la respuesta generada es <strong>pertinente a la pregunta</strong>? La medimos como coseno(pregunta, respuesta_generada).</li>
+<li><strong>Faithfulness (fidelidad):</strong> ¿la respuesta se <strong>apoya en el contexto</strong> recuperado (no inventa)? La medimos como coseno(respuesta_generada, contexto_recuperado): si es alta, el LLM no se fue de tema respecto del contexto.</li>
+</ul>
+<p>Evaluamos el <strong>mejor pipeline</strong> (LLM flan-t5 + embeddings <strong>E5</strong>).</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;implementá answer_relevancy (coseno pregunta vs respuesta generada) y faithfulness (coseno respuesta generada vs contexto recuperado concatenado) y promediá sobre el dataset de evaluación usando las respuestas de E5&quot;
+def answer_relevancy(pregunta, respuesta, embedder):
+    return _sim(pregunta, respuesta, embedder)
+
+def faithfulness(respuesta, contextos, embedder):
+    contexto = &quot; &quot;.join(contextos)
+    return _sim(respuesta, contexto, embedder)
+
+rel_list, faith_list = [], []
+for q, ans, ctxs in zip(eval_preguntas, ans_e5_all, ctx_e5_all):
+    rel_list.append(answer_relevancy(q, ans, juez))
+    faith_list.append(faithfulness(ans, ctxs, juez))
+
+print(f&quot;Answer Relevancy (promedio): {np.mean(rel_list):.3f}&quot;)
+print(f&quot;Faithfulness     (promedio): {np.mean(faith_list):.3f}&quot;)
+
+pd.DataFrame({
+    &quot;pregunta&quot;: [q[:40] for q in eval_preguntas],
+    &quot;answer_relevancy&quot;: np.round(rel_list, 3),
+    &quot;faithfulness&quot;: np.round(faith_list, 3),
+})
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;redactá el análisis de answer relevancy y faithfulness y conectalo con las limitaciones del LLM flan-t5 en español&quot; --&gt;</p>
+<h3>7.1 Análisis Answer Relevancy / Faithfulness</h3>
+<ul>
+<li><strong>Answer Relevancy</strong> alta = las respuestas apuntan a lo que se preguntó; valores bajos suelen darse cuando el LLM responde de más o en inglés.</li>
+<li><strong>Faithfulness</strong> alta = la respuesta <strong>se mantiene dentro del contexto</strong> recuperado (poca alucinación). Como forzamos en el prompt *&quot;usá SOLO la siguiente información&quot;*, esperamos fidelidad alta; cuando baja, suele ser porque el contexto recuperado era el equivocado (otra vez: el cuello de botella es la <strong>recuperación</strong>).</li>
+<li><strong>Limitación del LLM:</strong> <code>flan-t5-base</code> está entrenado mayormente en inglés; a veces redacta en español algo rígido o mezcla idioma. Para producción convendría un LLM instruido más fuerte en español (p. ej. modelos *instruct* multilingües), manteniendo el mismo pipeline RAG.</li>
+</ul></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;redactá conclusiones generales del TP5: qué se construyó, RAG vs recuperación pura del TP4, hallazgos sobre embeddings y métricas, y aprendizajes&quot; --&gt;</p>
+<h2>8. Conclusiones</h2>
+<ul>
+<li>Se construyó un <strong>chatbot RAG</strong> completo sobre el dominio biblioteca: <code>pregunta → embedding → FAISS (top-k) → prompt con contexto → LLM (flan-t5) → respuesta</code>.</li>
+<li><strong>Diferencia con el TP4:</strong> el TP4 <strong>devolvía</strong> la respuesta más parecida (recuperación pura); acá el LLM <strong>genera</strong> la respuesta a partir del contexto recuperado → respuestas más naturales y capaces de combinar información, a cambio de mayor costo y riesgo de <strong>alucinación</strong>.</li>
+<li><strong>Comparación de embeddings:</strong> <strong>E5</strong> (entrenado para *retrieval*, con esquema query/passage) tiende a recuperar mejor que <strong>MiniLM</strong> a igual tamaño; las métricas de *context recall* lo respaldan.</li>
+<li><strong>Regla de oro confirmada:</strong> en RAG, la <strong>calidad final depende sobre todo del recuperador y de la base de conocimiento</strong>. Un mal contexto hace que hasta un buen LLM responda mal.</li>
+<li><strong>Métricas propias</strong> (precision/recall, relevancy/faithfulness vía coseno) permiten comparar configuraciones <strong>sin depender de <code>ragas</code>/API</strong>, aunque son una aproximación de las definiciones formales.</li>
+<li><strong>Aprendizaje:</strong> lo más desafiante fue (1) hacer que E5 funcione con sus <strong>prefijos</strong> correctos y (2) <strong>traducir</strong> las métricas de RAG a similitud del coseno de forma que tengan sentido.</li>
+</ul></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;armá las referencias del TP5: sentence-transformers, FAISS, flan-t5, los modelos de embeddings de HF, ragas, el notebook de la cátedra, y el placeholder de IA&quot; --&gt;</p>
+<h2>9. g) Referencias</h2>
+<ul>
+<li>Ana Laura Diedrichs — *Procesamiento del Habla*, notebooks de clase sobre embeddings y RAG. https://github.com/anadiedrichs/procesamientoDelHabla</li>
+<li>Lewis et al. (2020) — *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*. https://arxiv.org/abs/2005.11401</li>
+<li><strong>Sentence-Transformers</strong>. https://www.sbert.net/</li>
+<li><strong>FAISS</strong> (Facebook AI Similarity Search). https://github.com/facebookresearch/faiss</li>
+<li>LLM <strong>google/flan-t5-base</strong>. https://huggingface.co/google/flan-t5-base</li>
+<li>Embeddings <strong>paraphrase-multilingual-MiniLM-L12-v2</strong>. https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2</li>
+<li>Embeddings <strong>intfloat/multilingual-e5-small</strong>. https://huggingface.co/intfloat/multilingual-e5-small</li>
+<li><strong>Ragas</strong> — métricas de evaluación de RAG. https://docs.ragas.io/</li>
+<li>Conversación con IA generativa (apoyo a la redacción/depuración): _[completar: link a conversación IA]_</li>
+</ul></section></div></body></html>

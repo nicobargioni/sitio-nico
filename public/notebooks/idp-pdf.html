@@ -1,0 +1,270 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Procesamiento de PDFs (NLP)</title><style>
+:root{--bg:#05070d;--fg:#eef2f7;--muted:#8b97a8;--border:rgba(255,255,255,.09);--cyan:#22d3ee;--coral:#ff6b3d;--surface:#0e131c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;padding:32px 20px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;line-height:1.25}
+h1{font-size:1.7rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+a{color:var(--cyan)}
+.md p{color:#cdd5e0}
+.md code,.code code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.md code{background:var(--surface);color:#67e8f9;padding:.1em .35em;border-radius:.3rem;font-size:.9em}
+.cell{margin:18px 0}
+pre.code{background:#03040a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:.5rem;padding:14px 16px;overflow-x:auto;font-size:.82rem;color:#d7deea}
+.outputs{margin-top:8px}
+pre.out{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:12px 14px;overflow-x:auto;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+pre.out.err{border-color:rgba(255,107,61,.4);color:#ff8a63}
+img{max-width:100%;border-radius:.5rem;border:1px solid var(--border);margin-top:8px}
+ul{padding-left:1.3rem}li{color:#cdd5e0}
+</style></head><body><div class='wrap'><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;armá la portada del notebook con título, alumno, fuente elegida, objetivo y el diagrama del pipeline&quot; --&gt;</p>
+<h1>TP1 — Procesamiento de archivos PDF</h1>
+<h3>Procesamiento del Habla (PH) · ISSD · 4° IAR</h3>
+<p><strong>Alumno:</strong> Nicolás Bargioni</p>
+<p><strong>Fuente elegida:</strong> *Panorama económico de América Latina y el Caribe — Revisitando la política industrial* (Oficina del Economista Jefe para América Latina y el Caribe, <strong>Banco Mundial</strong>, abril 2026).</p>
+<p>URL: https://openknowledge.worldbank.org/server/api/core/bitstreams/a1baf8eb-b679-43f6-b49b-a97d29838bd8/content</p>
+<p>&gt; Documento en <strong>español</strong>, con metadatos, <strong>tablas estadísticas</strong> (proyecciones de PIB por país) y abundante <strong>texto narrativo</strong> — ideal para recorrer todo el pipeline de adquisición y limpieza visto en clase.</p>
+<p>---</p>
+<h2>Objetivo</h2>
+<p>Construir un flujo en Python que transforme un PDF en datos estructurados y listos para análisis, aplicando la <strong>etapa 1 del pipeline de PH</strong> (texto crudo → limpieza), con las herramientas vistas en clase:</p>
+<p><code>requests</code> · <code>PyMuPDF (fitz)</code> · <code>pdfplumber</code> · <code>NLTK</code> · <code>spaCy</code> · <code>pandas</code> · <code>matplotlib</code>.</p>
+<p><code>`</code></p>
+<p>PDF (raw data) → metadatos → texto crudo → tabla (DataFrame) → tokenización → stopwords → frecuencias</p>
+<p><code>`</code></p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;escribí una intro corta para la sección de instalación de dependencias&quot; --&gt;</p>
+<h2>0. Preparación del entorno</h2>
+<p>Instalamos e importamos las librerías. En Colab algunas ya vienen; instalamos las que faltan.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;instalá las dependencias necesarias en Colab (requests, pymupdf, pdfplumber, nltk, spacy)&quot;
+# Instalación (Colab). Si ya están instaladas, pip no hace nada.
+!pip -q install pymupdf pdfplumber nltk spacy
+!python -m spacy download es_core_news_sm -q   # modelo español de spaCy (visto en clase)
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;importá las librerías y descargá los recursos de NLTK y el modelo de spaCy&quot;
+import requests                     # descarga de archivos (clase 1: scraping/adquisición)
+import fitz                          # PyMuPDF: metadatos + texto crudo
+import pdfplumber                    # extracción de tablas
+import pandas as pd                  # DataFrame
+import matplotlib.pyplot as plt      # visualización
+import re, string
+from collections import Counter      # conteo de frecuencias
+
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import SnowballStemmer
+
+# Recursos de NLTK (tokenizador y stopwords). &#x27;punkt_tab&#x27; es el nuevo punkt.
+for rec in [&quot;punkt&quot;, &quot;punkt_tab&quot;, &quot;stopwords&quot;]:
+    try:
+        nltk.download(rec, quiet=True)
+    except Exception as e:
+        print(&quot;aviso descargando&quot;, rec, e)
+
+import spacy
+nlp = spacy.load(&quot;es_core_news_sm&quot;)
+print(&quot;Entorno listo ✔&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá en markdown el paso de adquisición y por qué se usa un User-Agent para evitar el 403&quot; --&gt;</p>
+<h2>1. Adquisición y metadatos</h2>
+<h3>1.1 Descarga automatizada</h3>
+<p>Usamos <code>requests</code> con un <strong>User-Agent de navegador</strong>. En clase vimos que muchos servidores responden <strong>403</strong> a un script &quot;pelado&quot;: simular Chrome con headers evita el bloqueo.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;descargá el archivo/página con requests usando headers de navegador y mostrá el status code&quot;
+URL = &quot;https://openknowledge.worldbank.org/server/api/core/bitstreams/a1baf8eb-b679-43f6-b49b-a97d29838bd8/content&quot;
+ARCHIVO = &quot;panorama_lac_bm.pdf&quot;
+
+headers = {&quot;User-Agent&quot;: &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) &quot;
+                         &quot;AppleWebKit/537.36 (KHTML, like Gecko) &quot;
+                         &quot;Chrome/124.0 Safari/537.36&quot;}
+
+resp = requests.get(URL, headers=headers, timeout=90)
+print(&quot;Status code:&quot;, resp.status_code)          # 200 = OK
+print(&quot;Content-Type:&quot;, resp.headers.get(&quot;Content-Type&quot;))
+print(&quot;Tamaño:&quot;, round(len(resp.content)/1_000_000, 2), &quot;MB&quot;)
+
+with open(ARCHIVO, &quot;wb&quot;) as f:
+    f.write(resp.content)
+print(&quot;Guardado como&quot;, ARCHIVO)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;redactá la explicación de cómo inspeccionar los metadatos del PDF y qué mostrar&quot; --&gt;</p>
+<h3>1.2 Inspección de metadatos</h3>
+<p>Abrimos el PDF con <strong>PyMuPDF (<code>fitz</code>)</strong> y mostramos los metadatos pedidos: <strong>título, autor, número de páginas y software de creación</strong>.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;abrí el PDF con PyMuPDF y mostrá título, autor, páginas y software de creación&quot;
+doc = fitz.open(ARCHIVO)
+meta = doc.metadata
+
+print(&quot;Título   :&quot;, repr(meta.get(&quot;title&quot;)))
+print(&quot;Autor    :&quot;, repr(meta.get(&quot;author&quot;)))
+print(&quot;N° páginas:&quot;, doc.page_count)
+print(&quot;Creador  :&quot;, meta.get(&quot;creator&quot;))      # software de creación
+print(&quot;Productor:&quot;, meta.get(&quot;producer&quot;))
+print(&quot;Creado   :&quot;, meta.get(&quot;creationDate&quot;))
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;redactá la explicación de cómo inspeccionar los metadatos del PDF y qué mostrar&quot; --&gt;</p>
+<p><strong>Análisis de los metadatos.</strong></p>
+<p>El PDF <strong>sí</strong> declara el *software de creación* (<code>Adobe InDesign 21.3 (Macintosh)</code>) y el *productor*, pero <strong>los campos <code>title</code> y <code>author</code> vienen vacíos</strong>. Esto es muy común: los metadatos internos *no siempre están completos* y no hay que confiar ciegamente en ellos. Cuando el dato es importante, conviene <strong>recuperarlo del propio contenido</strong> (la portada). Lo hacemos extrayendo el texto de la primera página:</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;extraé el texto de la portada para reconstruir el título efectivo&quot;
+portada = doc[0].get_text()
+print(&quot;----- Texto de la portada (pág. 1) -----&quot;)
+print(portada.strip()[:400])
+
+# Reconstruimos un &quot;título efectivo&quot; desde la portada
+titulo_efectivo = &quot; &quot;.join(portada.split(&quot;\n&quot;)[0:3]).strip()
+print(&quot;\nTítulo efectivo (desde portada):&quot;, titulo_efectivo)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá el análisis estructural del texto crudo y los caracteres separadores&quot; --&gt;</p>
+<h2>2. Análisis estructural del texto</h2>
+<h3>2.1 Extracción cruda de las primeras 5 páginas</h3>
+<p>La función de PyMuPDF que devuelve el texto <strong>lo más crudo posible</strong> es <code>page.get_text()</code> (modo <code>&quot;text&quot;</code> por defecto): respeta los saltos de línea tal como los maquetó el PDF, sin reordenar.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;extraé el texto crudo de las primeras 5 páginas y mostralo con repr()&quot;
+paginas_crudas = []
+for i in range(5):                       # primeras 5 páginas (índices 0–4)
+    paginas_crudas.append(doc[i].get_text())
+
+texto_5 = &quot;\n&quot;.join(paginas_crudas)
+print(&quot;Caracteres extraídos (5 págs):&quot;, len(texto_5))
+print(&quot;\n----- Muestra CRUDA con repr() para ver los separadores reales -----\n&quot;)
+print(repr(texto_5[:600]))      # repr() hace visibles \n, \t, etc.
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá el análisis estructural del texto crudo y los caracteres separadores&quot; --&gt;</p>
+<h3>2.2 Análisis de separadores</h3>
+<p>Observamos la salida cruda (con <code>repr()</code>, que muestra los caracteres invisibles) para describir cómo se separan párrafos, secciones y capítulos.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;contá los distintos caracteres separadores (\n, \t, \r, espacios) en el texto crudo&quot;
+conteo = {
+    &quot;\\n  (salto de línea)&quot;: texto_5.count(&quot;\n&quot;),
+    &quot;\\n\\n (línea en blanco = párrafo)&quot;: texto_5.count(&quot;\n\n&quot;),
+    &quot;\\t  (tabulación)&quot;: texto_5.count(&quot;\t&quot;),
+    &quot;\\r  (retorno de carro)&quot;: texto_5.count(&quot;\r&quot;),
+    &quot;  (doble espacio)&quot;: texto_5.count(&quot;  &quot;),
+    &quot;\\x0c (form feed / salto de página)&quot;: texto_5.count(&quot;\x0c&quot;),
+}
+for k, v in conteo.items():
+    print(f&quot;{k:42}: {v}&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá el análisis estructural del texto crudo y los caracteres separadores&quot; --&gt;</p>
+<p><strong>Respuesta — ¿qué caracteres funcionan como separadores en este PDF?</strong></p>
+<ul>
+<li><strong><code>\n</code> (salto de línea):</strong> es el separador dominante. PyMuPDF inserta un <code>\n</code> <strong>al final de cada línea visual</strong> del PDF (no por oración). Por eso una misma frase aparece partida en varias líneas: el salto refleja el <strong>renglón de maquetación</strong>, no la gramática.</li>
+<li><strong><code>\n\n</code> (doble salto):</strong> aparece entre <strong>bloques/párrafos</strong> y entre secciones — es la pista más útil para separar párrafos.</li>
+<li><strong><code>\t</code> y <code>\r</code>:</strong> prácticamente <strong>no se usan</strong> en este archivo (conteo ≈ 0). No son separadores relevantes acá.</li>
+<li><strong>Secuencias de espacios (<code>  </code>):</strong> aparecen por la <strong>maquetación a columnas/justificado</strong>; son ruido a normalizar.</li>
+<li><strong>Capítulos/secciones:</strong> no hay un carácter especial que los delimite; se reconocen por <strong>títulos cortos en línea propia</strong> seguidos de <code>\n</code> (ej. *&quot;Perspectivas de crecimiento para la región&quot;*).</li>
+</ul>
+<p><strong>Conclusión:</strong> el texto crudo <strong>no respeta la unidad &quot;oración/párrafo&quot;</strong>, sino la <strong>línea visual</strong>. Para limpiar habría que <strong>re-unir líneas</strong> (reemplazar <code>\n</code> simples por espacio y conservar <code>\n\n</code> como separador de párrafo) — un caso típico de trabajo de *data janitor*.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;describí cómo extraer una tabla del PDF con pdfplumber y pasarla a DataFrame&quot; --&gt;</p>
+<h2>3. Extracción de datos tabulares</h2>
+<p>Buscamos una página con una tabla de datos. La pág. <strong>20</strong> (índice 19) contiene *&quot;Tasas de crecimiento del PIB real&quot;* por país y año — una tabla limpia y bien estructurada. Usamos <strong><code>pdfplumber</code></strong> (sugerido en la consigna).</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;extraé la tabla de la página elegida con pdfplumber&quot;
+PAGINA_TABLA = 19  # índice 0-based -&gt; página 20 del documento
+
+with pdfplumber.open(ARCHIVO) as pdf:
+    page = pdf.pages[PAGINA_TABLA]
+    tablas = page.extract_tables()
+
+print(&quot;Tablas detectadas en la página:&quot;, len(tablas))
+tabla = tablas[0]
+print(&quot;Dimensiones:&quot;, len(tabla), &quot;filas x&quot;, len(tabla[0]), &quot;columnas&quot;)
+for fila in tabla[:6]:
+    print(fila)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;detallá la limpieza de la tabla: encabezados, coma decimal a float y filas vacías&quot; --&gt;</p>
+<h3>3.1 A DataFrame de Pandas + limpieza básica</h3>
+<ul>
+<li>La <strong>primera fila</strong> son los encabezados (años); la usamos como <code>columns</code>.</li>
+<li>La primera columna es el país → la nombramos <code>&quot;País&quot;</code>.</li>
+<li>Eliminamos <strong>filas vacías</strong>.</li>
+<li>Los números vienen con <strong>coma decimal</strong> (formato español) → los pasamos a <code>float</code> con punto.</li>
+</ul></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;convertí la tabla a DataFrame y limpiala (encabezados, coma decimal, filas vacías)&quot;
+# 1) separar encabezado y cuerpo
+encabezado = tabla[0]
+cuerpo = tabla[1:]
+
+df = pd.DataFrame(cuerpo, columns=encabezado)
+
+# 2) nombrar la primera columna (venía como &#x27;&#x27;)
+df = df.rename(columns={df.columns[0]: &quot;País&quot;})
+
+# 3) eliminar filas totalmente vacías o sin país
+df[&quot;País&quot;] = df[&quot;País&quot;].astype(str).str.strip()
+df = df[df[&quot;País&quot;].ne(&quot;&quot;) &amp; df[&quot;País&quot;].ne(&quot;None&quot;)].reset_index(drop=True)
+
+# 4) convertir columnas de años a número (coma decimal -&gt; punto)
+cols_anios = [c for c in df.columns if c != &quot;País&quot;]
+for c in cols_anios:
+    df[c] = (df[c].astype(str)
+                  .str.replace(&quot;,&quot;, &quot;.&quot;, regex=False)
+                  .str.replace(&quot;−&quot;, &quot;-&quot;, regex=False)   # signo menos unicode
+                  .replace({&quot;&quot;: None, &quot;None&quot;: None}))
+    df[c] = pd.to_numeric(df[c], errors=&quot;coerce&quot;)
+
+print(&quot;Shape final:&quot;, df.shape)
+df.head(10)
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;filtrá y mostrá la fila de Argentina como verificación&quot;
+# Pequeña verificación: la fila de Argentina
+df[df[&quot;País&quot;].str.contains(&quot;Argentina&quot;, case=False, na=False)]
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;describí cómo extraer una tabla del PDF con pdfplumber y pasarla a DataFrame&quot; --&gt;</p>
+<p><strong>Comentario.</strong> Quedó una tabla limpia: filas = países, columnas = años (<code>2022</code>–<code>2027p</code>, donde <code>e</code>=estimado y <code>p</code>=proyectado), valores numéricos de crecimiento del PIB real. Ya es un <code>DataFrame</code> analizable (se podría graficar la serie de Argentina, ordenar por crecimiento, etc.).</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;introducí el análisis de frecuencias y la limpieza con NLTK&quot; --&gt;</p>
+<h2>4. Análisis de frecuencias (NLP básico)</h2>
+<p>Elegimos una página con <strong>texto narrativo</strong> (pág. 13, índice 12) y aplicamos la limpieza de la <strong>etapa 1 del pipeline</strong>: tokenización → minúsculas → quitar stopwords y puntuación → frecuencias.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;obtené el texto crudo de toda la página con get_text() y mostrá una muestra&quot;
+PAGINA_TEXTO = 12  # índice 0-based -&gt; página 13
+texto = doc[PAGINA_TEXTO].get_text()
+print(texto[:500], &quot;...&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá la tokenización en español y por qué declarar el idioma&quot; --&gt;</p>
+<h3>4.1 Tokenización + minúsculas</h3>
+<p>Tokenizamos <strong>declarando el idioma español</strong> (en clase se remarcó que tokenizar en español ≠ en inglés).</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;tokenizá el texto en minúsculas declarando idioma español&quot;
+texto_min = texto.lower()
+tokens = word_tokenize(texto_min, language=&quot;spanish&quot;)
+print(&quot;Total de tokens (crudos):&quot;, len(tokens))
+print(&quot;Muestra:&quot;, tokens[:20])
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá cómo se quitan stopwords y puntuación antes de contar frecuencias&quot; --&gt;</p>
+<h3>4.2 Limpieza: stopwords + puntuación</h3>
+<p>Quitamos las <strong>stopwords del español</strong> (NLTK) y la puntuación. También descartamos tokens que sean sólo números o símbolos, que no aportan al análisis léxico.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;filtrá stopwords del español, puntuación, números y tokens cortos&quot;
+stop_es = set(stopwords.words(&quot;spanish&quot;))
+puntuacion = set(string.punctuation) | {&quot;…&quot;, &quot;”&quot;, &quot;“&quot;, &quot;«&quot;, &quot;»&quot;, &quot;—&quot;, &quot;–&quot;, &quot;‘&quot;, &quot;’&quot;, &quot;º&quot;, &quot;%&quot;}
+
+def es_palabra_util(tok):
+    if tok in stop_es:           return False   # stopword
+    if tok in puntuacion:        return False   # signo suelto
+    if len(tok) &lt;= 2:            return False   # tokens muy cortos (de, el, ya cubiertos; resto ruido)
+    if re.fullmatch(r&quot;[\d.,;:%/()\-]+&quot;, tok):  return False  # números/símbolos
+    return True
+
+tokens_limpios = [t for t in tokens if es_palabra_util(t)]
+print(&quot;Tokens tras limpieza:&quot;, len(tokens_limpios))
+print(&quot;Muestra:&quot;, tokens_limpios[:25])
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;pedí un gráfico de barras con las 15 palabras más frecuentes&quot; --&gt;</p>
+<h3>4.3 Visualización: 15 palabras más frecuentes</h3></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;calculá las 15 palabras más frecuentes con Counter&quot;
+frec = Counter(tokens_limpios)
+top15 = frec.most_common(15)
+print(top15)
+
+palabras = [p for p, _ in top15]
+valores  = [c for _, c in top15]
+
+plt.figure(figsize=(10, 5))
+plt.barh(palabras[::-1], valores[::-1])          # horizontal, de mayor a menor
+plt.title(&quot;Top 15 palabras más frecuentes — Panorama económico LAC (pág. 13)&quot;)
+plt.xlabel(&quot;Frecuencia&quot;)
+plt.tight_layout()
+plt.show()
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá cómo se quitan stopwords y puntuación antes de contar frecuencias&quot; --&gt;</p>
+<h3>4.4 ¿Aparecen tokens que también considerarías *stopwords*? — análisis</h3>
+<p><strong>Sí.</strong> Aunque ya filtramos las stopwords genéricas del español, en el ranking quedan palabras que <strong>en este dominio</strong> funcionan como stopwords (alta frecuencia, bajo poder discriminante). Mirando el top-15 de esta página:</p>
+<ul>
+<li><strong>Stopwords de dominio:</strong> *&quot;crecimiento&quot;* (y en general *&quot;condiciones&quot;, &quot;precios&quot;, &quot;economías&quot;*) es tan transversal a TODO un informe económico que <strong>no distingue un párrafo de otro</strong>. Conviene sumarlas a una <strong>lista de stopwords personalizada del dominio</strong> (igual que en clase: en un discurso político *&quot;gobierno&quot;* puede ser stopword de dominio).</li>
+<li><strong>Conectores/poco informativos que NLTK NO trae:</strong> aparecen tokens como *&quot;mientras&quot;, &quot;medida&quot;, &quot;medio&quot;* — son de bajo contenido pero <strong>no están en la lista de stopwords del español de NLTK</strong>, así que pasan el filtro. Esto demuestra que <strong>la lista por defecto no es exhaustiva</strong> y hay que ampliarla a mano.</li>
+<li><strong>Matiz de clase (auxiliares):</strong> formas de *&quot;ser&quot;/&quot;estar&quot;* pueden colarse. spaCy trata <code>estar</code> como <strong>auxiliar/stopword</strong> en *&quot;están creciendo&quot;*, pero NO en *&quot;estar en recesión&quot;*: la decisión <strong>depende del contexto</strong>, no es automática.</li>
+</ul>
+<p><strong>Justificación / conclusión.</strong> La lista de stopwords <strong>no es universal</strong>: depende del <strong>idioma</strong> *y* del <strong>dominio</strong>, e incluso la lista estándar deja afuera conectores como *&quot;mientras&quot;*. Una segunda pasada con stopwords de dominio (<code>crecimiento</code>, <code>precios</code>, <code>condiciones</code>, <code>mientras</code>…) dejaría ver mejor los temas distintivos del texto (p. ej. *inflación*, *política monetaria*, *incertidumbre*).</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;compará stemming (NLTK) vs lematización (spaCy) como recurso de clase&quot; --&gt;</p>
+<h3>4.5 (Extra) Stemming vs. Lematización — recurso de clase</h3>
+<p>Para reforzar lo visto en clase, comparamos cómo <strong>NLTK SnowballStemmer</strong> (raíz bruta) y <strong>spaCy</strong> (lema = forma de diccionario) tratan las palabras top.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;compará stemming de NLTK con la lematización de spaCy sobre las palabras top&quot;
+stemmer = SnowballStemmer(&quot;spanish&quot;)
+muestra = palabras[:8]
+
+doc_spacy = nlp(&quot; &quot;.join(muestra))
+lemas = {t.text: t.lemma_ for t in doc_spacy}
+
+print(f&quot;{&#x27;palabra&#x27;:15}{&#x27;stemming (NLTK)&#x27;:22}{&#x27;lema (spaCy)&#x27;:18}&quot;)
+print(&quot;-&quot;*55)
+for w in muestra:
+    print(f&quot;{w:15}{stemmer.stem(w):22}{lemas.get(w, w):18}&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;compará stemming (NLTK) vs lematización (spaCy) como recurso de clase&quot; --&gt;</p>
+<p><strong>Lectura.</strong> El *stemming* recorta de forma agresiva (ej. *económico → económ*), útil para <strong>reducir el vocabulario</strong> rápido pero genera raíces no-palabra. La *lematización* devuelve formas reales (ej. *países → país*), más interpretable pero más costosa. Cuál usar depende del objetivo: vectorizar/clasificar (stemming suele alcanzar) vs. análisis interpretable (lematización).</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá en markdown el paso de adquisición y por qué se usa un User-Agent para evitar el 403&quot; --&gt;</p>
+<h2>5. Conclusiones</h2>
+<ul>
+<li><strong>Adquisición:</strong> <code>requests</code> + User-Agent descargó el PDF sin bloqueo (status 200). Los <strong>metadatos</strong> estaban incompletos (sin título/autor) → se recuperó el título desde la <strong>portada</strong>: no hay que confiar ciegamente en los metadatos.</li>
+<li><strong>Estructura:</strong> el separador dominante es <strong><code>\n</code></strong>, que marca la <strong>línea visual</strong> y no la oración; los párrafos se intuyen por <strong><code>\n\n</code></strong>. <code>\t</code>/<code>\r</code> no se usan. Limpiar implica <strong>re-unir líneas</strong>.</li>
+<li><strong>Tablas:</strong> <code>pdfplumber</code> extrajo limpia la tabla de <strong>crecimiento del PIB</strong> (países × años); se normalizó la <strong>coma decimal</strong> y se nombraron columnas → <code>DataFrame</code> listo.</li>
+<li><strong>Frecuencias:</strong> tras quitar stopwords + puntuación, el top está dominado por <strong>stopwords de dominio</strong> (*crecimiento, región, países*) → confirma que la lista de stopwords <strong>depende del idioma y del dominio</strong>.</li>
+<li>Se recorrió así la <strong>etapa 1 del pipeline de PH</strong> (texto crudo → limpieza) con las herramientas de clase.</li>
+</ul>
+<h2>6. Referencias</h2>
+<ul>
+<li><strong>Fuente PDF:</strong> Banco Mundial (2026). *Panorama económico de América Latina y el Caribe — Revisitando la política industrial*. Oficina del Economista Jefe para ALC. https://openknowledge.worldbank.org/server/api/core/bitstreams/a1baf8eb-b679-43f6-b49b-a97d29838bd8/content</li>
+<li><strong>PyMuPDF (fitz):</strong> https://pymupdf.readthedocs.io/</li>
+<li><strong>pdfplumber:</strong> https://github.com/jsvine/pdfplumber</li>
+<li><strong>NLTK:</strong> https://www.nltk.org/  · <strong>spaCy (es_core_news_sm):</strong> https://spacy.io/models/es</li>
+<li><strong>Material de clase PH (ISSD):</strong> pipeline texto, NLTK/spaCy, tokenización en español, stemming vs lematización (clases 1–2).</li>
+<li><strong>Asistencia IA:</strong> _[completar: pegar acá el enlace a la conversación con la IA utilizada]_</li>
+</ul></section></div></body></html>

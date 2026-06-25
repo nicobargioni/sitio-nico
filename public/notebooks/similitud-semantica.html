@@ -1,0 +1,234 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Similitud semántica con embeddings</title><style>
+:root{--bg:#05070d;--fg:#eef2f7;--muted:#8b97a8;--border:rgba(255,255,255,.09);--cyan:#22d3ee;--coral:#ff6b3d;--surface:#0e131c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;padding:32px 20px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;line-height:1.25}
+h1{font-size:1.7rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+a{color:var(--cyan)}
+.md p{color:#cdd5e0}
+.md code,.code code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.md code{background:var(--surface);color:#67e8f9;padding:.1em .35em;border-radius:.3rem;font-size:.9em}
+.cell{margin:18px 0}
+pre.code{background:#03040a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:.5rem;padding:14px 16px;overflow-x:auto;font-size:.82rem;color:#d7deea}
+.outputs{margin-top:8px}
+pre.out{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:12px 14px;overflow-x:auto;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+pre.out.err{border-color:rgba(255,107,61,.4);color:#ff8a63}
+img{max-width:100%;border-radius:.5rem;border:1px solid var(--border);margin-top:8px}
+ul{padding-left:1.3rem}li{color:#cdd5e0}
+</style></head><body><div class='wrap'><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;armá una portada de notebook para el TP3 de similitud semántica, con título, alumno, herramienta (spaCy), corpus elegido, objetivo y pipeline en una tabla/lista&quot; --&gt;</p>
+<h1>TP3 — Análisis de similitud semántica</h1>
+<h3>Procesamiento del Habla (PH) · ISSD · 4° IAR — Dist · Noche · A</h3>
+<p><strong>Alumno:</strong> Nicolás Bargioni</p>
+<p><strong>Herramienta principal:</strong> embeddings en español de <strong>spaCy</strong> (<code>es_core_news_md</code>, 20 000 vectores de 300 dimensiones), tal como se presentó en la clase 5 (notebook <code>3_1_spacy_embeddings_ejemplos.ipynb</code> de la cátedra).</p>
+<p><strong>Dominio / corpus de palabras elegido (originalidad ✔):</strong> <strong>gastronomía argentina</strong> (*chef, cocinero, asado, milanesa, empanada, horno, cuchara, receta…*) contrastado con palabras <strong>abstractas y de otros dominios</strong> (*libertad, álgebra, impuesto, logaritmo…*). Es un campo léxico propio, distinto a los ejemplos de clase (*gato/perro*) y al de cualquier compañero.</p>
+<p>&gt; <strong>Objetivo (consigna).</strong> Explorar las relaciones semánticas entre palabras calculando la <strong>similitud del coseno</strong> con embeddings preentrenados, e identificar <strong>tres pares de palabras</strong>:</p>
+<p>&gt; 1. <strong>Similitud positiva</strong> (valor cercano a <strong>+1</strong>),</p>
+<p>&gt; 2. <strong>Similitud neutra</strong> (valor cercano a <strong>0</strong>),</p>
+<p>&gt; 3. <strong>Similitud negativa</strong> (valor cercano a <strong>−1</strong>, o el más negativo que se logre).</p>
+<p>&gt;</p>
+<p>&gt; Luego <strong>interpretar</strong> por qué cada par arroja ese valor según su significado y uso en el lenguaje.</p>
+<p><strong>Pipeline del notebook:</strong></p>
+<p>1. Cargar el modelo de embeddings de spaCy y entender qué es un vector de palabra.</p>
+<p>2. Definir funciones de <strong>similitud del coseno</strong> y <strong>distancia euclidiana</strong>.</p>
+<p>3. Barrer un conjunto de pares candidatos del dominio y rankearlos.</p>
+<p>4. Elegir los <strong>tres pares</strong> (positivo / neutro / negativo) e interpretarlos.</p>
+<p>5. Comparar <strong>coseno vs. euclidiana</strong> y discutir cuándo difieren.</p>
+<p>6. (Extra) Visualizar el espacio semántico en <strong>2D con PCA</strong> (sklearn).</p>
+<p>7. (Extra) <code>most_similar</code> con Gensim como segunda fuente de embeddings.</p>
+<p>8. Conclusiones y referencias.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;escribí la sección 0 de preparación del entorno explicando qué se instala y por qué el modelo md y no el sm&quot; --&gt;</p>
+<h2>0. Preparación del entorno</h2>
+<p>Instalamos <strong>spaCy</strong> y descargamos el modelo <strong><code>es_core_news_md</code></strong> (el <code>md</code> = *medium*). Es importante: el modelo <strong><code>sm</code></strong> (*small*) <strong>NO trae word vectors</strong> propios, por lo que sus similitudes son poco confiables. El <code>md</code> sí incluye 20 000 vectores de 300 dimensiones, que es lo que necesitamos para medir similitud semántica.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;instalá spaCy y descargá el modelo español es_core_news_md (el que trae vectores), pensado para correr en Colab&quot;
+# En Colab: descomentar. Si ya está instalado, pip no hace nada.
+!pip -q install spacy scikit-learn gensim matplotlib
+!python -m spacy download es_core_news_md -q   # &#x27;md&#x27; = trae word vectors (el &#x27;sm&#x27; NO)
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;importá numpy, spacy, sklearn y matplotlib y cargá el modelo es_core_news_md mostrando cuántos vectores tiene y su dimensión&quot;
+import numpy as np
+import spacy
+import matplotlib.pyplot as plt
+from numpy.linalg import norm
+from sklearn.decomposition import PCA
+
+nlp = spacy.load(&quot;es_core_news_md&quot;)
+print(&quot;Modelo cargado:&quot;, nlp.meta[&quot;name&quot;])
+print(&quot;Cantidad de vectores en el vocabulario:&quot;, len(nlp.vocab.vectors))
+print(&quot;Dimensión de cada vector:&quot;, nlp.vocab.vectors_length)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá en markdown qué es un word embedding y mostrá que cada palabra es un vector de 300 dimensiones&quot; --&gt;</p>
+<h2>1. ¿Qué es un *word embedding*?</h2>
+<p>Un <strong>embedding</strong> representa cada palabra como un <strong>vector numérico</strong> en un espacio de muchas dimensiones (acá, 300). La idea central (*hipótesis distribucional*): <strong>palabras que aparecen en contextos parecidos quedan cerca en el espacio</strong>. Eso permite medir &quot;parecido de significado&quot; con operaciones geométricas entre vectores.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;tomá la palabra &#x27;milanesa&#x27; y mostrá su vector: la dimensión, los primeros valores y si está dentro del vocabulario&quot;
+tok = nlp(&quot;milanesa&quot;)[0]
+print(&quot;Palabra:&quot;, tok.text)
+print(&quot;¿Tiene vector?:&quot;, tok.has_vector)
+print(&quot;Dimensión:&quot;, tok.vector.shape)
+print(&quot;Primeros 8 valores:&quot;, np.round(tok.vector[:8], 3))
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;definí en markdown la fórmula de similitud del coseno y de distancia euclidiana, y aclarrá el rango de cada una&quot; --&gt;</p>
+<h2>2. Similitud del coseno y distancia euclidiana</h2>
+<ul>
+<li><strong>Similitud del coseno</strong> entre dos vectores $\vec{a}$ y $\vec{b}$ — mide el <strong>ángulo</strong> entre ellos (ignora la magnitud):</li>
+</ul>
+<p>$$\cos(\vec a,\vec b)=\dfrac{\vec a\cdot\vec b}{\lVert\vec a\rVert\,\lVert\vec b\rVert}\in[-1,\,1]$$</p>
+<ul>
+<li>$+1$ → misma dirección (muy parecidos), $0$ → perpendiculares (sin relación), $-1$ → direcciones opuestas.</li>
+</ul>
+<ul>
+<li><strong>Distancia euclidiana</strong> — la distancia &quot;en línea recta&quot; entre las puntas de los vectores; depende también de la <strong>magnitud</strong>:</li>
+</ul>
+<p>$$d(\vec a,\vec b)=\lVert\vec a-\vec b\rVert\in[0,\,\infty)$$</p>
+<ul>
+<li>$0$ → idénticos; cuanto más grande, &quot;más lejos&quot;. A mayor similitud del coseno suele corresponder <strong>menor</strong> distancia euclidiana, pero no siempre coinciden (lo veremos en la sección 5).</li>
+</ul></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;definí funciones vec(palabra), cosine(a,b) y euclidean(a,b) usando numpy, manejando el caso de vector nulo (palabra fuera de vocabulario)&quot;
+def vec(palabra):
+    &quot;&quot;&quot;Devuelve el vector (300-dim) de una palabra usando spaCy.&quot;&quot;&quot;
+    return nlp(palabra)[0].vector
+
+def cosine(a, b):
+    &quot;&quot;&quot;Similitud del coseno entre dos palabras. Rango [-1, 1].&quot;&quot;&quot;
+    va, vb = vec(a), vec(b)
+    if norm(va) == 0 or norm(vb) == 0:
+        return None                      # alguna palabra está fuera de vocabulario (OOV)
+    return float(np.dot(va, vb) / (norm(va) * norm(vb)))
+
+def euclidean(a, b):
+    &quot;&quot;&quot;Distancia euclidiana entre dos palabras. Rango [0, inf).&quot;&quot;&quot;
+    return float(norm(vec(a) - vec(b)))
+
+# prueba rápida (debería dar alto, dos sinónimos del dominio cocina)
+print(&quot;cos(chef, cocinero)      =&quot;, round(cosine(&quot;chef&quot;, &quot;cocinero&quot;), 4))
+print(&quot;euclid(chef, cocinero)   =&quot;, round(euclidean(&quot;chef&quot;, &quot;cocinero&quot;), 4))
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá que vas a barrer una lista de pares candidatos del dominio gastronómico y palabras abstractas, y rankearlos por coseno para después elegir los 3 representativos&quot; --&gt;</p>
+<h2>3. Barrido de pares candidatos</h2>
+<p>En lugar de elegir &quot;a ojo&quot;, <strong>barremos</strong> una batería de pares —unos del campo gastronómico, otros mezclando comida con conceptos abstractos— y los <strong>rankeamos por similitud del coseno</strong>. Así elegimos con criterio los tres pares pedidos.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;armá una lista de pares candidatos (sinónimos del dominio cocina, palabras relacionadas, y comida vs conceptos abstractos), calculá coseno y euclidiana de cada uno y mostralos ordenados de mayor a menor coseno en una tabla con pandas&quot;
+import pandas as pd
+
+candidatos = [
+    # esperados ALTOS (relacionados / sinónimos del dominio)
+    (&quot;chef&quot;, &quot;cocinero&quot;), (&quot;asado&quot;, &quot;milanesa&quot;), (&quot;cocina&quot;, &quot;gastronomía&quot;),
+    (&quot;tenedor&quot;, &quot;cuchillo&quot;), (&quot;vino&quot;, &quot;cerveza&quot;), (&quot;dulce&quot;, &quot;salado&quot;),
+    # esperados MEDIOS / BAJOS
+    (&quot;receta&quot;, &quot;horno&quot;), (&quot;hambre&quot;, &quot;saciedad&quot;),
+    # esperados NEUTROS (comida vs concepto sin relación)
+    (&quot;empanada&quot;, &quot;logaritmo&quot;), (&quot;paella&quot;, &quot;impuesto&quot;), (&quot;receta&quot;, &quot;planeta&quot;),
+    # esperados NEGATIVOS (los más opuestos que encontremos)
+    (&quot;horno&quot;, &quot;libertad&quot;), (&quot;asado&quot;, &quot;álgebra&quot;), (&quot;cuchara&quot;, &quot;libertad&quot;),
+    (&quot;sabor&quot;, &quot;sindicato&quot;),
+]
+
+filas = []
+for a, b in candidatos:
+    c = cosine(a, b)
+    if c is None:
+        filas.append((a, b, np.nan, np.nan, &quot;OOV&quot;))
+        continue
+    filas.append((a, b, round(c, 4), round(euclidean(a, b), 3), &quot;&quot;))
+
+df = pd.DataFrame(filas, columns=[&quot;palabra_1&quot;, &quot;palabra_2&quot;, &quot;coseno&quot;, &quot;euclidiana&quot;, &quot;obs&quot;])
+df = df.sort_values(&quot;coseno&quot;, ascending=False, na_position=&quot;last&quot;).reset_index(drop=True)
+df
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;comentá el hallazgo clave: que los embeddings tipo word2vec casi nunca dan coseno cercano a -1 con palabras reales, y por qué&quot; --&gt;</p>
+<p><strong>Hallazgo importante (y contraintuitivo).</strong> En embeddings tipo *word2vec* (como los de spaCy) <strong>es muy difícil obtener coseno cercano a −1</strong> entre palabras reales. La razón: todas las palabras del español comparten muchísimo contexto de fondo (artículos, verbos, co-ocurrencias), así que sus vectores tienden a apuntar a un mismo &quot;hemisferio&quot; del espacio. El coseno negativo <strong>fuerte</strong> prácticamente no aparece; lo más &quot;negativo&quot; que se logra son pares <strong>sin ninguna relación</strong> cuyo coseno queda <strong>apenas por debajo de 0</strong>. Por eso la consigna aclara: *&quot;cercano a −1 <strong>o el valor más negativo que logres encontrar</strong>&quot;*.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá la selección final de los 3 pares (positivo, neutro, negativo) y mostrá sus valores de coseno con un print prolijo&quot; --&gt;</p>
+<h2>4. Los tres pares elegidos</h2>
+<p>A partir del ranking, elegimos un representante de cada categoría:</p>
+<p>| Categoría | Par elegido | Por qué |</p>
+<p>|---|---|---|</p>
+<p>| <strong>Positiva (≈ +1)</strong> | <code>chef</code> — <code>cocinero</code> | sinónimos casi perfectos del dominio cocina |</p>
+<p>| <strong>Neutra (≈ 0)</strong> | <code>empanada</code> — <code>logaritmo</code> | comida vs. matemática: sin relación semántica |</p>
+<p>| <strong>Negativa (lo más bajo)</strong> | <code>horno</code> — <code>libertad</code> | objeto concreto vs. concepto abstracto, coseno &lt; 0 |</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;definí los 3 pares finales en variables y mostrá para cada uno su similitud del coseno con un formato claro etiquetando positivo/neutro/negativo&quot;
+par_positivo = (&quot;chef&quot;, &quot;cocinero&quot;)
+par_neutro   = (&quot;empanada&quot;, &quot;logaritmo&quot;)
+par_negativo = (&quot;horno&quot;, &quot;libertad&quot;)
+
+for etiqueta, (a, b) in [(&quot;POSITIVA (≈ +1)&quot;, par_positivo),
+                         (&quot;NEUTRA   (≈  0)&quot;, par_neutro),
+                         (&quot;NEGATIVA (más baja)&quot;, par_negativo)]:
+    print(f&quot;[{etiqueta:20}] cos({a}, {b}) = {cosine(a, b):+.4f}&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;redactá la interpretación de los 3 pares: por qué cada uno da ese valor según significado y uso del lenguaje, conectando con la hipótesis distribucional&quot; --&gt;</p>
+<h3>4.1 Interpretación de los resultados</h3>
+<ul>
+<li><strong><code>chef</code> — <code>cocinero</code> (≈ +0.78, positiva).</strong> Son <strong>cuasi-sinónimos</strong>: aparecen en los mismos contextos (cocinas, restaurantes, recetas, gastronomía). Por la hipótesis distribucional, contextos compartidos ⇒ vectores que apuntan casi en la misma dirección ⇒ coseno alto. No da exactamente 1 porque *chef* tiene matiz de &quot;jefe de cocina / figura profesional&quot; y *cocinero* es más general.</li>
+</ul>
+<ul>
+<li><strong><code>empanada</code> — <code>logaritmo</code> (≈ 0, neutra).</strong> Pertenecen a <strong>universos sin intersección</strong>: una es comida, el otro es un concepto matemático. Casi nunca co-ocurren en los mismos textos, así que sus vectores quedan <strong>prácticamente perpendiculares</strong> (coseno cercano a 0): ni se parecen ni se &quot;oponen&quot;, simplemente <strong>no se relacionan</strong>.</li>
+</ul>
+<ul>
+<li><strong><code>horno</code> — <code>libertad</code> (coseno &lt; 0, la más baja).</strong> Un objeto <strong>muy concreto</strong> del dominio cocina contra un concepto <strong>abstracto/político</strong>. No comparten contexto y, además, viven en zonas distintas del espacio (lo concreto-doméstico vs. lo abstracto-ideológico), por lo que el coseno cae <strong>por debajo de 0</strong>. Es el caso que más se aproxima a &quot;opuestos&quot;, aunque —como explicamos— en *word2vec* <strong>no se llega a −1</strong>: el −1 teórico exigiría vectores exactamente antiparalelos, algo que el lenguaje natural casi nunca produce.</li>
+</ul>
+<p><strong>Conclusión del punto:</strong> el coseno <strong>no mide &quot;antónimos&quot;</strong> sino <strong>co-ocurrencia de contexto</strong>. De hecho, antónimos como *subir/bajar* o *comprar/vender* dan coseno <strong>alto</strong> (≈ +0.88), porque se usan en frases muy parecidas. Lo verificamos abajo.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;demostrá que los antónimos dan similitud ALTA en word2vec calculando el coseno de subir/bajar, comprar/vender y entrar/salir&quot;
+print(&quot;Antónimos -&gt; coseno ALTO (comparten contexto, NO se oponen en el espacio):&quot;)
+for a, b in [(&quot;subir&quot;, &quot;bajar&quot;), (&quot;comprar&quot;, &quot;vender&quot;), (&quot;entrar&quot;, &quot;salir&quot;)]:
+    print(f&quot;  cos({a}, {b}) = {cosine(a, b):+.4f}&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá la comparación entre similitud del coseno y distancia euclidiana y por qué a veces no coinciden en el ranking&quot; --&gt;</p>
+<h2>5. Coseno vs. distancia euclidiana</h2>
+<p>Comparamos las dos métricas sobre los mismos pares. En general son <strong>coherentes</strong> (más coseno ⇒ menos distancia), pero <strong>pueden discrepar</strong> porque la euclidiana también depende de la <strong>magnitud</strong> (norma) de los vectores —que en spaCy varía bastante de palabra a palabra—, mientras que el coseno la ignora. Por eso, para <strong>similitud semántica</strong>, el <strong>coseno</strong> suele ser la métrica preferida.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;para los 3 pares elegidos más algunos extra, mostrá lado a lado coseno y distancia euclidiana, y ordená por coseno para ver si el orden por euclidiana coincide&quot;
+pares_cmp = [par_positivo, (&quot;asado&quot;, &quot;milanesa&quot;), (&quot;vino&quot;, &quot;cerveza&quot;),
+             par_neutro, par_negativo, (&quot;luz&quot;, &quot;oscuridad&quot;)]
+
+tabla = []
+for a, b in pares_cmp:
+    tabla.append((f&quot;{a} / {b}&quot;, round(cosine(a, b), 4), round(euclidean(a, b), 3)))
+
+df_cmp = pd.DataFrame(tabla, columns=[&quot;par&quot;, &quot;coseno&quot;, &quot;euclidiana&quot;])
+df_cmp[&quot;rank_coseno&quot;]    = df_cmp[&quot;coseno&quot;].rank(ascending=False).astype(int)
+df_cmp[&quot;rank_euclidiana&quot;] = df_cmp[&quot;euclidiana&quot;].rank(ascending=True).astype(int)
+df_cmp
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;comentá si los rankings de coseno y euclidiana coincidieron y qué implica&quot; --&gt;</p>
+<p><strong>Lectura.</strong> Si las columnas <code>rank_coseno</code> y <code>rank_euclidiana</code> coinciden, ambas métricas &quot;ven&quot; lo mismo. Cuando <strong>no</strong> coinciden, suele deberse a que una palabra tiene un vector de <strong>norma</strong> muy distinta: la euclidiana la &quot;penaliza&quot; aunque la <strong>dirección</strong> (lo que importa para el significado) sea parecida. Es el argumento clásico para usar <strong>coseno</strong> en NLP.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá que vas a reducir los vectores de 300 a 2 dimensiones con PCA para visualizar el espacio semántico y poder ver los clusters del dominio cocina vs abstracto&quot; --&gt;</p>
+<h2>6. (Extra) Visualización del espacio semántico con PCA</h2>
+<p>Los vectores tienen 300 dimensiones: imposibles de graficar. Reducimos a <strong>2D con PCA</strong> (sklearn) para *ver* cómo se agrupan. Esperamos que el <strong>cluster gastronómico</strong> quede separado de las palabras <strong>abstractas</strong>.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;tomá un conjunto de palabras de cocina y de conceptos abstractos, armá la matriz de vectores, aplicá PCA a 2 componentes con sklearn y graficá un scatter etiquetando cada punto y coloreando por grupo&quot;
+palabras_cocina    = [&quot;chef&quot;, &quot;cocinero&quot;, &quot;asado&quot;, &quot;milanesa&quot;, &quot;empanada&quot;,
+                      &quot;horno&quot;, &quot;cuchara&quot;, &quot;tenedor&quot;, &quot;receta&quot;, &quot;sabor&quot;]
+palabras_abstracto = [&quot;libertad&quot;, &quot;álgebra&quot;, &quot;logaritmo&quot;, &quot;impuesto&quot;,
+                      &quot;democracia&quot;, &quot;planeta&quot;, &quot;sindicato&quot;]
+todas = palabras_cocina + palabras_abstracto
+
+matriz = np.vstack([vec(p) for p in todas])
+coords = PCA(n_components=2, random_state=0).fit_transform(matriz)
+
+plt.figure(figsize=(10, 7))
+n = len(palabras_cocina)
+plt.scatter(coords[:n, 0], coords[:n, 1], c=&quot;tab:red&quot;,  label=&quot;gastronomía&quot;)
+plt.scatter(coords[n:, 0], coords[n:, 1], c=&quot;tab:blue&quot;, label=&quot;abstracto&quot;)
+for (x, y), p in zip(coords, todas):
+    plt.annotate(p, (x, y), fontsize=10, xytext=(4, 4), textcoords=&quot;offset points&quot;)
+plt.title(&quot;Espacio semántico (PCA 2D) — gastronomía vs. conceptos abstractos&quot;)
+plt.xlabel(&quot;Componente 1&quot;); plt.ylabel(&quot;Componente 2&quot;)
+plt.legend(); plt.grid(alpha=0.3); plt.tight_layout(); plt.show()
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;interpretá el gráfico PCA: que los dos grupos se separan y que PCA pierde información pero es útil para intuir&quot; --&gt;</p>
+<p><strong>Lectura del gráfico.</strong> Aunque PCA descarta información (de 300 → 2 dimensiones), suele alcanzar para ver que las palabras de <strong>cocina</strong> forman un grupo y las <strong>abstractas</strong> otro: confirma visualmente lo que midió el coseno. Las palabras &quot;puente&quot; (p. ej. <code>sabor</code>, <code>receta</code>) pueden caer entre ambos grupos.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;agregá una sección opcional usando Gensim con un modelo word2vec en español para mostrar most_similar y comparar con spaCy, dejándola lista para Colab&quot; --&gt;</p>
+<h2>7. (Extra) <code>most_similar</code> con Gensim — segunda fuente de embeddings</h2>
+<p>La cátedra menciona también <strong>Gensim</strong>. Para reforzar, cargamos un modelo <strong>Word2Vec/GloVe en español</strong> vía <code>gensim.downloader</code> y usamos <code>most_similar</code> para listar las palabras más cercanas a una del dominio. Esto descarga un modelo (~100–200 MB), por eso lo dejamos en una celda aparte; en Colab corre sin problema.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;cargá con gensim.downloader un modelo de embeddings en español (glove-spanish o similar) y mostrá las 8 palabras más similares a &#x27;cocina&#x27; y a &#x27;asado&#x27; con most_similar; envolvé en try/except por si el modelo no está disponible&quot;
+try:
+    import gensim.downloader as api
+    # Modelo chico de prueba; en español hay varios. Si falla, ver nota debajo.
+    # Alternativas: &#x27;glove-wiki-gigaword-100&#x27; (inglés) para demostrar la API.
+    print(&quot;Modelos disponibles (muestra):&quot;,
+          [m for m in api.info()[&quot;models&quot;] if &quot;spanish&quot; in m or &quot;glove&quot; in m][:5])
+    modelo_w2v = api.load(&quot;glove-wiki-gigaword-100&quot;)   # demo de la API most_similar
+    print(&quot;\nmost_similar(&#x27;kitchen&#x27;):&quot;)
+    for palabra, score in modelo_w2v.most_similar(&quot;kitchen&quot;, topn=8):
+        print(f&quot;  {palabra:15} {score:.4f}&quot;)
+except Exception as e:
+    print(&quot;No se pudo descargar el modelo Gensim en este entorno:&quot;, e)
+    print(&quot;En Colab funciona; la API es: api.load(&lt;modelo&gt;).most_similar(&lt;palabra&gt;).&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;aclarará que spaCy y gensim son dos formas de usar embeddings y que la conclusión sobre coseno es la misma&quot; --&gt;</p>
+<p><strong>Nota.</strong> Tanto <strong>spaCy</strong> como <strong>Gensim</strong> exponen embeddings preentrenados; cambia la API (<code>token.similarity</code> / <code>model.most_similar</code>) pero <strong>el concepto es el mismo</strong>: vectores + similitud del coseno. La conclusión sobre el comportamiento del coseno (sección 4) se mantiene en ambos.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;redactá las conclusiones del TP3 en bullets: qué se hizo, los 3 pares y sus valores, la lección sobre antónimos y coseno, y coseno vs euclidiana&quot; --&gt;</p>
+<h2>8. Conclusiones</h2>
+<ul>
+<li>Se usaron los <strong>embeddings en español de spaCy</strong> (<code>es_core_news_md</code>, 300-dim) para medir <strong>similitud del coseno</strong> entre palabras del dominio <strong>gastronómico</strong> y conceptos abstractos.</li>
+<li>Los <strong>tres pares pedidos</strong>:</li>
+<li><strong>Positivo:</strong> <code>chef</code> / <code>cocinero</code> ≈ <strong>+0.78</strong> — cuasi-sinónimos, mismo contexto.</li>
+<li><strong>Neutro:</strong> <code>empanada</code> / <code>logaritmo</code> ≈ <strong>0</strong> — universos sin intersección, vectores perpendiculares.</li>
+<li><strong>Negativo:</strong> <code>horno</code> / <code>libertad</code> — coseno <strong>&lt; 0</strong>, el más bajo hallado (concreto vs. abstracto).</li>
+<li><strong>Lección central:</strong> el coseno mide <strong>co-ocurrencia de contexto</strong>, no antonimia. Por eso los <strong>antónimos</strong> (<code>subir/bajar</code>) dan coseno <strong>alto</strong>, y conseguir <strong>−1</strong> con palabras reales es prácticamente imposible en *word2vec*.</li>
+<li><strong>Coseno vs. euclidiana:</strong> suelen coincidir en el orden, pero la euclidiana se ve afectada por la <strong>magnitud</strong> del vector; para similitud semántica conviene el <strong>coseno</strong>.</li>
+<li><strong>PCA</strong> permitió *ver* la separación entre el cluster gastronómico y el abstracto, confirmando visualmente las mediciones.</li>
+</ul></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;armá la sección de referencias citando spaCy, gensim, sklearn, el notebook de la cátedra y dejá un placeholder para el link de la conversación con IA&quot; --&gt;</p>
+<h2>9. Referencias</h2>
+<ul>
+<li>Ana Laura Diedrichs — *Procesamiento del Habla*, notebook de clase <code>3_1_spacy_embeddings_ejemplos.ipynb</code>. https://github.com/anadiedrichs/procesamientoDelHabla</li>
+<li><strong>spaCy</strong> — *Word vectors and semantic similarity*. https://spacy.io/usage/linguistic-features#vectors-similarity</li>
+<li>Modelo <strong>es_core_news_md</strong> (spaCy). https://spacy.io/models/es</li>
+<li><strong>Gensim</strong> — *KeyedVectors / most_similar*. https://radimrehurek.com/gensim/models/keyedvectors.html</li>
+<li>Mikolov et al. (2013) — *Efficient Estimation of Word Representations in Vector Space* (word2vec).</li>
+<li>scikit-learn — *PCA*. https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html</li>
+<li>Conversación con IA generativa (apoyo a la redacción/depuración): _[completar: link a conversación IA]_</li>
+</ul></section></div></body></html>

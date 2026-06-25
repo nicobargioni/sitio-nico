@@ -1,0 +1,260 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Chatbot por recuperación</title><style>
+:root{--bg:#05070d;--fg:#eef2f7;--muted:#8b97a8;--border:rgba(255,255,255,.09);--cyan:#22d3ee;--coral:#ff6b3d;--surface:#0e131c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;padding:32px 20px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;line-height:1.25}
+h1{font-size:1.7rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+a{color:var(--cyan)}
+.md p{color:#cdd5e0}
+.md code,.code code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.md code{background:var(--surface);color:#67e8f9;padding:.1em .35em;border-radius:.3rem;font-size:.9em}
+.cell{margin:18px 0}
+pre.code{background:#03040a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:.5rem;padding:14px 16px;overflow-x:auto;font-size:.82rem;color:#d7deea}
+.outputs{margin-top:8px}
+pre.out{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:12px 14px;overflow-x:auto;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+pre.out.err{border-color:rgba(255,107,61,.4);color:#ff8a63}
+img{max-width:100%;border-radius:.5rem;border:1px solid var(--border);margin-top:8px}
+ul{padding-left:1.3rem}li{color:#cdd5e0}
+</style></head><body><div class='wrap'><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;armá la portada del TP4: chatbot basado en recuperación de información, con alumno, aplicación elegida (biblioteca pública), objetivo y pipeline&quot; --&gt;</p>
+<h1>TP4 — Chatbot basado en recuperación de la información</h1>
+<h3>Procesamiento del Habla (PH) · ISSD · 4° IAR — Dist · Noche · A</h3>
+<p><strong>Alumno:</strong> Nicolás Bargioni</p>
+<p><strong>Aplicación elegida (originalidad ✔):</strong> <strong>asistente virtual de una biblioteca pública</strong> — la *&quot;Biblioteca Popular Domingo F. Sarmiento&quot;*. Responde las consultas frecuentes de socios y visitantes: cómo asociarse, horarios, préstamos, devoluciones, biblioteca digital, servicios, etc.</p>
+<p>&gt; El dominio <strong>biblioteca</strong> es <strong>distinto</strong> a los de los compañeros relevados (banco, consultorio médico, sanguchería), lo que garantiza originalidad y evita repetir corpus.</p>
+<p>&gt; <strong>Objetivo (consigna).</strong> Construir un *information retrieval chatbot*: dado un dataset propio de <strong>pares pregunta–respuesta</strong>, el bot recibe una consulta del usuario, la <strong>vectoriza</strong>, calcula <strong>similitud del coseno</strong> contra las preguntas conocidas y devuelve la <strong>respuesta de la pregunta más parecida</strong>.</p>
+<p><strong>Pipeline del notebook (sigue las actividades de la consigna):</strong></p>
+<p>1. <strong>Dataset</strong> propio de Q&amp;A (≥ 20 pares) — Actividad 1.</p>
+<p>2. <strong>Chatbot con TF-IDF + similitud del coseno</strong> (<code>sklearn</code>) — Actividad 2.</p>
+<p>3. <strong>Chatbot con embeddings</strong> (<code>spaCy</code>, word vectors en español) — Actividad 3.</p>
+<p>4. <strong>Demostración y comparación</strong> de ambos con consultas de prueba — Actividad 4.</p>
+<p>5. <strong>Conclusiones</strong> (fortalezas/debilidades de cada enfoque) — Actividad 5.</p>
+<p>6. Referencias.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;escribí la sección de instalación e imports para el TP4 (sklearn, spacy md, nltk) lista para Colab&quot; --&gt;</p>
+<h2>0. Preparación del entorno</h2>
+<p>Usamos el stack visto en clase: <strong><code>scikit-learn</code></strong> (<code>TfidfVectorizer</code>, <code>cosine_similarity</code>), <strong><code>spaCy</code></strong> con el modelo <strong><code>es_core_news_md</code></strong> (trae word vectors en español) y <strong>NLTK</strong> para tokenización en español.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;instalá spaCy + es_core_news_md, scikit-learn y nltk pensando en Colab; el modelo md es el que trae vectores&quot;
+!pip -q install spacy scikit-learn nltk pandas
+!python -m spacy download es_core_news_md -q   # &#x27;md&#x27; = incluye word vectors en español
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;importá numpy, pandas, spacy, los vectorizadores de sklearn y descargá los recursos de nltk para tokenizar en español&quot;
+import numpy as np
+import pandas as pd
+import spacy
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+import nltk
+nltk.download(&quot;punkt&quot;, quiet=True)
+nltk.download(&quot;punkt_tab&quot;, quiet=True)        # tokenizador nuevo de NLTK
+nltk.download(&quot;stopwords&quot;, quiet=True)
+from nltk.corpus import stopwords
+
+nlp = spacy.load(&quot;es_core_news_md&quot;)
+print(&quot;spaCy:&quot;, nlp.meta[&quot;name&quot;], &quot;| vectores:&quot;, len(nlp.vocab.vectors))
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá la Actividad 1: definir la aplicación del chatbot (biblioteca) y armar el dataset de mínimo 20 pares pregunta-respuesta&quot; --&gt;</p>
+<h2>1. Actividad 1 — Dataset de preguntas y respuestas</h2>
+<h3>1.1 Aplicación</h3>
+<p><strong>Asistente virtual de atención al socio de una biblioteca pública.</strong> El chatbot resuelve dudas habituales sin intervención humana: asociación, horarios, préstamos, devoluciones, biblioteca digital, servicios y actividades.</p>
+<h3>1.2 Dataset</h3>
+<p>Definimos <strong>22 pares pregunta–respuesta</strong> (la consigna pide ≥ 20), agrupados por temas. Cada <strong>pregunta</strong> es la &quot;intención&quot; que el bot debe reconocer; cada <strong>respuesta</strong> es lo que devuelve.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;creá dos listas alineadas, preguntas y respuestas, con 22 pares para un chatbot de biblioteca pública cubriendo asociación, horarios, préstamos, devoluciones, biblioteca digital y servicios&quot;
+preguntas = [
+    # --- Asociación / carnet ---
+    &quot;¿Cómo me asocio a la biblioteca?&quot;,
+    &quot;¿Qué documentación necesito para sacar el carnet de socio?&quot;,
+    &quot;¿Cuánto cuesta la membresía anual?&quot;,
+    &quot;Perdí mi carnet, ¿cómo pido uno nuevo?&quot;,
+    # --- Horarios y ubicación ---
+    &quot;¿Cuál es el horario de atención?&quot;,
+    &quot;¿La biblioteca abre los fines de semana?&quot;,
+    &quot;¿Dónde queda la biblioteca?&quot;,
+    # --- Préstamos ---
+    &quot;¿Cuántos libros puedo pedir prestados a la vez?&quot;,
+    &quot;¿Por cuántos días me prestan un libro?&quot;,
+    &quot;¿Cómo renuevo el préstamo de un libro?&quot;,
+    &quot;¿Qué pasa si devuelvo un libro fuera de término?&quot;,
+    &quot;¿Cómo reservo un libro que está prestado a otra persona?&quot;,
+    # --- Biblioteca digital ---
+    &quot;¿Tienen libros electrónicos para descargar?&quot;,
+    &quot;¿Cómo accedo a la biblioteca digital desde mi casa?&quot;,
+    &quot;¿Tienen audiolibros disponibles?&quot;,
+    # --- Servicios en sala ---
+    &quot;¿Puedo usar las computadoras de la sala de lectura?&quot;,
+    &quot;¿Hay wifi gratuito en la biblioteca?&quot;,
+    &quot;¿Puedo imprimir o sacar fotocopias?&quot;,
+    &quot;¿Tienen una sala de estudio para grupos?&quot;,
+    # --- Actividades / comunidad ---
+    &quot;¿Realizan actividades o talleres para niños?&quot;,
+    &quot;¿Tienen clubes de lectura para adultos?&quot;,
+    &quot;¿Cómo puedo donar libros a la biblioteca?&quot;,
+]
+
+respuestas = [
+    # asociación
+    &quot;Para asociarte acercate al mostrador de atención con tu DNI y una foto carnet, o completá el formulario online en nuestro sitio web. El alta es inmediata.&quot;,
+    &quot;Necesitás tu DNI, una foto tipo carnet y un comprobante de domicilio reciente (factura de servicio o similar).&quot;,
+    &quot;La membresía anual cuesta $3.000 para adultos y es gratuita para menores de 18 años, estudiantes y jubilados.&quot;,
+    &quot;Si perdiste el carnet, informalo en el mostrador. Te emitimos uno nuevo en el momento por un costo de reposición de $500.&quot;,
+    # horarios / ubicación
+    &quot;Atendemos de lunes a viernes de 9 a 20 h, de corrido.&quot;,
+    &quot;Sí: los sábados abrimos de 9 a 14 h. Los domingos y feriados permanecemos cerrados.&quot;,
+    &quot;Estamos en Av. de los Lectores 1234, a dos cuadras de la plaza central. Hay estacionamiento sobre la calle lateral.&quot;,
+    # préstamos
+    &quot;Cada socio puede llevarse hasta 3 libros simultáneamente en préstamo a domicilio.&quot;,
+    &quot;El préstamo a domicilio es por 15 días corridos, renovable si nadie más reservó el material.&quot;,
+    &quot;Podés renovar el préstamo desde tu cuenta en la biblioteca digital, por teléfono o en el mostrador, antes de la fecha de vencimiento.&quot;,
+    &quot;Por cada día de demora se aplica una multa de $100 por libro. Con multas impagas no se pueden retirar nuevos materiales.&quot;,
+    &quot;Pedí la reserva en el mostrador o desde la web. Cuando el libro se devuelva, te avisamos por mail y queda reservado para vos 48 horas.&quot;,
+    # digital
+    &quot;Sí, contamos con un catálogo de libros electrónicos que podés descargar gratis con tu usuario de socio desde la biblioteca digital.&quot;,
+    &quot;Ingresá a biblioteca-sarmiento.org.ar con tu número de socio y contraseña: desde ahí accedés a ebooks, audiolibros y bases de datos las 24 horas.&quot;,
+    &quot;Sí, tenemos una colección creciente de audiolibros en español, disponibles para escuchar online o descargar desde la app de la biblioteca.&quot;,
+    # sala
+    &quot;Sí, hay 10 computadoras de uso libre en la sala de lectura. El uso es gratuito por turnos de una hora.&quot;,
+    &quot;Sí, ofrecemos wifi gratuito para todos los visitantes. La contraseña está publicada en la sala de lectura.&quot;,
+    &quot;Disponemos de servicio de impresión y fotocopias a bajo costo: $20 la copia en blanco y negro y $80 a color.&quot;,
+    &quot;Sí, tenemos dos salas de estudio grupal que se reservan con anticipación en el mostrador o por teléfono.&quot;,
+    # actividades
+    &quot;Todos los sábados a las 11 h hacemos &#x27;La hora del cuento&#x27; y talleres de lectura para niños de 4 a 10 años. La entrada es libre y gratuita.&quot;,
+    &quot;Sí, el club de lectura para adultos se reúne el último jueves de cada mes a las 18 h. No hace falta inscripción previa.&quot;,
+    &quot;¡Aceptamos donaciones de libros en buen estado! Acercalos al mostrador; los evaluamos para sumarlos al catálogo o a nuestra feria solidaria.&quot;,
+]
+
+assert len(preguntas) == len(respuestas), &quot;Las listas deben estar alineadas&quot;
+print(&quot;Pares pregunta-respuesta en el dataset:&quot;, len(preguntas))
+df_kb = pd.DataFrame({&quot;pregunta&quot;: preguntas, &quot;respuesta&quot;: respuestas})
+df_kb.head(6)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá la Actividad 2 explicando qué es TF-IDF y por qué sirve para recuperar la pregunta más parecida&quot; --&gt;</p>
+<h2>2. Actividad 2 — Chatbot con TF-IDF + similitud del coseno</h2>
+<p><strong>TF-IDF</strong> representa cada pregunta como un vector de pesos: una palabra pesa más si es <strong>frecuente en esa pregunta</strong> (TF) pero <strong>rara en el conjunto</strong> (IDF). Así, términos discriminantes (*carnet*, *horario*, *wifi*) pesan más que palabras comunes. El chatbot vectoriza la consulta del usuario con el <strong>mismo</strong> vocabulario y devuelve la respuesta de la pregunta con <strong>mayor similitud del coseno</strong>.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;creá una función de normalización en español con NLTK (minúsculas, tokenizar, sacar stopwords y puntuación) para pasarla como tokenizer al TfidfVectorizer&quot;
+import string
+from nltk.tokenize import word_tokenize
+
+stop_es = set(stopwords.words(&quot;spanish&quot;))
+signos = set(string.punctuation) | {&quot;¿&quot;, &quot;¡&quot;, &quot;“&quot;, &quot;”&quot;, &quot;—&quot;}
+
+def normalizar(texto):
+    &quot;&quot;&quot;Tokeniza en español, pasa a minúsculas y descarta stopwords/puntuación.&quot;&quot;&quot;
+    tokens = word_tokenize(texto.lower(), language=&quot;spanish&quot;)
+    return [t for t in tokens if t not in stop_es and t not in signos and t.isalpha()]
+
+# ejemplo
+print(normalizar(&quot;¿Cuál es el horario de atención de la biblioteca?&quot;))
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;entrená un TfidfVectorizer sobre las preguntas usando el tokenizer en español y mostrá la forma de la matriz y parte del vocabulario&quot;
+vectorizer = TfidfVectorizer(tokenizer=normalizar, token_pattern=None)
+tfidf_matrix = vectorizer.fit_transform(preguntas)
+
+print(&quot;Matriz TF-IDF:&quot;, tfidf_matrix.shape, &quot;(preguntas x términos)&quot;)
+print(&quot;Tamaño del vocabulario:&quot;, len(vectorizer.get_feature_names_out()))
+print(&quot;Muestra del vocabulario:&quot;, vectorizer.get_feature_names_out()[:15])
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;implementá la función chatbot_tfidf que vectoriza la consulta, calcula similitud del coseno contra la matriz, aplica un umbral mínimo y devuelve la respuesta, la pregunta recuperada y la similitud&quot;
+UMBRAL_TFIDF = 0.15   # por debajo de esto, asumimos que la consulta está fuera de dominio
+
+def chatbot_tfidf(consulta):
+    &quot;&quot;&quot;Devuelve (respuesta, pregunta_recuperada, similitud) usando TF-IDF + coseno.&quot;&quot;&quot;
+    consulta_vec = vectorizer.transform([consulta])
+    sims = cosine_similarity(consulta_vec, tfidf_matrix).flatten()
+    idx = int(sims.argmax())
+    if sims[idx] &lt; UMBRAL_TFIDF:
+        return (&quot;Disculpá, no encontré información sobre eso. ¿Podés reformular la pregunta?&quot;,
+                None, float(sims[idx]))
+    return (respuestas[idx], preguntas[idx], float(sims[idx]))
+
+# prueba
+r, p, s = chatbot_tfidf(&quot;¿hay wifi en la biblioteca?&quot;)
+print(f&quot;Similitud: {s:.3f}&quot;)
+print(f&quot;Pregunta reconocida: {p}&quot;)
+print(f&quot;Respuesta: {r}&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá la Actividad 3: chatbot con embeddings de spaCy, indicando qué embedding se usa y por qué puede entender paráfrasis que TF-IDF no&quot; --&gt;</p>
+<h2>3. Actividad 3 — Chatbot con embeddings</h2>
+<p><strong>Embedding elegido:</strong> <code>es_core_news_md</code> de <strong>spaCy</strong> (word vectors preentrenados en español, 300 dimensiones). A diferencia de TF-IDF —que sólo &quot;ve&quot; coincidencias <strong>léxicas</strong> (las mismas palabras)—, los embeddings capturan <strong>significado</strong>, por lo que pueden reconocer una consulta aunque use <strong>sinónimos</strong> o <strong>palabras distintas</strong> (&quot;a qué hora cierran&quot; ≈ &quot;horario de atención&quot;).</p>
+<p>Representamos cada pregunta por el <strong>vector promedio de sus palabras de contenido</strong> —descartando stopwords, puntuación y palabras sin vector—, porque promediar *todo* (incluido *de, la, qué…*) mete ruido y empeora la recuperación. Luego comparamos por coseno.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;definí embed(texto) que promedia SOLO los vectores de las palabras de contenido (sin stopwords, sin puntuación, con vector); armá la matriz de embeddings de las preguntas&quot;
+def embed(texto):
+    &quot;&quot;&quot;Vector promedio (300-dim) de las palabras de CONTENIDO de un texto, vía spaCy.
+    Filtra stopwords, puntuación y tokens sin vector para reducir ruido.&quot;&quot;&quot;
+    doc = nlp(texto)
+    vecs = [t.vector for t in doc
+            if t.has_vector and not t.is_stop and not t.is_punct and t.is_alpha]
+    if not vecs:                       # fallback: si todo era stopword, usamos doc.vector
+        return doc.vector
+    return np.mean(vecs, axis=0)
+
+# matriz de embeddings de la base de conocimiento
+emb_matrix = np.vstack([embed(p) for p in preguntas])
+emb_norms = np.linalg.norm(emb_matrix, axis=1)
+
+UMBRAL_EMB = 0.40   # umbral más bajo que TF-IDF: el coseno entre promedios de embeddings vive en un rango distinto
+
+def chatbot_embeddings(consulta):
+    &quot;&quot;&quot;Devuelve (respuesta, pregunta_recuperada, similitud) usando embeddings + coseno.&quot;&quot;&quot;
+    q = embed(consulta)
+    qn = np.linalg.norm(q)
+    if qn == 0:
+        return (&quot;No pude interpretar la consulta.&quot;, None, 0.0)
+    sims = (emb_matrix @ q) / (emb_norms * qn + 1e-9)
+    idx = int(sims.argmax())
+    if sims[idx] &lt; UMBRAL_EMB:
+        return (&quot;Disculpá, no encontré información sobre eso. ¿Podés reformular la pregunta?&quot;,
+                None, float(sims[idx]))
+    return (respuestas[idx], preguntas[idx], float(sims[idx]))
+
+# prueba con una PARÁFRASIS (sin palabras en común con la pregunta original)
+r, p, s = chatbot_embeddings(&quot;¿a qué hora cierran?&quot;)
+print(f&quot;Similitud: {s:.3f}&quot;)
+print(f&quot;Pregunta reconocida: {p}&quot;)
+print(f&quot;Respuesta: {r}&quot;)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;presentá la Actividad 4: demostrar ambos chatbots con un set de consultas de prueba (incluyendo paráfrasis y una fuera de dominio) y comparar en una tabla&quot; --&gt;</p>
+<h2>4. Actividad 4 — Demostración y comparación</h2>
+<p>Probamos <strong>ambos</strong> chatbots con consultas reales: algunas <strong>literales</strong> (comparten palabras con la base), otras <strong>parafraseadas</strong> (mismo sentido, otras palabras) y una <strong>fuera de dominio</strong>. Mostramos qué pregunta reconoce cada enfoque y con qué similitud.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;definí una lista de consultas de prueba etiquetando si son literales, paráfrasis o fuera de dominio, y armá un DataFrame comparando qué pregunta recupera TF-IDF vs embeddings con sus similitudes&quot;
+consultas_prueba = [
+    (&quot;¿Hay wifi gratis?&quot;,                       &quot;literal&quot;),
+    (&quot;Quiero hacerme socio de la biblioteca&quot;,   &quot;literal&quot;),
+    (&quot;¿A qué hora cierran?&quot;,                     &quot;paráfrasis&quot;),   # &#x27;horario&#x27; no aparece
+    (&quot;Se me venció el libro, ¿qué hago?&quot;,        &quot;paráfrasis&quot;),   # &#x27;fuera de término&#x27;
+    (&quot;¿Puedo leer libros por internet?&quot;,         &quot;paráfrasis&quot;),   # &#x27;libros electrónicos&#x27;
+    (&quot;¿Tienen actividades para chicos?&quot;,         &quot;paráfrasis&quot;),   # &#x27;niños&#x27;
+    (&quot;¿Cuál es la receta de la milanesa?&quot;,       &quot;fuera de dominio&quot;),
+]
+
+filas = []
+for consulta, tipo in consultas_prueba:
+    _, p_tf, s_tf   = chatbot_tfidf(consulta)
+    _, p_emb, s_emb = chatbot_embeddings(consulta)
+    filas.append({
+        &quot;consulta&quot;: consulta,
+        &quot;tipo&quot;: tipo,
+        &quot;TF-IDF reconoce&quot;: p_tf if p_tf else &quot;(fuera de dominio)&quot;,
+        &quot;sim_tfidf&quot;: round(s_tf, 3),
+        &quot;Embeddings reconoce&quot;: p_emb if p_emb else &quot;(fuera de dominio)&quot;,
+        &quot;sim_emb&quot;: round(s_emb, 3),
+    })
+
+pd.set_option(&quot;display.max_colwidth&quot;, 45)
+pd.DataFrame(filas)
+</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;mostrá de forma legible la respuesta COMPLETA que da el chatbot de embeddings para tres consultas representativas&quot;
+print(&quot;=&quot; * 70)
+for consulta in [&quot;Quiero asociarme&quot;, &quot;¿a qué hora cierran?&quot;, &quot;¿puedo estudiar en grupo?&quot;]:
+    r, p, s = chatbot_embeddings(consulta)
+    print(f&quot;Usuario : {consulta}&quot;)
+    print(f&quot;Bot     : {r}&quot;)
+    print(f&quot;  (reconoció: &#x27;{p}&#x27; | similitud {s:.3f})&quot;)
+    print(&quot;=&quot; * 70)
+</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;redactá la Actividad 5 con el análisis comparativo: fortalezas y debilidades de TF-IDF vs embeddings, cuándo falla cada uno y cuál conviene&quot; --&gt;</p>
+<h2>5. Actividad 5 — Conclusiones</h2>
+<p><strong>Chatbot TF-IDF</strong></p>
+<ul>
+<li>✅ Simple, rápido y muy preciso cuando la consulta <strong>comparte palabras</strong> con la pregunta guardada (*&quot;¿hay wifi?&quot;* → wifi).</li>
+<li>❌ <strong>Falla con paráfrasis</strong>: *&quot;¿a qué hora cierran?&quot;* no comparte ninguna palabra con *&quot;¿cuál es el horario de atención?&quot;*, así que la similitud cae y puede recuperar la respuesta equivocada o caer bajo el umbral. Sólo &quot;entiende&quot; coincidencia <strong>léxica</strong>, no significado.</li>
+</ul>
+<p><strong>Chatbot con embeddings (spaCy)</strong></p>
+<ul>
+<li>✅ Capta <strong>significado</strong>: reconoce sinónimos y reformulaciones que TF-IDF no — *cerrar/horario*, *chicos/niños*, *internet/electrónico*, *estudiar en grupo/sala de estudio*. Filtrar <strong>stopwords/puntuación</strong> antes de promediar mejora bastante la recuperación.</li>
+<li>❌ Al representar la pregunta por el <strong>promedio</strong> de sus vectores, <strong>diluye</strong> matices: consultas muy cortas o genéricas (*&quot;Quiero asociarme&quot;*) pueden quedar por debajo del umbral o confundirse con preguntas del mismo tema. El promedio no distingue bien el <strong>foco</strong> de la pregunta (cuántos vs. por cuántos días).</li>
+</ul>
+<p><strong>Decisión.</strong> Para este dominio, el enfoque por <strong>embeddings</strong> es más robusto frente a la variedad del lenguaje real de los usuarios, pero <strong>TF-IDF</strong> es un baseline excelente y barato. Una solución de producción combinaría ambos (p. ej. embeddings como recuperador y TF-IDF/umbral como verificación) — y, de hecho, ese es el puente hacia el <strong>TP5 (RAG)</strong>, donde reemplazaremos el promedio de spaCy por embeddings de oraciones (*sentence-transformers*) y agregaremos un LLM que <strong>genere</strong> la respuesta en lugar de devolverla literal.</p>
+<p><strong>Sobre el umbral.</strong> Ambos bots usan un <strong>umbral mínimo de similitud</strong>: si ninguna pregunta supera el corte, el bot admite que no sabe en vez de inventar. Es clave para no dar respuestas erróneas a consultas fuera de dominio (como la de la milanesa).</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;armá las referencias del TP4 citando sklearn, spaCy, nltk, el notebook de la cátedra y el placeholder de IA&quot; --&gt;</p>
+<h2>6. Referencias</h2>
+<ul>
+<li>Ana Laura Diedrichs — *Procesamiento del Habla*, notebooks de clase <code>clase_1_vectorizacion.ipynb</code> e *intro chatbot basado en recuperación de la información*. https://github.com/anadiedrichs/procesamientoDelHabla</li>
+<li>scikit-learn — *TfidfVectorizer* y *cosine_similarity*. https://scikit-learn.org/stable/modules/feature_extraction.html#tfidf-term-weighting</li>
+<li>spaCy — *Word vectors and similarity*. https://spacy.io/usage/linguistic-features#vectors-similarity</li>
+<li>NLTK — *Tokenizers / stopwords*. https://www.nltk.org/</li>
+<li>Conversación con IA generativa (apoyo a la redacción/depuración): _[completar: link a conversación IA]_</li>
+</ul></section></div></body></html>

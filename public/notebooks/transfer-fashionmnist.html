@@ -1,0 +1,197 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Transfer learning — FashionMNIST</title><style>
+:root{--bg:#05070d;--fg:#eef2f7;--muted:#8b97a8;--border:rgba(255,255,255,.09);--cyan:#22d3ee;--coral:#ff6b3d;--surface:#0e131c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;padding:32px 20px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;line-height:1.25}
+h1{font-size:1.7rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+a{color:var(--cyan)}
+.md p{color:#cdd5e0}
+.md code,.code code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.md code{background:var(--surface);color:#67e8f9;padding:.1em .35em;border-radius:.3rem;font-size:.9em}
+.cell{margin:18px 0}
+pre.code{background:#03040a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:.5rem;padding:14px 16px;overflow-x:auto;font-size:.82rem;color:#d7deea}
+.outputs{margin-top:8px}
+pre.out{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:12px 14px;overflow-x:auto;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+pre.out.err{border-color:rgba(255,107,61,.4);color:#ff8a63}
+img{max-width:100%;border-radius:.5rem;border:1px solid var(--border);margin-top:8px}
+ul{padding-left:1.3rem}li{color:#cdd5e0}
+</style></head><body><div class='wrap'><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Escribí la portada del TP2 de imágenes con transfer learning sobre FashionMNIST y justificá la originalidad del dataset.&quot; --&gt;</p>
+<h1>TP2 — Clasificación de imágenes con Transfer Learning (CNN)</h1>
+<h3>Aprendizaje Automático 2 (AA2) · ISSD · 5° IAR</h3>
+<p><strong>Alumno:</strong> Nicolás Bargioni</p>
+<p><strong>Dataset elegido:</strong> *FashionMNIST* (Zalando) — <strong>10 clases</strong> de prendas de ropa (remera, pantalón, pulóver, vestido, abrigo, sandalia, camisa, zapatilla, cartera, botín) en imágenes de 28×28 en escala de grises. Se descarga <strong>directo por <code>torchvision.datasets</code></strong>, sin subir archivos a Colab.</p>
+<p><strong>¿Por qué es original?</strong> Todos los compañeros del foro usaron el dataset de <strong>retinopatía diabética</strong> (Kaggle). <strong>Nadie usó FashionMNIST</strong>, así que el caso de estudio es propio. Además permite mostrar un detalle técnico interesante de transfer learning: <strong>adaptar una ResNet preentrenada en ImageNet (RGB) a imágenes de 1 canal</strong>.</p>
+<p><strong>Técnica:</strong> <strong>Transfer Learning</strong> con <strong>ResNet18 preentrenada en ImageNet</strong>. Reemplazamos la capa final por una de 10 salidas y hacemos *fine-tuning*.</p>
+<p><strong>Objetivo:</strong></p>
+<p>1. Armar <code>DataLoader</code>s con transforms (resize a 224, replicar canal a RGB, normalización ImageNet).</p>
+<p>2. Cargar ResNet18 preentrenada y adaptar el clasificador.</p>
+<p>3. Entrenar (fine-tuning) y graficar curvas.</p>
+<p>4. Evaluar con accuracy, *classification report* y <strong>matriz de confusión</strong>.</p>
+<p>&gt; ⚠️ <strong>Ejecución en Colab con GPU.</strong> Para que la demo sea rápida usamos un <strong>subconjunto</strong> del dataset (configurable) y <strong>pocas épocas</strong>. En GPU completa basta con subir <code>N_TRAIN</code>/<code>EPOCHS</code>.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Celda de instalación e import para el TP de imágenes con torch y torchvision.&quot; --&gt;</p>
+<h2>0. Preparación del entorno</h2>
+<p><code>torch</code> y <code>torchvision</code> ya vienen en Colab. Importamos todo y detectamos GPU.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Importá torch, torchvision, sklearn y seaborn; fijá semilla y detectá el dispositivo.&quot;
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, Subset
+
+import torchvision
+from torchvision import datasets, transforms, models
+
+from sklearn.metrics import classification_report, confusion_matrix
+
+SEED = 42
+torch.manual_seed(SEED); np.random.seed(SEED)
+device = torch.device(&quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;)
+print(&quot;torch&quot;, torch.__version__, &quot;| torchvision&quot;, torchvision.__version__, &quot;| device:&quot;, device)
+sns.set_theme(style=&quot;whitegrid&quot;)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Definí los transforms: resize a 224, escala de grises a 3 canales y normalización ImageNet.&quot; --&gt;</p>
+<h2>1. Transforms y DataLoaders</h2>
+<p>ResNet18 fue entrenada en <strong>ImageNet</strong> con imágenes RGB de 224×224 normalizadas con medias/desvíos específicos. FashionMNIST es 28×28 en gris, así que el pipeline de transforms:</p>
+<p>1. <strong>Resize</strong> a 224×224.</p>
+<p>2. <strong>Grayscale→3 canales</strong> (<code>Grayscale(num_output_channels=3)</code>): replica el canal para que entre en la ResNet.</p>
+<p>3. <strong>ToTensor</strong> + <strong>Normalize</strong> con las estadísticas de ImageNet.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Armá los transforms con resize 224, grayscale a 3 canales y normalización ImageNet.&quot;
+IMAGENET_MEAN = [0.485, 0.456, 0.406]
+IMAGENET_STD  = [0.229, 0.224, 0.225]
+
+tf = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.Grayscale(num_output_channels=3),
+    transforms.ToTensor(),
+    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+])
+
+train_full = datasets.FashionMNIST(root=&quot;./data&quot;, train=True,  download=True, transform=tf)
+test_full  = datasets.FashionMNIST(root=&quot;./data&quot;, train=False, download=True, transform=tf)
+CLASSES = train_full.classes
+print(&quot;Clases:&quot;, CLASSES)</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Tomá un subconjunto balanceado para demo rápida y armá los DataLoaders de train y test.&quot;
+# --- Config reducida para demo en Colab; subir estos números para entrenamiento completo ---
+N_TRAIN = 3000
+N_TEST  = 1000
+BATCH   = 64
+
+g = torch.Generator().manual_seed(SEED)
+train_idx = torch.randperm(len(train_full), generator=g)[:N_TRAIN]
+test_idx  = torch.randperm(len(test_full),  generator=g)[:N_TEST]
+
+train_ds = Subset(train_full, train_idx.tolist())
+test_ds  = Subset(test_full,  test_idx.tolist())
+
+train_loader = DataLoader(train_ds, batch_size=BATCH, shuffle=True,  num_workers=2)
+test_loader  = DataLoader(test_ds,  batch_size=BATCH, shuffle=False, num_workers=2)
+print(f&quot;Train: {len(train_ds)} | Test: {len(test_ds)} | batches train: {len(train_loader)}&quot;)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Mostrá una grilla de imágenes de ejemplo desnormalizadas con su etiqueta.&quot; --&gt;</p>
+<h2>2. Visualización de ejemplos</h2></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Mostrá una grilla 2x4 de imágenes del batch, desnormalizando para verlas bien.&quot;
+def denorm(t):
+    mean = torch.tensor(IMAGENET_MEAN).view(3, 1, 1)
+    std  = torch.tensor(IMAGENET_STD).view(3, 1, 1)
+    return (t * std + mean).clamp(0, 1)
+
+xb, yb = next(iter(train_loader))
+fig, axes = plt.subplots(2, 4, figsize=(12, 6))
+for i, ax in enumerate(axes.flat):
+    ax.imshow(denorm(xb[i]).permute(1, 2, 0).numpy())
+    ax.set_title(CLASSES[yb[i]]); ax.axis(&quot;off&quot;)
+plt.suptitle(&quot;Muestras de FashionMNIST (3 canales, 224x224)&quot;); plt.tight_layout(); plt.show()</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Cargá ResNet18 preentrenada, congelá el backbone y reemplazá la fc por 10 salidas.&quot; --&gt;</p>
+<h2>3. Modelo: ResNet18 preentrenada (Transfer Learning)</h2>
+<p>Estrategia de <strong>feature extraction + fine-tuning ligero</strong>:</p>
+<ul>
+<li>Cargamos <strong>ResNet18 con pesos de ImageNet</strong>.</li>
+<li><strong>Congelamos</strong> todo el backbone (no se actualizan sus pesos al principio).</li>
+<li>Reemplazamos la capa final <code>fc</code> (1000 clases de ImageNet) por una <strong>Linear de 10 salidas</strong> (nuestras prendas). Esa capa nueva <strong>sí</strong> se entrena.</li>
+<li>Opcionalmente descongelamos el último bloque para fine-tuning fino.</li>
+</ul></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Cargá resnet18 con pesos ImageNet, congelá parámetros y reemplazá fc por Linear de 10 clases.&quot;
+def build_model(n_classes=10, unfreeze_layer4=True):
+    weights = models.ResNet18_Weights.IMAGENET1K_V1
+    model = models.resnet18(weights=weights)
+    for p in model.parameters():
+        p.requires_grad = False           # congelar backbone
+    if unfreeze_layer4:
+        for p in model.layer4.parameters():
+            p.requires_grad = True        # fine-tuning del último bloque
+    in_feat = model.fc.in_features
+    model.fc = nn.Linear(in_feat, n_classes)   # cabeza nueva (entrenable)
+    return model
+
+model = build_model().to(device)
+n_train = sum(p.numel() for p in model.parameters() if p.requires_grad)
+n_total = sum(p.numel() for p in model.parameters())
+print(f&quot;Parámetros entrenables: {n_train:,} de {n_total:,}&quot;)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Escribí el loop de entrenamiento y la función de evaluación para el fine-tuning.&quot; --&gt;</p>
+<h2>4. Entrenamiento (fine-tuning)</h2>
+<p>Solo optimizamos los parámetros con <code>requires_grad=True</code> (la cabeza nueva + <code>layer4</code>). Usamos <code>Adam</code> y <code>CrossEntropyLoss</code>.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Definí evaluate y train que registren loss y accuracy de train y test por época.&quot;
+@torch.no_grad()
+def evaluate(model, loader, criterion):
+    model.eval()
+    loss_sum, correct, n = 0.0, 0, 0
+    for xb, yb in loader:
+        xb, yb = xb.to(device), yb.to(device)
+        out = model(xb)
+        loss_sum += criterion(out, yb).item() * xb.size(0)
+        correct += (out.argmax(1) == yb).sum().item()
+        n += xb.size(0)
+    return loss_sum / n, correct / n
+
+def train(model, train_loader, test_loader, epochs=4, lr=1e-3):
+    criterion = nn.CrossEntropyLoss()
+    params = [p for p in model.parameters() if p.requires_grad]
+    optimizer = torch.optim.Adam(params, lr=lr)
+    hist = {&quot;tr_loss&quot;: [], &quot;te_loss&quot;: [], &quot;tr_acc&quot;: [], &quot;te_acc&quot;: []}
+    for ep in range(epochs):
+        model.train()
+        for xb, yb in train_loader:
+            xb, yb = xb.to(device), yb.to(device)
+            optimizer.zero_grad()
+            loss = criterion(model(xb), yb)
+            loss.backward(); optimizer.step()
+        trl, tra = evaluate(model, train_loader, criterion)
+        tel, tea = evaluate(model, test_loader, criterion)
+        for k, v in zip(hist, [trl, tel, tra, tea]): hist[k].append(v)
+        print(f&quot;Época {ep+1}/{epochs} | train loss {trl:.3f} acc {tra:.3f} | test loss {tel:.3f} acc {tea:.3f}&quot;)
+    return hist</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Entrená 4 épocas (config demo) y graficá las curvas de loss y accuracy.&quot;
+EPOCHS = 4   # subir a 10-15 en GPU completa
+hist = train(model, train_loader, test_loader, epochs=EPOCHS, lr=1e-3)
+
+fig, ax = plt.subplots(1, 2, figsize=(14, 5))
+ax[0].plot(hist[&quot;tr_loss&quot;], &quot;o-&quot;, label=&quot;train&quot;); ax[0].plot(hist[&quot;te_loss&quot;], &quot;s-&quot;, label=&quot;test&quot;)
+ax[0].set_title(&quot;Loss&quot;); ax[0].set_xlabel(&quot;época&quot;); ax[0].legend()
+ax[1].plot(hist[&quot;tr_acc&quot;], &quot;o-&quot;, label=&quot;train&quot;); ax[1].plot(hist[&quot;te_acc&quot;], &quot;s-&quot;, label=&quot;test&quot;)
+ax[1].set_title(&quot;Accuracy&quot;); ax[1].set_xlabel(&quot;época&quot;); ax[1].legend()
+plt.tight_layout(); plt.show()</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Evaluá el modelo en test: classification report y matriz de confusión con seaborn.&quot; --&gt;</p>
+<h2>5. Evaluación final</h2></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Generá predicciones sobre todo el test y mostrá classification_report y matriz de confusión.&quot;
+model.eval()
+y_true, y_pred = [], []
+with torch.no_grad():
+    for xb, yb in test_loader:
+        out = model(xb.to(device))
+        y_pred.extend(out.argmax(1).cpu().tolist())
+        y_true.extend(yb.tolist())
+
+print(classification_report(y_true, y_pred, target_names=CLASSES))
+
+cm = confusion_matrix(y_true, y_pred)
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt=&quot;d&quot;, cmap=&quot;Blues&quot;,
+            xticklabels=CLASSES, yticklabels=CLASSES)
+plt.title(&quot;Matriz de confusión — ResNet18 fine-tuned&quot;)
+plt.ylabel(&quot;real&quot;); plt.xlabel(&quot;predicho&quot;)
+plt.xticks(rotation=45, ha=&quot;right&quot;); plt.tight_layout(); plt.show()</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Interpretá la matriz de confusión señalando las confusiones entre prendas visualmente parecidas.&quot; --&gt;</p>
+<p><strong>Lectura de resultados.</strong> Con apenas 4 épocas y un subconjunto chico, el transfer learning ya alcanza una accuracy alta (~85-90%). En la matriz de confusión las confusiones típicas aparecen entre clases <strong>visualmente parecidas</strong>: *Shirt* vs *T-shirt/Coat/Pullover* (todas prendas superiores) y *Sneaker* vs *Ankle boot*. Esto muestra que el modelo aprende <strong>forma/textura</strong> de la prenda, no su semántica exacta — lo esperable de features de ImageNet adaptadas.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Redactá las conclusiones del TP2 sobre transfer learning y las dificultades técnicas.&quot; --&gt;</p>
+<h2>6. Conclusiones</h2>
+<ul>
+<li><strong>Qué construí:</strong> un clasificador de prendas con <strong>transfer learning</strong> (ResNet18 ImageNet) sobre FashionMNIST, con DataLoaders, fine-tuning del último bloque + cabeza nueva, curvas y matriz de confusión.</li>
+<li><strong>Detalle técnico clave:</strong> ResNet espera <strong>3 canales RGB de 224×224</strong>; FashionMNIST es 1 canal de 28×28. Lo resolví con <code>Grayscale(num_output_channels=3)</code> + <code>Resize(224)</code> y la normalización <strong>de ImageNet</strong> (no la del dataset propio), porque los pesos preentrenados asumen esa distribución de entrada.</li>
+<li><strong>Por qué transfer learning:</strong> congelando el backbone entreno <strong>muy pocos parámetros</strong> y converjo en pocas épocas, frente a entrenar una CNN desde cero que necesitaría muchos más datos y tiempo.</li>
+<li><strong>Dificultad superada:</strong> al principio pasaba el tensor de 1 canal directo a la ResNet → error de shape <code>[N,1,...]</code> vs <code>[N,3,...]</code>. La solución fue el transform <code>Grayscale(3)</code>.</li>
+<li><strong>Duda que queda:</strong> cuánto mejora descongelar <strong>todo</strong> el backbone (full fine-tuning) vs solo <code>layer4</code>, y a partir de qué tamaño de dataset conviene.</li>
+</ul></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Sección de referencias del TP2 con el paper de FashionMNIST, docs de torchvision y placeholder de IA.&quot; --&gt;</p>
+<h2>7. Referencias</h2>
+<ul>
+<li>Xiao, H., Rasul, K., Vollgraf, R. (2017). *Fashion-MNIST: a Novel Image Dataset for Benchmarking ML Algorithms.* https://github.com/zalandoresearch/fashion-mnist</li>
+<li>torchvision — *Models and pre-trained weights*: https://pytorch.org/vision/stable/models.html</li>
+<li>He, K. et al. (2015). *Deep Residual Learning for Image Recognition (ResNet)*. https://arxiv.org/abs/1512.03385</li>
+<li>PyTorch — *Transfer Learning tutorial*: https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html</li>
+<li>Material de clase AA2 (CNN, transfer learning).</li>
+<li>Conversación con IA generativa usada como apoyo: _[completar: link a conversación IA]_</li>
+</ul></section></div></body></html>

@@ -1,0 +1,572 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Embeddings del Mundial (lab)</title><style>
+:root{--bg:#05070d;--fg:#eef2f7;--muted:#8b97a8;--border:rgba(255,255,255,.09);--cyan:#22d3ee;--coral:#ff6b3d;--surface:#0e131c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;padding:32px 20px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;line-height:1.25}
+h1{font-size:1.7rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+a{color:var(--cyan)}
+.md p{color:#cdd5e0}
+.md code,.code code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.md code{background:var(--surface);color:#67e8f9;padding:.1em .35em;border-radius:.3rem;font-size:.9em}
+.cell{margin:18px 0}
+pre.code{background:#03040a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:.5rem;padding:14px 16px;overflow-x:auto;font-size:.82rem;color:#d7deea}
+.outputs{margin-top:8px}
+pre.out{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:12px 14px;overflow-x:auto;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+pre.out.err{border-color:rgba(255,107,61,.4);color:#ff8a63}
+img{max-width:100%;border-radius:.5rem;border:1px solid var(--border);margin-top:8px}
+ul{padding-left:1.3rem}li{color:#cdd5e0}
+</style></head><body><div class='wrap'><section class='md'><h1>🔦 El cono bajo los reflectores — Álgebra lineal con embeddings 🇦🇷</h1></section><section class='cell'><pre class='code'><code>from IPython.display import display, HTML
+
+display(HTML(&#x27;&#x27;&#x27;
+&lt;div style=&quot;font-family:Montserrat,system-ui,sans-serif;width:100%;box-sizing:border-box;
+            border-radius:16px;overflow:hidden;box-shadow:0 14px 56px rgba(0,0,0,.55);
+            border:1px solid rgba(79,184,232,.28);margin:6px 0&quot;&gt;
+  &lt;div style=&quot;padding:46px 34px;text-align:center;color:#eef7fb;
+       background:
+         radial-gradient(120% 90% at 12% -12%, rgba(79,184,232,.36), transparent 52%),
+         radial-gradient(90% 80% at 90% 120%, rgba(38,86,116,.55), transparent 60%),
+         linear-gradient(160deg,#08161f 0%,#0a1b27 55%,#061019 100%)&quot;&gt;
+    &lt;div style=&quot;font-size:2.3em;filter:drop-shadow(0 0 12px rgba(124,200,238,.7))&quot;&gt;⚽ 🇦🇷 ✨&lt;/div&gt;
+    &lt;h1 style=&quot;margin:.1em 0 0;font-size:2.7em;font-weight:800;letter-spacing:-.02em;text-transform:uppercase;
+               line-height:1;text-shadow:0 5px 26px rgba(0,0,0,.6)&quot;&gt;El cono bajo los
+       &lt;span style=&quot;color:#4fb8e8;text-shadow:0 0 28px rgba(79,184,232,.75)&quot;&gt;reflectores&lt;/span&gt;&lt;/h1&gt;
+    &lt;div style=&quot;font-size:1.0em;color:#7cc8ee;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-top:12px&quot;&gt;
+        Álgebra lineal con embeddings · Mundial 2026&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div style=&quot;padding:30px 34px;background:#0a141d;color:#cfe3ef;line-height:1.65;text-align:left&quot;&gt;
+    &lt;p style=&quot;margin:0 0 14px;font-size:1.02em&quot;&gt;
+      &lt;b style=&quot;color:#7cc8ee&quot;&gt;🎯 De qué se trata.&lt;/b&gt; Una computadora no entiende palabras: las convierte en
+      &lt;b&gt;vectores&lt;/b&gt; (listas de cientos de números). Este notebook agarra 56 frases sobre la Selección y el Mundial,
+      las transforma en vectores, y usa &lt;b&gt;álgebra lineal&lt;/b&gt; para mostrar cómo se organiza el significado: por qué dos
+      frases se parecen, por qué todas se &amp;laquo;apiñan&amp;raquo; en un cono, y cómo eso afecta a un buscador o a un clustering real.&lt;/p&gt;
+    &lt;p style=&quot;margin:0 0 14px;font-size:1.02em&quot;&gt;
+      &lt;b style=&quot;color:#7cc8ee&quot;&gt;👁 Qué vas a ver.&lt;/b&gt; Un recorrido en 8 capítulos + 8 módulos de juego. Vas a ver
+      &lt;b&gt;matrices de similitud&lt;/b&gt; coloreadas, el &lt;b&gt;cono en 3D&lt;/b&gt; que podés girar con el mouse, un
+      &lt;b&gt;scree plot&lt;/b&gt; que revela que de cientos de dimensiones trabajan ~45, un &lt;b&gt;buscador semántico&lt;/b&gt;, un
+      &lt;b&gt;dendrograma&lt;/b&gt; de temas, y experimentos como analogías vectoriales, rotaciones mágicas, compresión y morphing.&lt;/p&gt;
+    &lt;p style=&quot;margin:0;font-size:1.02em&quot;&gt;
+      &lt;b style=&quot;color:#7cc8ee&quot;&gt;🧭 Cómo recorrerlo.&lt;/b&gt; Andá a &lt;b&gt;Entorno de ejecución → Ejecutar todo&lt;/b&gt;. Cada sección
+      arranca con una tarjeta que explica &lt;b&gt;qué se hace y dónde mirar&lt;/b&gt;, después viene el gráfico, y abajo una
+      &lt;b&gt;📝 Lectura&lt;/b&gt; que interpreta el resultado. Cada bloque marca con 🧮 la operación de álgebra lineal que lo hace posible.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div style=&quot;display:flex;flex-wrap:wrap;background:#061019&quot;&gt;
+    &lt;div style=&quot;flex:1;min-width:120px;padding:16px;text-align:center;border-right:1px solid #15303f;color:#eef7fb&quot;&gt;
+        &lt;div style=&quot;font-size:1.8em;font-weight:800;color:#4fb8e8&quot;&gt;56&lt;/div&gt;
+        &lt;div style=&quot;font-size:.76em;color:#6f93a8;text-transform:uppercase;letter-spacing:.12em&quot;&gt;frases · 7 temas&lt;/div&gt;&lt;/div&gt;
+    &lt;div style=&quot;flex:1;min-width:120px;padding:16px;text-align:center;border-right:1px solid #15303f;color:#eef7fb&quot;&gt;
+        &lt;div style=&quot;font-size:1.8em;font-weight:800;color:#4fb8e8&quot;&gt;8+8&lt;/div&gt;
+        &lt;div style=&quot;font-size:.76em;color:#6f93a8;text-transform:uppercase;letter-spacing:.12em&quot;&gt;capítulos · módulos&lt;/div&gt;&lt;/div&gt;
+    &lt;div style=&quot;flex:1;min-width:120px;padding:16px;text-align:center;color:#eef7fb&quot;&gt;
+        &lt;div style=&quot;font-size:1.8em;font-weight:800;color:#4fb8e8&quot;&gt;3D&lt;/div&gt;
+        &lt;div style=&quot;font-size:.76em;color:#6f93a8;text-transform:uppercase;letter-spacing:.12em&quot;&gt;interactivo&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;@import url(&#x27;https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&amp;display=swap&#x27;);&lt;/style&gt;
+&#x27;&#x27;&#x27;))</code></pre></section><section class='md'><h2>0 · Preparación del entorno</h2></section><section class='cell'><pre class='code'><code>!pip -q install sentence-transformers &gt;/dev/null 2&gt;&amp;1
+print(&quot;✅ Listo&quot;)</code></pre></section><section class='cell'><pre class='code'><code>import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+import plotly.graph_objects as go
+import plotly.express as px
+from sentence_transformers import SentenceTransformer
+from IPython.display import display, HTML
+
+np.random.seed(42)
+
+# ---- paleta &#x27;noche de estadio&#x27; ----
+NIGHT=&quot;#0a1b27&quot;; INK=&quot;#bcdcec&quot;; BEAM=&quot;#4fb8e8&quot;; CELESTE=&quot;#8fc0e8&quot;; MIST=&quot;#6f93a8&quot;; LINE=&quot;#15303f&quot;
+plt.rcParams.update({
+    &quot;figure.figsize&quot;:(9,4.5), &quot;figure.facecolor&quot;:NIGHT, &quot;axes.facecolor&quot;:NIGHT,
+    &quot;savefig.facecolor&quot;:NIGHT, &quot;axes.edgecolor&quot;:LINE, &quot;axes.labelcolor&quot;:INK,
+    &quot;text.color&quot;:INK, &quot;axes.titlecolor&quot;:INK, &quot;xtick.color&quot;:MIST, &quot;ytick.color&quot;:MIST,
+    &quot;axes.grid&quot;:True, &quot;grid.color&quot;:LINE, &quot;grid.alpha&quot;:.5, &quot;font.size&quot;:11, &quot;legend.framealpha&quot;:0,
+})
+CINE = LinearSegmentedColormap.from_list(&quot;cine&quot;, [&quot;#061019&quot;,&quot;#12303f&quot;,&quot;#4fb8e8&quot;,&quot;#cfe8f6&quot;])
+TCOLOR = {&quot;jugadores&quot;:&quot;#6cb8e8&quot;,&quot;tactica&quot;:&quot;#8fa8e0&quot;,&quot;rivales&quot;:&quot;#5fd0c0&quot;,
+          &quot;historia&quot;:&quot;#e8b86a&quot;,&quot;sedes2026&quot;:&quot;#e88a8a&quot;,&quot;hinchada&quot;:&quot;#c9a0e8&quot;,&quot;cultura&quot;:&quot;#aab9c8&quot;}
+
+def style3d(fig, title):
+    ax=dict(backgroundcolor=&quot;#0a1b27&quot;, gridcolor=&quot;#13344a&quot;, showbackground=True, color=&quot;#6f93a8&quot;)
+    fig.update_layout(title=title, height=560, paper_bgcolor=&quot;#0a1b27&quot;, font_color=&quot;#bcdcec&quot;,
+        scene=dict(xaxis_title=&quot;eje del cono&quot;, yaxis_title=&quot;u1&quot;, zaxis_title=&quot;u2&quot;,
+                   xaxis=ax, yaxis=ax, zaxis=ax))
+    return fig
+
+def intro(emoji, titulo, parrafos):
+    # Tarjeta full-width estilo PP2: título + 3 párrafos (qué se hace / qué se ve / dónde mirar).
+    ps = &quot;&quot;.join(f&#x27;&lt;p style=&quot;margin:0 0 11px;color:#cfe3ef;font-size:.97em;line-height:1.62&quot;&gt;{p}&lt;/p&gt;&#x27; for p in parrafos)
+    return HTML(f&#x27;&#x27;&#x27;
+    &lt;div style=&quot;font-family:Montserrat,system-ui,sans-serif;width:100%;box-sizing:border-box;
+                background:linear-gradient(135deg,#0a1b27,#102b3c 55%,#15384b);
+                border:1px solid rgba(79,184,232,.22);border-left:5px solid #4fb8e8;border-radius:12px;
+                padding:22px 28px;margin:6px 0;color:#eef7fb;box-shadow:0 8px 30px rgba(0,0,0,.35)&quot;&gt;
+      &lt;div style=&quot;font-size:1.35em;font-weight:800;text-transform:uppercase;letter-spacing:.01em;margin-bottom:13px&quot;&gt;
+          &lt;span style=&quot;font-size:1.05em&quot;&gt;{emoji}&lt;/span&gt;&amp;nbsp;{titulo}&lt;/div&gt;
+      {ps}
+    &lt;/div&gt;&#x27;&#x27;&#x27;)
+
+MODEL_NAME = &quot;sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2&quot;
+model = SentenceTransformer(MODEL_NAME)
+
+def embed(textos):
+    return model.encode(list(textos), normalize_embeddings=False, show_progress_bar=False)
+
+print(&quot;Modelo cargado:&quot;, MODEL_NAME)</code></pre></section><section class='md'><h2>1 · El corpus</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;📚&quot;, &quot;1 · El corpus: el Mundial en frases&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Todo experimento con embeddings empieza por un corpus: un conjunto de textos. Acá usamos 56 frases cortas repartidas en 7 sub-temas — jugadores de la Selección, táctica, rivales, historia (1978, 1986, Qatar 2022), sedes del Mundial 2026, la hinchada, y un grupo de cultura argentina no-futbolera (mate, asado, tango). Ese último grupo está puesto a propósito: es el &amp;laquo;contraste&amp;raquo; que después hace que las analogías y los ejes de concepto den resultados claros.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; La celda arma un diccionario con los 7 temas y aplana todo en dos listas paralelas: &lt;code&gt;texts&lt;/code&gt; (las 56 frases) y &lt;code&gt;topics&lt;/code&gt; (a qué tema pertenece cada una). Esa etiqueta de tema NO se la damos al modelo — la guardamos sólo para nosotros, para después comprobar si la geometría logra reagrupar los temas por su cuenta.&quot;,
+ &quot;&lt;b&gt;Dónde mirar.&lt;/b&gt; Abajo se imprime el conteo: 56 frases, 7 temas. Tené presente esos grupos porque van a reaparecer como colores en casi todos los gráficos que siguen.&quot;,
+]))
+
+CORPUS = {
+ &quot;jugadores&quot;: [
+  &quot;Lionel Messi lidera a la selección argentina como capitán y máximo referente.&quot;,
+  &quot;Emiliano Dibu Martínez es el arquero que ataja penales decisivos.&quot;,
+  &quot;Julián Álvarez se mueve como delantero veloz y desequilibrante.&quot;,
+  &quot;Lautaro Martínez pelea el puesto de centrodelantero titular.&quot;,
+  &quot;Rodrigo De Paul corre todo el mediocampo y recupera pelotas.&quot;,
+  &quot;Enzo Fernández organiza el juego desde el centro del campo.&quot;,
+  &quot;Alexis Mac Allister aporta gol y llegada desde la segunda línea.&quot;,
+  &quot;Cristian Cuti Romero es un defensor central duro y aguerrido.&quot;,
+ ],
+ &quot;tactica&quot;: [
+  &quot;El equipo presiona alto para recuperar la pelota en campo rival.&quot;,
+  &quot;La línea de cuatro defensores se achica para dejar al rival en offside.&quot;,
+  &quot;El mediocampo controla la posesión y maneja los tiempos del partido.&quot;,
+  &quot;El entrenador plantea un repliegue para defender el resultado.&quot;,
+  &quot;Los laterales se proyectan al ataque por las bandas.&quot;,
+  &quot;El equipo busca la contra rápida apenas recupera el balón.&quot;,
+  &quot;La presión tras pérdida asfixia la salida del rival.&quot;,
+  &quot;El armado del juego empieza desde los pies del arquero.&quot;,
+ ],
+ &quot;rivales&quot;: [
+  &quot;Brasil llega con Vinícius y Rodrygo como principales amenazas ofensivas.&quot;,
+  &quot;Francia, con Mbappé, es candidata a pelear el título.&quot;,
+  &quot;España apuesta a un juego de posesión y toque constante.&quot;,
+  &quot;Inglaterra tiene un plantel joven y profundo en ataque.&quot;,
+  &quot;Alemania busca recuperar protagonismo tras años irregulares.&quot;,
+  &quot;Países Bajos confía en su orden táctico y su mediocampo.&quot;,
+  &quot;Portugal depende del talento y la experiencia de sus figuras.&quot;,
+  &quot;Uruguay plantea partidos físicos y de gran intensidad.&quot;,
+ ],
+ &quot;historia&quot;: [
+  &quot;Argentina ganó su primer Mundial en casa en 1978.&quot;,
+  &quot;Diego Maradona llevó a Argentina al título en México 1986.&quot;,
+  &quot;La mano de Dios y el gol del siglo marcaron el Mundial de 1986.&quot;,
+  &quot;En Qatar 2022 Argentina se consagró campeón del mundo.&quot;,
+  &quot;Messi levantó la copa tras la final contra Francia en 2022.&quot;,
+  &quot;La final de 2022 se definió por penales tras un empate tres a tres.&quot;,
+  &quot;Argentina luce tres estrellas mundiales en su camiseta.&quot;,
+  &quot;La consagración en Qatar coronó la carrera de Lionel Messi.&quot;,
+ ],
+ &quot;sedes2026&quot;: [
+  &quot;El Mundial 2026 se jugará en Estados Unidos, México y Canadá.&quot;,
+  &quot;Será el primer Mundial con cuarenta y ocho selecciones participantes.&quot;,
+  &quot;La final se disputará en el MetLife Stadium de Nueva Jersey.&quot;,
+  &quot;Ciudad de México albergará partidos en el histórico estadio Azteca.&quot;,
+  &quot;Toronto y Vancouver serán las sedes canadienses del torneo.&quot;,
+  &quot;El Mundial repartirá los partidos en dieciséis ciudades anfitrionas.&quot;,
+  &quot;El calor del verano norteamericano será un factor en varias sedes.&quot;,
+  &quot;Estados Unidos concentrará la mayoría de los estadios del torneo.&quot;,
+ ],
+ &quot;hinchada&quot;: [
+  &quot;La hinchada argentina copa las tribunas con bombos y banderas.&quot;,
+  &quot;El himno nacional se canta a todo pulmón antes de cada partido.&quot;,
+  &quot;La camiseta celeste y blanca es un símbolo de identidad nacional.&quot;,
+  &quot;Los hinchas inundan las calles para festejar cada victoria.&quot;,
+  &quot;La canción Muchachos se volvió el himno popular de la hinchada.&quot;,
+  &quot;Las banderas con la cara de Messi flamean en cada estadio.&quot;,
+  &quot;El aliento de la gente empuja al equipo en los momentos difíciles.&quot;,
+  &quot;Las caravanas de festejo desbordan el Obelisco tras los títulos.&quot;,
+ ],
+ &quot;cultura&quot;: [
+  &quot;El mate es la infusión que acompaña las tardes de los argentinos.&quot;,
+  &quot;El asado del domingo reúne a la familia alrededor de la parrilla.&quot;,
+  &quot;El tango nació en los barrios porteños a orillas del Río de la Plata.&quot;,
+  &quot;Las empanadas son un clásico infaltable de la cocina criolla.&quot;,
+  &quot;El dulce de leche endulza postres y facturas en todo el país.&quot;,
+  &quot;La cumbia y el rock nacional suenan en cada fiesta popular.&quot;,
+  &quot;El Obelisco es el punto de encuentro en el centro de Buenos Aires.&quot;,
+  &quot;El café con medialunas marca el ritmo de la mañana porteña.&quot;,
+ ],
+}
+
+texts, topics = [], []
+for t, ss in CORPUS.items():
+    for s in ss:
+        texts.append(s); topics.append(t)
+TOPICS = list(CORPUS.keys())
+tid = np.array([TOPICS.index(t) for t in topics])
+print(f&quot;{len(texts)} frases · {len(TOPICS)} temas: {TOPICS}&quot;)</code></pre></section><section class='md'><h2>2 · Qué es un embedding</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🔢&quot;, &quot;2 · Qué es un embedding&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Acá ocurre la transformación central de todo el notebook: pasamos cada una de las 56 frases por el modelo de IA y obtenemos su &lt;b&gt;embedding&lt;/b&gt;, una lista de cientos de números que codifica su significado. Apilamos los 56 vectores uno debajo del otro y formamos la &lt;b&gt;matriz E&lt;/b&gt;, de tamaño (56 × d). Cada fila es una frase; cada columna, una dimensión latente que el modelo aprendió.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Abajo se imprime la forma de la matriz (56 filas × cientos de columnas) y las primeras 8 coordenadas de la primera frase, sobre Messi. Vas a notar que son números chiquitos, positivos y negativos, sin ninguna etiqueta humana: nadie diseñó la columna 3 para que mida &amp;laquo;fútbol&amp;raquo;.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Lo importante no es cada número suelto sino la &lt;b&gt;dirección&lt;/b&gt; del vector completo. De acá en adelante todo es geometría: apilar los vectores en una matriz nos deja operar con ellos de a miles a la vez, que es la gran ventaja del álgebra lineal.&quot;,
+]))
+
+E = embed(texts)
+print(&quot;Matriz E:&quot;, E.shape, &quot;  → 56 frases ×&quot;, E.shape[1], &quot;dimensiones&quot;)
+print(&quot;\nLas primeras 8 coordenadas de la frase 0 (&#x27;%s...&#x27;):&quot; % texts[0][:40])
+print(np.round(E[0][:8], 3))</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Cada una de las 56 frases quedó convertida en una fila de la matriz <code>E</code>, con cientos de columnas. Fijate que los números sueltos (<code>0.041</code>, <code>-0.012</code>…) <strong>no significan nada por separado</strong>: nadie diseñó una columna para que mida &quot;fútbol&quot;. Lo que captura el significado es la <strong>dirección del vector completo</strong>, las cientos de coordenadas tomadas en conjunto.</p>
+<p>Por eso de acá en adelante no miramos los números uno por uno, sino la <strong>geometría</strong>: hacia dónde apunta cada flecha y qué tan parecidas son sus direcciones. Ese cambio de mirada —de &quot;lista de números&quot; a &quot;punto en un mapa de significados&quot;— es lo que vuelve útil todo lo que sigue. Dos frases parecidas serán dos puntos cercanos; dos frases sin relación, dos puntos lejanos.</p></section><section class='md'><h2>3 · El parecido (coseno) y la matriz de Gram</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;📐&quot;, &quot;3 · El parecido = coseno · la matriz de Gram&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Si cada frase es una flecha que sale del origen, podemos medir cuánto se parecen dos frases por el &lt;b&gt;ángulo&lt;/b&gt; entre sus flechas. La medida estándar es el &lt;b&gt;coseno&lt;/b&gt; de ese ángulo: vale 1 si apuntan igual (frases idénticas en significado), 0 si son perpendiculares (nada que ver) y -1 si apuntan al revés.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Calculamos el coseno entre TODAS las parejas y lo dibujamos como un &lt;b&gt;mapa de calor&lt;/b&gt; de 56×56. Más brillante (cian claro) = más parecido. Vas a distinguir 7 bloques luminosos sobre la diagonal: cada tema parecido a sí mismo. Pero mirá también el fondo entre bloques.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Si normalizamos cada fila a longitud 1 y multiplicamos la matriz por su traspuesta (&lt;code&gt;Ê · Êᵀ&lt;/code&gt;) obtenemos la &lt;b&gt;matriz de Gram&lt;/b&gt;: todas las similitudes de todos contra todos en una sola multiplicación. Es el corazón de cualquier buscador semántico.&quot;,
+]))
+
+def normalizar(M):
+    return M / np.linalg.norm(M, axis=1, keepdims=True)
+
+def cos_matrix(M):
+    Mn = normalizar(M)
+    return Mn @ Mn.T
+
+S = cos_matrix(E)
+fig, ax = plt.subplots(figsize=(8, 7))
+im = ax.imshow(S, cmap=CINE, vmin=0, vmax=1)
+for k in range(1, 7):
+    ax.axhline(k*8-.5, color=&quot;#0a1b27&quot;, lw=.6); ax.axvline(k*8-.5, color=&quot;#0a1b27&quot;, lw=.6)
+ax.set_title(&quot;Matriz de similitud coseno (56×56)\nbloques diagonales = mismo tema&quot;)
+ax.set_xticks([4+8*k for k in range(7)]); ax.set_xticklabels(TOPICS, rotation=45, ha=&quot;right&quot;)
+ax.set_yticks([4+8*k for k in range(7)]); ax.set_yticklabels(TOPICS)
+plt.colorbar(im, fraction=.046); plt.tight_layout(); plt.show()</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Aparecen <strong>7 bloques brillantes</strong> sobre la diagonal: cada tema se parece mucho a sí mismo, justo lo que esperábamos. Frases de jugadores con frases de jugadores, de cultura con cultura.</p>
+<p>Pero lo verdaderamente revelador está en el <strong>fondo</strong>: no es negro. Las celdas que cruzan temas distintos —una frase de cocina contra una de finanzas, digamos— igual tienen un tono medio, nunca caen a cero. Eso significa que, según el coseno crudo, <strong>hasta frases que no tienen nada que ver se parecen un poco</strong>.</p>
+<p>Guardá esta observación, porque es la punta del ovillo de todo el notebook: en la próxima sección la vamos a medir con un histograma y vas a comprobar que no es un artefacto del gráfico, sino una <strong>propiedad real y conocida</strong> del espacio de embeddings.</p></section><section class='md'><h2>4 · La anisotropía y el cono 🍦</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🍦&quot;, &quot;4 · La anisotropía y el cono&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Ponemos a prueba la sospecha de la sección anterior con una pregunta directa: dos frases SIN relación, ¿dan coseno ≈ 0, como debería? Para tener una vara de comparación generamos un &lt;b&gt;espacio isótropo ideal&lt;/b&gt; — vectores totalmente al azar, repartidos parejo en todas las direcciones, como las púas de un erizo.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Un histograma con dos curvas superpuestas: en gris, los cosenos de pares del espacio ideal; en cian, los de nuestros embeddings reales. Si el espacio fuera sano, ambas estarían centradas en 0. Vas a ver que la curva real está &lt;b&gt;corrida a la derecha&lt;/b&gt;.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Ese corrimiento tiene nombre: &lt;b&gt;anisotropía&lt;/b&gt; (del griego: NO igual en todas las direcciones). Los vectores no usan toda la esfera; viven apiñados en una región estrecha — un cono. Abajo medimos además el ángulo promedio de cada frase al eje del cono.&quot;,
+]))
+
+def pares(M):
+    C = cos_matrix(M); iu = np.triu_indices(len(M), k=1); return C[iu]
+
+R = np.random.randn(*E.shape)
+real = pares(E); iso = pares(R)
+plt.figure()
+plt.hist(iso,  bins=40, alpha=.75, label=f&quot;isótropo ideal (media={iso.mean():.2f})&quot;, color=&quot;#6f93a8&quot;)
+plt.hist(real, bins=40, alpha=.8,  label=f&quot;nuestros embeddings (media={real.mean():.2f})&quot;, color=&quot;#4fb8e8&quot;)
+plt.axvline(0, color=&quot;#bcdcec&quot;, ls=&quot;--&quot;, lw=1)
+plt.title(&quot;Coseno entre pares al azar: ¿centrado en 0?&quot;)
+plt.xlabel(&quot;coseno&quot;); plt.ylabel(&quot;cantidad de pares&quot;); plt.legend(); plt.show()
+print(f&quot;Coseno medio entre pares — real: {real.mean():.3f}  |  isótropo: {iso.mean():.3f}&quot;)
+
+mu = E.mean(0); eje = mu / np.linalg.norm(mu)
+ang = np.degrees(np.arccos(np.clip(normalizar(E) @ eje, -1, 1)))
+print(f&quot;Ángulo medio de las frases al eje del cono: {ang.mean():.1f}°  (isótropo daría ~90°)&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> El histograma cian (nuestros embeddings) está <strong>claramente corrido a la derecha del 0</strong>: en promedio, dos frases cualesquiera dan ~0.24 de coseno aunque hablen de cosas totalmente distintas. El gris (el espacio sano) se clava en 0, como debería.</p>
+<p>Esa diferencia es la <strong>anisotropía</strong>, y no es un defecto de nuestro corpus: es una propiedad conocida de casi todos los modelos de embeddings. El dato del ángulo lo confirma desde otro ángulo (literal): cada frase se pega al eje común a ~60°, no a los ~90° que daría un espacio isótropo. Están todas mirando, más o menos, hacia el mismo lado.</p>
+<p>La consecuencia práctica es enorme: el <strong>&quot;cero&quot; real del sistema no es 0</strong>, está corrido para arriba. Cualquiera que arme un buscador y ponga un umbral ingenuo (&quot;traeme todo lo que supere 0.2&quot;) se va a llenar de resultados irrelevantes, porque hasta lo que no tiene nada que ver llega a ~0.24.</p></section><section class='md'><h2>4b · El cono en 3D (girable)</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🍦&quot;, &quot;El cono en 3D — girá la nube con el mouse&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Hasta acá el cono fue un número. Ahora lo dibujamos. No podemos ver cientos de dimensiones, así que proyectamos la nube a 3 ejes elegidos a propósito: el &lt;b&gt;eje del cono&lt;/b&gt; (la dirección media de todas las frases) y dos direcciones perpendiculares a él.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Una nube 3D que podés &lt;b&gt;girar arrastrando con el mouse&lt;/b&gt;. Cada punto es una frase (coloreada por tema) y cada línea va del centro blanco a su punto — son las &amp;laquo;flechas&amp;raquo;. Vas a ver que todos los puntos caen de un mismo lado del centro, formando un haz, como la luz de un reflector.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Para que los 3 ejes sean perpendiculares entre sí usamos &lt;b&gt;Gram-Schmidt&lt;/b&gt; (proyectar y restar). Probá girar hasta mirar el haz de frente, a lo largo del eje X: el cono &amp;laquo;se aplana&amp;raquo; en una bola. Esa es la ilusión que muestran las webs de visualización.&quot;,
+]))
+
+Ec = E - mu
+U, Sg, Vt = np.linalg.svd(Ec, full_matrices=False)
+def proj_out(v, b): return v - (v @ b) * b
+u1 = proj_out(Vt[0], eje); u1 /= np.linalg.norm(u1)
+u2 = proj_out(proj_out(Vt[1], eje), u1); u2 /= np.linalg.norm(u2)
+B = np.vstack([eje, u1, u2]).T
+P = E @ B
+col = [TCOLOR[t] for t in topics]
+
+rx, ry, rz = [], [], []
+for i in range(len(P)):
+    rx += [0, P[i,0], None]; ry += [0, P[i,1], None]; rz += [0, P[i,2], None]
+fig = go.Figure()
+fig.add_trace(go.Scatter3d(x=rx, y=ry, z=rz, mode=&quot;lines&quot;,
+              line=dict(color=&quot;rgba(124,200,238,.22)&quot;, width=1), hoverinfo=&quot;skip&quot;, showlegend=False))
+fig.add_trace(go.Scatter3d(x=P[:,0], y=P[:,1], z=P[:,2], mode=&quot;markers&quot;,
+              marker=dict(size=4, color=col), text=[f&quot;{topics[i]}: {texts[i]}&quot; for i in range(len(P))],
+              hoverinfo=&quot;text&quot;, showlegend=False))
+fig.add_trace(go.Scatter3d(x=[0], y=[0], z=[0], mode=&quot;markers&quot;,
+              marker=dict(size=7, color=&quot;white&quot;, line=dict(color=&quot;#061019&quot;, width=2)),
+              text=[&quot;centro (0)&quot;], hoverinfo=&quot;text&quot;, showlegend=False))
+style3d(fig, &quot;El CONO — todos los puntos caen de un lado del centro (eje X = eje del cono)&quot;)
+fig.show()</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Girá la nube despacio. Mires desde donde mires, <strong>todos los puntos caen del mismo lado del centro blanco</strong> (hacia el eje X positivo), formando un haz que se abre — exactamente como el cono de luz de un reflector. Las frases no rodean al origen: lo dejan a un costado.</p>
+<p>Ahora probá mirar el haz <strong>de frente</strong>, a lo largo del eje X: de golpe parece una bola repartida y el cono &quot;desaparece&quot;. No desapareció — lo estás viendo desde el único ángulo que lo esconde, y es justo así como te lo muestran las visualizaciones tipo *TensorFlow Projector*.</p>
+<p>Conclusión: la forma de cono es <strong>real</strong> y vive en las cientos de dimensiones; lo que cambia es desde qué ángulo proyectás la sombra. En la próxima sección lo &quot;arreglamos&quot;.</p></section><section class='md'><h2>5 · El arreglo: centrar el espacio</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🎯&quot;, &quot;5 · El arreglo: centrar el espacio&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Si el problema es que la nube está corrida hacia un lado, la solución es mudar el origen al centro de la nube. Eso es &lt;b&gt;centrar&lt;/b&gt;: calcular el vector promedio de todas las frases (que apunta justo al centro del cono) y restárselo a cada una.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Un histograma que compara los cosenos antes (cian) y después (celeste) de centrar. La curva centrada se corre a la izquierda: los pares de distinto tema pasan a dar &lt;b&gt;negativo&lt;/b&gt;. Y abajo, un número de &amp;laquo;separación&amp;raquo; entre mismo y distinto tema que &lt;b&gt;sube&lt;/b&gt; al centrar.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Es una sola operación: &lt;code&gt;E − μ&lt;/code&gt;. Sin reentrenar nada, sin tocar el modelo. Es el primer paso de una técnica llamada &lt;i&gt;all-but-the-top&lt;/i&gt;, y el mejor ratio costo/beneficio de todo el notebook.&quot;,
+]))
+
+real_cen = pares(Ec)
+plt.figure()
+plt.hist(real,     bins=40, alpha=.6, label=f&quot;crudo (media={real.mean():.2f})&quot;, color=&quot;#4fb8e8&quot;)
+plt.hist(real_cen, bins=40, alpha=.6, label=f&quot;centrado (media={real_cen.mean():.2f})&quot;, color=&quot;#8fc0e8&quot;)
+plt.axvline(0, color=&quot;#bcdcec&quot;, ls=&quot;--&quot;, lw=1)
+plt.title(&quot;Antes y después de centrar&quot;); plt.xlabel(&quot;coseno&quot;); plt.legend(); plt.show()
+
+def gap(M):
+    C = cos_matrix(M); same, diff = [], []
+    for i in range(len(M)):
+        for j in range(i+1, len(M)):
+            (same if tid[i]==tid[j] else diff).append(C[i,j])
+    return np.mean(same)-np.mean(diff)
+print(f&quot;Separación mismo–distinto tema   crudo: {gap(E):.3f}   centrado: {gap(Ec):.3f}&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Mirá cómo el histograma centrado (celeste) se corre a la izquierda: ahora los pares de <strong>distinto tema caen en negativo</strong>, mientras que los del mismo tema siguen positivos. Eso es exactamente lo que querés en un buscador: que lo irrelevante puntúe por debajo de cero y lo relevante se destaque.</p>
+<p>El número de &quot;separación&quot; entre mismo y distinto tema <strong>sube al centrar</strong>, y todo esto lo conseguiste con <strong>una sola resta</strong> (el vector media), sin reentrenar el modelo ni tocar una sola frase.</p>
+<p>Es el mejor ratio costo/beneficio del notebook: una línea de álgebra lineal que reposiciona el origen en el centro del cono y, de paso, afila la búsqueda. En la próxima celda lo vemos en 3D.</p></section><section class='md'><h2>5b · El mismo cono, centrado</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🎯&quot;, &quot;El cono centrado en 3D&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Volvemos a la nube 3D, pero esta vez con los datos centrados (&lt;code&gt;E − μ&lt;/code&gt;) en lugar de los crudos. La idea es ver, con los mismos ojos, qué le hizo la resta de la media a la forma de la nube.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; La misma nube de frases pero ahora &lt;b&gt;rodeando&lt;/b&gt; el centro blanco en vez de quedar todas de un lado. El haz se transformó en una bola equilibrada. Podés girarla igual que antes para confirmarlo desde todos los ángulos.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; No cambiamos la forma interna de la nube (las distancias entre frases siguen iguales): sólo trasladamos el origen al centro de masa. Es la versión &amp;laquo;honesta&amp;raquo; del espacio, la que muestran las herramientas de visualización.&quot;,
+]))
+
+Pc = (E - mu) @ B
+fig = go.Figure()
+fig.add_trace(go.Scatter3d(x=Pc[:,0], y=Pc[:,1], z=Pc[:,2], mode=&quot;markers&quot;,
+              marker=dict(size=4, color=col), text=[f&quot;{topics[i]}: {texts[i]}&quot; for i in range(len(Pc))],
+              hoverinfo=&quot;text&quot;, showlegend=False))
+fig.add_trace(go.Scatter3d(x=[0], y=[0], z=[0], mode=&quot;markers&quot;,
+              marker=dict(size=7, color=&quot;white&quot;, line=dict(color=&quot;#061019&quot;, width=2)),
+              text=[&quot;centro (0)&quot;], hoverinfo=&quot;text&quot;, showlegend=False))
+style3d(fig, &quot;Centrado: ahora la nube RODEA el centro (ya no es un cono)&quot;)
+fig.show()</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Comparalo con la nube de antes: ahora los puntos <strong>rodean</strong> el centro blanco en lugar de quedar todos de un lado. El cono se convirtió en una bola equilibrada.</p>
+<p>Es la misma resta de la media de la celda anterior, pero vista en 3D: corrimos el origen desde afuera del haz hasta el corazón del haz. Esta es, además, la versión &quot;honesta&quot; del espacio que muestran las herramientas de visualización — y la razón por la que en esas webs los embeddings *parecen* repartidos parejo aunque en crudo no lo estén.</p></section><section class='md'><h2>6 · PCA / SVD: ¿cuántas dimensiones trabajan?</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🗜️&quot;, &quot;6 · PCA / SVD: ¿cuántas dimensiones trabajan?&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Cada embedding tiene cientos de dimensiones. ¿Las usa todas? PCA (vía la descomposición SVD) reordena las direcciones del espacio de la que más información carga a la que menos, para revelar cuántas hacen el trabajo de verdad.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Un &lt;b&gt;scree plot&lt;/b&gt;: barras cian (cuánta información aporta cada componente) y una línea clara (el acumulado). Vas a ver que la barra 1 es chica (ninguna domina) pero el acumulado sube rápido y se aplana: con ~45 componentes ya juntás el 90%.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; La SVD factoriza la matriz como &lt;code&gt;E_c = U Σ Vᵀ&lt;/code&gt;. Los valores de Σ al cuadrado son la información de cada dirección. El número de &amp;laquo;dimensión efectiva&amp;raquo; que imprime abajo resume cuántas trabajan realmente.&quot;,
+]))
+
+var = (Sg**2); var_ratio = var / var.sum(); cum = np.cumsum(var_ratio)
+k90 = int(np.argmax(cum &gt;= .90) + 1)
+pr  = (var.sum()**2) / (var**2).sum()
+fig, ax1 = plt.subplots()
+ax1.bar(range(1, 31), var_ratio[:30], color=&quot;#4fb8e8&quot;, alpha=.85)
+ax1.set_ylabel(&quot;varianza por componente&quot;); ax1.set_xlabel(&quot;componente principal&quot;)
+ax2 = ax1.twinx(); ax2.plot(range(1, 31), cum[:30], color=&quot;#cfe8f6&quot;, marker=&quot;o&quot;, ms=3)
+ax2.set_ylabel(&quot;varianza acumulada&quot;); ax2.set_ylim(0, 1); ax2.grid(False)
+ax1.set_title(f&quot;Scree plot — {k90} componentes llegan al 90% (dim. efectiva ≈ {pr:.0f})&quot;)
+plt.tight_layout(); plt.show()
+print(f&quot;Dimensiones nominales: {E.shape[1]}  |  para 90% de la info: {k90}  |  dim. efectiva: {pr:.1f}&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Dos cosas saltan a la vista. Primero, <strong>ninguna componente domina</strong>: la barra 1 explica un porcentaje chico, la información está repartida. Segundo —y más importante— la curva acumulada sube rápido y después se aplana: con apenas <strong>~45 componentes ya juntás el 90%</strong> de toda la información, de las cientos que tiene el vector.</p>
+<p>Eso significa que la <strong>dimensión efectiva</strong> real del espacio es mucho menor que la nominal: gran parte de las dimensiones casi no aportan, son relleno.</p>
+<p>La consecuencia práctica es directa: podés <strong>comprimir</strong> los embeddings a una fracción del tamaño y tu buscador queda más rápido y barato <strong>sin perder casi señal</strong>. La &quot;riqueza&quot; de un vector de cientos de dimensiones es, en buena parte, una ilusión — algo que vamos a explotar en los módulos E y F.</p></section><section class='md'><h2>6b · Mapa 2D de los temas</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🗺️&quot;, &quot;Mapa 2D — las cientos de dimensiones aplastadas a 2&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Si PCA dice que pocas direcciones cargan casi toda la información, ¿qué pasa si nos quedamos sólo con las DOS primeras y dibujamos cada frase en un plano? Es la prueba de fuego: ¿sobrevive la estructura de temas a semejante compresión?&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Un scatter interactivo donde cada punto es una frase, coloreada por su tema. &lt;b&gt;Pasá el mouse&lt;/b&gt; por los puntos para leer la frase. Vas a ver que los 7 temas caen en zonas separadas, sin que nadie le haya dicho al algoritmo a qué grupo pertenece cada uno.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Las coordenadas son &lt;code&gt;U[:,:2] · Σ[:2]&lt;/code&gt; — la proyección sobre las dos primeras componentes principales. Que los temas se separen es la prueba visual de que los embeddings capturan estructura semántica real.&quot;,
+]))
+
+coords2d = U[:, :2] * Sg[:2]
+fig = px.scatter(x=coords2d[:,0], y=coords2d[:,1], color=topics,
+                 hover_name=texts, color_discrete_map=TCOLOR,
+                 labels={&quot;x&quot;:&quot;PC1&quot;,&quot;y&quot;:&quot;PC2&quot;}, title=&quot;Las cientos de dimensiones → 2, y los temas igual se separan&quot;)
+fig.update_traces(marker=dict(size=10, line=dict(width=1, color=&quot;#061019&quot;)))
+fig.update_layout(height=560, paper_bgcolor=&quot;#0a1b27&quot;, plot_bgcolor=&quot;#0a1b27&quot;, font_color=&quot;#bcdcec&quot;,
+                  xaxis=dict(gridcolor=&quot;#13344a&quot;, zerolinecolor=&quot;#13344a&quot;),
+                  yaxis=dict(gridcolor=&quot;#13344a&quot;, zerolinecolor=&quot;#13344a&quot;))
+fig.show()</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Este es el pago de todo lo anterior. Aplastamos cientos de dimensiones a solo <strong>2</strong> (las dos primeras componentes principales) y, aun así, los 7 temas caen en <strong>zonas separadas</strong> del plano: el fútbol por un lado, la cultura por otro, los rivales en su rincón.</p>
+<p>Nadie le dijo al algoritmo a qué tema pertenece cada frase — la separación emerge <strong>sola</strong> de la geometría. Esto es la prueba visual de que los embeddings capturan estructura semántica real.</p>
+<p>Es exactamente lo que hace posible que funcionen la búsqueda, los clusters y los recomendadores. Pasá el mouse por los puntos para leer cada frase y confirmá que los vecinos tienen sentido (los jugadores cerca de la táctica, el mate cerca del asado).</p></section><section class='md'><h2>🔍 Módulo C · Eigen-frases</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🔍&quot;, &quot;Módulo C · Eigen-frases: ¿qué significa cada componente?&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; En la sección 6 vimos QUE pocas componentes cargan la información. Acá preguntamos QUÉ significa cada una. Abrimos la caja negra del PCA mirando, para cada componente, las frases que quedan en sus dos extremos.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Para las 4 primeras componentes, se imprimen las 3 frases del extremo positivo y las 3 del negativo. Vas a notar que cada componente separa un &lt;b&gt;contraste reconocible&lt;/b&gt; (por ejemplo deporte vs cultura, o lo técnico vs lo emotivo).&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; La proyección de las frases sobre la componente k es &lt;code&gt;E_c · v_k&lt;/code&gt;, donde v_k es el k-ésimo &lt;b&gt;autovector&lt;/b&gt; de la covarianza. Ordenar por ese valor y mirar los extremos es como ponerle nombre a cada eje del espacio.&quot;,
+]))
+
+scores = Ec @ Vt.T
+for k in range(4):
+    s = scores[:, k]; order = np.argsort(s)
+    print(f&quot;\n=== Componente {k+1} (explica {var_ratio[k]*100:.1f}%) ===&quot;)
+    print(&quot;  ➕ extremo positivo:&quot;)
+    for i in order[::-1][:3]: print(f&quot;     [{topics[i]:9}] {texts[i]}&quot;)
+    print(&quot;  ➖ extremo negativo:&quot;)
+    for i in order[:3]:       print(f&quot;     [{topics[i]:9}] {texts[i]}&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Acá abrís la caja negra del PCA. Mirá las frases que quedan en los dos extremos de cada componente: casi siempre tienen un <strong>contraste reconocible</strong> (por ejemplo, deporte vs cultura cotidiana, o lo técnico-táctico vs lo emotivo de la hinchada).</p>
+<p>Eso demuestra que las dimensiones del espacio <strong>no son aleatorias ni indescifrables</strong>: cada eje principal codifica una distinción semántica concreta que podés leer en palabras. Es el equivalente a las &quot;eigenfaces&quot; en visión por computadora, pero con frases.</p>
+<p>Si alguna vez te preguntaste qué &quot;significa&quot; la dimensión 1 de un embedding, esta celda te da la respuesta empírica: significa el contraste más fuerte que existe en tu corpus.</p></section><section class='md'><h2>7 · Buscador semántico (top-k)</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🔎&quot;, &quot;7 · Buscador semántico (top-k)&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Acá usamos todo lo anterior para algo útil: un buscador. Vos escribís una consulta, la convertimos en vector, y traemos las frases del corpus cuyo vector apunta más parecido. A esto se le llama búsqueda &lt;b&gt;top-k&lt;/b&gt;: vos ponés el ancla y pedís los k más cercanos.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Tres búsquedas de ejemplo con sus 5 mejores resultados y su score de coseno. Fijate que &amp;laquo;quién ataja los penales&amp;raquo; encuentra al arquero &lt;b&gt;aunque no compartan las palabras exactas&lt;/b&gt;, y &amp;laquo;comida típica&amp;raquo; trae empanadas y asado sin que aparezca la palabra comida.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Es un producto punto de la consulta contra todas las filas, y después ordenás. Usamos coseno &lt;b&gt;crudo&lt;/b&gt; (sin centrar) a propósito: al buscar sólo importa el ORDEN relativo a una consulta, y el cono empuja a todos parejo, así que el ranking se mantiene.&quot;,
+]))
+
+def buscar(consulta, k=5):
+    q = normalizar(embed([consulta]))[0]
+    sims = normalizar(E) @ q
+    idx = np.argsort(-sims)[:k]
+    print(f&quot;🔎 &#x27;{consulta}&#x27;&quot;)
+    for i in idx: print(f&quot;   {sims[i]:.3f}  [{topics[i]:9}] {texts[i]}&quot;)
+    print()
+
+buscar(&quot;quién ataja los penales&quot;)
+buscar(&quot;dónde se juega la final del mundial&quot;)
+buscar(&quot;comida típica argentina&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Para cada consulta, el buscador trajo las frases más <strong>alineadas en dirección</strong> con el vector de la pregunta, ordenadas por coseno. Fijate en el detalle clave: &#x27;quién ataja los penales&#x27; encuentra la frase del arquero <strong>aunque no comparta las palabras exactas</strong> (&#x27;ataja&#x27; vs &#x27;penales decisivos&#x27;).</p>
+<p>Eso es lo que distingue la búsqueda <strong>semántica</strong> de un Ctrl+F: no compara texto, compara significado.</p>
+<p>Y notá que usamos el coseno <strong>crudo</strong>, sin centrar — porque al buscar solo importa el *orden* relativo a una consulta, y el cono empuja a todos parejo, así que el ranking se mantiene. El centrado lo guardamos para el clustering, que es otra historia (la de la próxima sección).</p></section><section class='md'><h2>7b · Clustering (sin ancla)</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🧩&quot;, &quot;Clustering — el corpus se agrupa solo&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Al revés del buscador: acá NO traemos un ancla. Le pedimos al algoritmo que descubra solo los grupos naturales del corpus. Y de paso usamos esto para una lección sutil sobre cuándo centrar ayuda y cuándo no.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Dos resultados medidos con el Adjusted Rand Index (1 = agrupamiento perfecto vs los temas reales). Primero, que el KMeans euclídeo da &lt;b&gt;idéntico&lt;/b&gt; antes y después de centrar. Segundo, que el clustering por &lt;b&gt;coseno&lt;/b&gt; sí cambia (y mejora) al centrar.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; El KMeans usa distancia euclídea, que es &lt;b&gt;invariante a traslaciones&lt;/b&gt;: mover toda la nube no cambia las distancias, así que centrar no le hace nada. El coseno NO es invariante a traslación — por eso centrar sí lo afecta.&quot;,
+]))
+
+from sklearn.cluster import KMeans, AgglomerativeClustering
+from sklearn.metrics import adjusted_rand_score
+
+def agg_cos(M, n=7):
+    try:
+        return AgglomerativeClustering(n_clusters=n, metric=&quot;cosine&quot;, linkage=&quot;average&quot;).fit_predict(M)
+    except TypeError:
+        return AgglomerativeClustering(n_clusters=n, affinity=&quot;cosine&quot;, linkage=&quot;average&quot;).fit_predict(M)
+
+km_raw = KMeans(7, n_init=10, random_state=0).fit_predict(E)
+km_cen = KMeans(7, n_init=10, random_state=0).fit_predict(Ec)
+print(&quot;KMeans euclídeo crudo vs centrado, ¿iguales? ARI =&quot;,
+      round(adjusted_rand_score(km_raw, km_cen), 3), &quot; (≈1 confirma la invariancia)&quot;)
+print(&quot;\nAgglomerative por COSENO  ·  ARI contra los temas reales:&quot;)
+print(&quot;   crudo   :&quot;, round(adjusted_rand_score(tid, agg_cos(E)),  3))
+print(&quot;   centrado:&quot;, round(adjusted_rand_score(tid, agg_cos(Ec)), 3))</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Acá hay dos resultados y los dos enseñan algo. <strong>(1)</strong> El KMeans euclídeo da prácticamente <strong>idéntico</strong> antes y después de centrar (ARI ≈ 1). ¿Por qué? Porque la distancia euclídea es <strong>invariante a traslaciones</strong>: mover toda la nube no cambia las distancias entre puntos, así que restar la media no le hace nada.</p>
+<p><strong>(2)</strong> El clustering por <strong>coseno</strong>, en cambio, <strong>sí cambia</strong> al centrar (y suele mejorar), porque el coseno NO es invariante a traslación — lo vimos en la sección 5.</p>
+<p>La moraleja es más profunda que &quot;centrar es bueno&quot;: <strong>qué arreglo ayuda depende de la métrica que uses</strong>. Centrar afila el coseno pero es transparente para KMeans euclídeo. Saber esto te evita aplicar recetas a ciegas.</p></section><section class='md'><h2>7c · Dendrograma de temas</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🌳&quot;, &quot;Dendrograma — clustering jerárquico&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Otra forma de agrupar, pero esta vez mostrando la &lt;b&gt;jerarquía&lt;/b&gt;: en qué orden se van fusionando las frases, de las más parecidas a las más distintas. No hay que decir de antemano cuántos grupos hay.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Un árbol donde cada hoja es una frase (etiquetada con las 4 primeras letras del tema). Las ramas de colores son los grupos que se forman abajo; las uniones blancas, arriba, juntan grupos ya lejanos. Cuanto más baja la unión, más parecidas las frases.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Calculamos todas las distancias coseno entre pares y las pasamos por &lt;i&gt;average linkage&lt;/i&gt;. Leé el árbol de abajo hacia arriba: los bloques de un mismo color suelen ser de un mismo tema.&quot;,
+]))
+
+from scipy.cluster.hierarchy import linkage, dendrogram
+from scipy.spatial.distance import pdist
+Z = linkage(pdist(Ec, metric=&quot;cosine&quot;), method=&quot;average&quot;)
+plt.figure(figsize=(12, 5))
+dendrogram(Z, labels=[f&quot;{topics[i][:4]}&quot; for i in range(len(texts))],
+           leaf_font_size=7, above_threshold_color=&quot;#ffffff&quot;)
+plt.title(&quot;Árbol de agrupamiento por coseno (centrado)&quot;); plt.tight_layout(); plt.show()</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> El dendrograma muestra el orden en que las frases se van fusionando, de abajo hacia arriba. Las <strong>uniones bajas</strong> (las ramas de colores) juntan frases muy parecidas, casi siempre del mismo tema: ves bloques de &#x27;juga&#x27;, &#x27;cult&#x27;, &#x27;riva&#x27;…</p>
+<p>Las <strong>uniones altas</strong> (las ramas blancas) ya mezclan temas distintos, porque ahí lo único que queda por unir son grupos lejanos.</p>
+<p>Leído así, el árbol es un <strong>mapa jerárquico</strong> de la estructura del corpus: te dice no solo cuántos grupos hay sino *qué tan cerca* están entre sí. Por ejemplo, &#x27;jugadores&#x27; y &#x27;táctica&#x27; probablemente se fusionen antes que cualquiera de ellos con &#x27;cultura&#x27;. Es la herramienta ideal cuando no sabés de antemano en cuántos grupos cortar.</p></section><section class='md'><h2>🧮 Módulo A · Analogías vectoriales</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🧮&quot;, &quot;Módulo A · Analogías vectoriales&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; El truco que hizo famoso a word2vec: &lt;code&gt;rey − hombre + mujer ≈ reina&lt;/code&gt;. La idea es que las relaciones de significado son &lt;b&gt;direcciones&lt;/b&gt; en el espacio, así que se pueden sumar y restar. Lo probamos con vocabulario del fútbol.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Cuatro analogías resueltas, cada una mostrando el vecino más cercano del resultado. Algunas van a sonar lógicas y otras te van a dar resultados raros — y eso es parte de la lección, no un error.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Pura suma y resta de vectores: &lt;code&gt;a − b + c&lt;/code&gt;, y después buscamos el vecino más cercano. Ojo: usamos embeddings de &lt;b&gt;palabras sueltas&lt;/b&gt; (no las frases del corpus), que son más ruidosas — por eso falla a veces.&quot;,
+]))
+
+VOCAB = [&quot;Messi&quot;,&quot;Maradona&quot;,&quot;Mbappé&quot;,&quot;Neymar&quot;,&quot;Vinícius&quot;,
+         &quot;Argentina&quot;,&quot;Brasil&quot;,&quot;Francia&quot;,&quot;España&quot;,&quot;Uruguay&quot;,
+         &quot;arquero&quot;,&quot;delantero&quot;,&quot;defensor&quot;,&quot;mediocampista&quot;,&quot;entrenador&quot;,
+         &quot;gol&quot;,&quot;penal&quot;,&quot;título&quot;,&quot;copa&quot;,&quot;mundial&quot;,&quot;camiseta&quot;,&quot;hinchada&quot;,&quot;pelota&quot;,
+         &quot;mate&quot;,&quot;asado&quot;,&quot;tango&quot;,&quot;empanada&quot;,&quot;Obelisco&quot;]
+W = embed(VOCAB); Wn = normalizar(W)
+def analogia(a, b, c, k=3):
+    va, vb, vc = [Wn[VOCAB.index(x)] for x in (a, b, c)]
+    objetivo = va - vb + vc; objetivo /= np.linalg.norm(objetivo)
+    sims = Wn @ objetivo
+    for x in (a, b, c): sims[VOCAB.index(x)] = -9
+    idx = np.argsort(-sims)[:k]
+    print(f&quot;  {a} − {b} + {c}  ≈  &quot; + &quot;, &quot;.join(f&quot;{VOCAB[i]} ({sims[i]:.2f})&quot; for i in idx))
+print(&quot;Analogías (resta + suma de vectores):\n&quot;)
+analogia(&quot;Messi&quot;, &quot;Argentina&quot;, &quot;Brasil&quot;)
+analogia(&quot;Maradona&quot;, &quot;Messi&quot;, &quot;Mbappé&quot;)
+analogia(&quot;arquero&quot;, &quot;defensor&quot;, &quot;gol&quot;)
+analogia(&quot;mate&quot;, &quot;asado&quot;, &quot;tango&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Algunas analogías van a sonar lógicas y otras te van a dar resultados raros — y eso <strong>no es un error</strong>, es la lección. La aritmética <code>a − b + c</code> funciona porque los embeddings codifican relaciones como <strong>direcciones</strong> consistentes (la dirección que va de &quot;Argentina&quot; a un jugador es parecida a la que va de &quot;Brasil&quot; al suyo).</p>
+<p>Pero es frágil: con palabras sueltas (sin contexto) las direcciones son ruidosas, y con modelos chicos más todavía.</p>
+<p>La conclusión honesta: la suma y resta de vectores <strong>captura</strong> relaciones semánticas reales, pero <strong>no es un oráculo exacto</strong> — es una propiedad emergente, no una garantía. Por eso en producción nadie resuelve analogías así; lo usamos para *entender* qué guardan los vectores.</p></section><section class='md'><h2>📊 Módulo B · Ejes de concepto</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;📊&quot;, &quot;Módulo B · Ejes de concepto&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Construimos un &amp;laquo;termómetro&amp;raquo; semántico a medida. Tomamos dos frases-ancla opuestas (los polos de un concepto) y proyectamos todo el corpus sobre la dirección que las une, para rankear cada frase según cuánto de ese concepto tiene.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Dos ejes en acción: fútbol ↔ cultura, y ofensivo ↔ defensivo. Para cada uno se imprimen las frases más cercanas a cada polo. Vas a ver que el orden tiene perfecto sentido, sin haber entrenado ningún clasificador.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; El eje es una &lt;b&gt;resta&lt;/b&gt; de los dos vectores-ancla; el ranking es un &lt;b&gt;producto punto&lt;/b&gt; de cada frase contra ese eje. Cualquier atributo que puedas describir con dos frases opuestas se vuelve una regla numérica.&quot;,
+]))
+
+def eje_concepto(polo_pos, polo_neg):
+    d = normalizar(embed([polo_pos]))[0] - normalizar(embed([polo_neg]))[0]
+    return d / np.linalg.norm(d)
+def proyectar(eje, top=5):
+    score = normalizar(E) @ eje; order = np.argsort(-score)
+    print(&quot;  Más cerca del polo (+):&quot;)
+    for i in order[:top]:        print(f&quot;    {score[i]:+.2f} [{topics[i]:9}] {texts[i]}&quot;)
+    print(&quot;  Más cerca del polo (−):&quot;)
+    for i in order[::-1][:top]:  print(f&quot;    {score[i]:+.2f} [{topics[i]:9}] {texts[i]}&quot;)
+print(&quot;EJE  ⚽ fútbol  ↔  🧉 cultura\n&quot;)
+proyectar(eje_concepto(&quot;Es una frase sobre fútbol, partidos y jugadores.&quot;,
+                       &quot;Es una frase sobre comidas, costumbres y cultura argentina.&quot;))
+print(&quot;\nEJE  🗡️ ofensivo  ↔  🛡️ defensivo\n&quot;)
+proyectar(eje_concepto(&quot;El equipo ataca, presiona arriba y busca el gol.&quot;,
+                       &quot;El equipo se repliega y defiende su arco.&quot;), top=4)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Esto es sorprendentemente potente y sorprendentemente simple. Definiste un eje con <strong>dos frases-ancla</strong> (los polos), y proyectar el corpus sobre ese eje ordenó todo según &quot;cuánto de ese concepto tiene cada frase&quot; — sin entrenar nada, solo con un <strong>producto punto</strong>.</p>
+<p>Fijate que el eje fútbol↔cultura separa limpio los dos mundos, y el eje ofensivo↔defensivo ordena las frases tácticas según su intención.</p>
+<p>Es, en los hechos, un <strong>clasificador instantáneo</strong> y un medidor de intensidad: cualquier atributo que puedas describir con dos frases opuestas se vuelve una regla numérica. En tu negocio esto sirve para rankear documentos por &quot;formalidad&quot;, &quot;tono técnico&quot;, &quot;urgencia&quot;, lo que quieras — definís dos polos y el álgebra lineal hace el resto.</p></section><section class='md'><h2>🎩 Módulo D · Invariancia a la rotación</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🎩&quot;, &quot;Módulo D · El truco de magia: invariancia a la rotación&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Un experimento que parece magia: tomamos todos los embeddings y los &lt;b&gt;rotamos&lt;/b&gt; en bloque con una matriz aleatoria. Los números de cada vector cambian por completo. La pregunta es: ¿cambian también las similitudes?&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Tres líneas impresas: que la matriz de rotación es ortogonal, que los embeddings efectivamente cambiaron muchísimo, y que el coseno entre pares quedó &lt;b&gt;idéntico&lt;/b&gt; (diferencia ~0). Magia explicable.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Una matriz ortogonal cumple &lt;code&gt;Qᵀ Q = I&lt;/code&gt;: es una rotación rígida que preserva ángulos y distancias. Demuestra que el coseno sólo ve la forma &lt;b&gt;relativa&lt;/b&gt; de la nube, no su orientación ni sus coordenadas absolutas.&quot;,
+]))
+
+A = np.random.randn(E.shape[1], E.shape[1])
+Q, _ = np.linalg.qr(A)
+E_rot = E @ Q
+print(&quot;¿Q es ortogonal?  máx|QᵀQ − I| =&quot;, np.abs(Q.T @ Q - np.eye(len(Q))).max().round(8))
+print(&quot;Embeddings cambiaron:           media|E − E_rot| =&quot;, np.abs(E - E_rot).mean().round(4))
+print(&quot;Pero la similitud NO cambió:    máx|cos(E) − cos(E_rot)| =&quot;,
+      np.abs(cos_matrix(E) - cos_matrix(E_rot)).max().round(8), &quot; ✨&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> El resultado es casi mágico: después de rotar, <strong>cada número de cada vector cambió por completo</strong> (la media de la diferencia es grande), pero el coseno entre cualquier par de frases quedó <strong>idéntico</strong> (la diferencia máxima es ~0, sólo error de redondeo).</p>
+<p>¿Por qué? Porque una matriz ortogonal <code>Q</code> es una <strong>rotación rígida</strong>: gira toda la nube sin deformarla, y los ángulos entre flechas no cambian.</p>
+<p>La lección práctica es importante: el coseno <strong>solo ve la forma relativa</strong> de la nube, no su orientación ni sus coordenadas absolutas. Por eso dos modelos de embeddings pueden dar vectores con números totalmente distintos y aun así medir las mismas similitudes — y por eso los &quot;números crudos&quot; de un embedding nunca son comparables entre modelos, pero los ángulos sí.</p></section><section class='md'><h2>🗜️ Módulo E · Compresión SVD</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🗜️&quot;, &quot;Módulo E · Compresión SVD (rango bajo)&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Si la información vive en pocas direcciones (sección 6), deberíamos poder reconstruir los embeddings usando sólo un puñado de componentes. Acá medimos cuánto se pierde al hacerlo, para distintos valores de k.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Una curva del error de reconstrucción vs el número de componentes. Vas a ver que cae en picada al principio y después se aplana: con pocas componentes ya recuperás gran parte del significado original.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Reconstruimos con &lt;code&gt;U[:,:k] Σ[:k] Vᵀ[:k]&lt;/code&gt;. El &lt;b&gt;teorema de Eckart-Young&lt;/b&gt; garantiza que truncar la SVD a k términos es la MEJOR aproximación posible de rango k: no existe nada mejor de ese tamaño.&quot;,
+]))
+
+ks = [1, 2, 3, 5, 8, 12, 20, 30, 50]
+err = []
+for k in ks:
+    Ek = U[:, :k] @ np.diag(Sg[:k]) @ Vt[:k]
+    err.append(np.linalg.norm(Ec - Ek) / np.linalg.norm(Ec))
+plt.figure()
+plt.plot(ks, err, &quot;o-&quot;, color=&quot;#4fb8e8&quot;)
+plt.title(&quot;Error de reconstrucción vs número de componentes (Eckart-Young)&quot;)
+plt.xlabel(&quot;k componentes&quot;); plt.ylabel(&quot;error relativo&quot;); plt.ylim(0, 1); plt.show()
+print(&quot;Con solo&quot;, ks[3], &quot;componentes el error es&quot;, round(err[3], 2),
+      &quot;→ se reconstruye gran parte del significado.&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> La curva de error <strong>cae en picada</strong> al principio y después se aplana: con un puñado de componentes ya recuperás la mayor parte del vector original, y agregar más casi no mejora.</p>
+<p>Lo elegante es que esto no es &quot;una compresión que anda bien&quot;: el <strong>teorema de Eckart-Young</strong> garantiza que truncar la SVD a <code>k</code> términos es <strong>la mejor aproximación posible</strong> de ese tamaño — no existe nada mejor de rango <code>k</code>.</p>
+<p>Conecta directo con la sección 6 (la dimensión efectiva): si la información vive en pocas direcciones, podés tirar el resto. Traducción para tu buscador: podés guardar vectores mucho más chicos —menos memoria, menos costo, búsquedas más rápidas— perdiendo una fracción mínima de calidad.</p></section><section class='md'><h2>🎲 Módulo F · Random projection</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🎲&quot;, &quot;Módulo F · Random projection (Johnson-Lindenstrauss)&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Un resultado tan contraintuitivo que parece imposible: podés comprimir de cientos de dimensiones a 50 multiplicando por una matriz &lt;b&gt;completamente al azar&lt;/b&gt;, y las distancias entre frases se conservan casi perfectas.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Un scatter que compara la distancia entre frases en el espacio original (eje X) contra la misma distancia ya comprimida (eje Y). Vas a ver que casi todos los puntos caen sobre la diagonal: correlación cercana a 1.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; &lt;code&gt;E_proj = E · R&lt;/code&gt; con R gaussiana. El lema de &lt;b&gt;Johnson-Lindenstrauss&lt;/b&gt; dice que en alta dimensión una proyección aleatoria casi no distorsiona las distancias. A diferencia de la SVD, acá NO aprendés nada de los datos: sólo multiplicás por ruido.&quot;,
+]))
+
+k = 50
+Rp = np.random.randn(E.shape[1], k) / np.sqrt(k)
+E_proj = E @ Rp
+d_orig = pdist(E, metric=&quot;cosine&quot;); d_proj = pdist(E_proj, metric=&quot;cosine&quot;)
+plt.figure(figsize=(5.5, 5.5))
+plt.scatter(d_orig, d_proj, s=7, alpha=.5, color=&quot;#4fb8e8&quot;)
+lims = [0, max(d_orig.max(), d_proj.max())]
+plt.plot(lims, lims, &quot;--&quot;, color=&quot;#bcdcec&quot;, lw=1)
+plt.title(f&quot;Distancias preservadas: {E.shape[1]}→{k} dims\ncorrelación = {np.corrcoef(d_orig, d_proj)[0,1]:.3f}&quot;)
+plt.xlabel(&quot;distancia original&quot;); plt.ylabel(&quot;distancia proyectada&quot;); plt.show()</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Cada punto compara la distancia entre dos frases en el espacio <strong>original</strong> contra esa misma distancia después de comprimir a 50 dimensiones con una matriz <strong>completamente al azar</strong>.</p>
+<p>Que caigan casi todos sobre la diagonal (correlación ~1) parece imposible: ¿cómo puede una matriz random preservar la geometría? Y sin embargo lo hace — es el <strong>lema de Johnson-Lindenstrauss</strong>, uno de los resultados más contraintuitivos del álgebra lineal.</p>
+<p>La diferencia con la SVD del módulo E: acá <strong>no aprendés nada de los datos</strong>, no calculás componentes, solo multiplicás por ruido — y aun así comprimís bien. Es la opción más barata y rápida cuando tenés millones de vectores y no querés pagar el costo de una SVD.</p></section><section class='md'><h2>🌈 Módulo G · Morphing semántico</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;🌈&quot;, &quot;Módulo G · Morphing semántico&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Probamos que el espacio de significados es un &lt;b&gt;continuo&lt;/b&gt;, no un casillero de etiquetas sueltas. Tomamos dos frases muy distintas y nos movemos en línea recta de una a la otra, viendo qué frase real aparece en cada paso.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Una transición en 7 pasos, de &amp;laquo;Messi levantó la copa&amp;raquo; a &amp;laquo;el asado del domingo&amp;raquo;. En cada paso se imprime la frase del corpus más cercana a la mezcla. Vas a ver el significado mutar de a poco, pasando por frases-puente con sentido.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Una &lt;b&gt;combinación convexa&lt;/b&gt;: &lt;code&gt;v = (1−α)·v₀ + α·v₁&lt;/code&gt; con α de 0 a 1. Es la misma operación que usa la IA generativa cuando interpola entre dos conceptos.&quot;,
+]))
+
+i0 = texts.index(&quot;Messi levantó la copa tras la final contra Francia en 2022.&quot;)
+i1 = texts.index(&quot;El asado del domingo reúne a la familia alrededor de la parrilla.&quot;)
+v0, v1 = E[i0], E[i1]; En = normalizar(E)
+print(f&quot;De:  «{texts[i0]}»\nA:   «{texts[i1]}»\n&quot;)
+for a in np.linspace(0, 1, 7):
+    v = (1-a)*v0 + a*v1; v = v/np.linalg.norm(v)
+    i = np.argmax(En @ v)
+    print(f&quot;  α={a:.2f} → [{topics[i]:9}] {texts[i]}&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> A medida que α avanza de 0 a 1, mezclamos los dos vectores en distintas proporciones y, en cada paso, mostramos la frase real más cercana a esa mezcla. Lo que ves es el significado <strong>transformándose de a poco</strong>: arranca en Messi/la copa, pasa por frases puente (de hinchada, de festejo, de familia) y termina en el asado.</p>
+<p>La clave es que la transición es <strong>continua y con sentido</strong>: no hay saltos arbitrarios, hay un camino donde cada paso intermedio es semánticamente plausible.</p>
+<p>Eso demuestra que el espacio de embeddings no es un casillero de etiquetas sueltas sino un <strong>continuo</strong> donde &quot;moverse&quot; en línea recta entre dos ideas atraviesa ideas relacionadas. Es la misma propiedad que explota la IA generativa cuando interpola entre conceptos.</p></section><section class='md'><h2>⚪ Módulo H · Whitening</h2></section><section class='cell'><pre class='code'><code>display(intro(&quot;⚪&quot;, &quot;Módulo H · Whitening (isotropización total)&quot;, [
+ &quot;&lt;b&gt;De qué se trata.&lt;/b&gt; Centrar (sección 5) mató la DIRECCIÓN del cono, pero el cono también está &lt;b&gt;estirado&lt;/b&gt;: unas direcciones tienen mucha más varianza que otras. El whitening lo aplana del todo, dejando la nube como una esfera perfecta.&quot;,
+ &quot;&lt;b&gt;Qué vas a ver.&lt;/b&gt; Tres histogramas superpuestos del coseno entre pares: crudo, centrado y whitened. Cada paso acerca más la media a 0. El whitened queda prácticamente clavado en cero: el cono desapareció por completo.&quot;,
+ &quot;🧮 &lt;b&gt;Dónde mirar / álgebra lineal.&lt;/b&gt; Usamos la matriz de &lt;b&gt;covarianza&lt;/b&gt; y su raíz inversa: con la descomposición espectral &lt;code&gt;C = V Λ Vᵀ&lt;/code&gt;, el blanqueador es &lt;code&gt;W = V Λ^(−1/2) Vᵀ&lt;/code&gt;. Es el arreglo más completo del cono — pero también el más agresivo.&quot;,
+]))
+
+C = np.cov(Ec, rowvar=False)
+lam, V = np.linalg.eigh(C); lam = np.clip(lam, 1e-8, None)
+W = V @ np.diag(1.0/np.sqrt(lam)) @ V.T
+E_white = Ec @ W
+plt.figure()
+plt.hist(pares(E),       bins=40, alpha=.55, label=f&quot;crudo (media={pares(E).mean():.2f})&quot;,       color=&quot;#4fb8e8&quot;)
+plt.hist(pares(Ec),      bins=40, alpha=.55, label=f&quot;centrado (media={pares(Ec).mean():.2f})&quot;,    color=&quot;#8fc0e8&quot;)
+plt.hist(pares(E_white), bins=40, alpha=.55, label=f&quot;whitened (media={pares(E_white).mean():.2f})&quot;, color=&quot;#6f93a8&quot;)
+plt.axvline(0, color=&quot;#bcdcec&quot;, ls=&quot;--&quot;, lw=1)
+plt.title(&quot;Coseno entre pares: crudo → centrado → whitened (cada vez más isótropo)&quot;)
+plt.xlabel(&quot;coseno&quot;); plt.legend(); plt.show()
+print(&quot;El whitening deja el coseno medio casi en 0: el cono desapareció del todo.&quot;)</code></pre></section><section class='md'><p>📝 <strong>Lectura.</strong> Seguí los tres histogramas en orden: <strong>crudo</strong> (corrido a la derecha), <strong>centrado</strong> (más cerca del 0) y <strong>whitened</strong> (clavado en 0). Cada paso isotropiza más.</p>
+<p>¿Qué hace el whitening que el centrado no? Centrar solo mueve el origen al medio del cono, pero el cono todavía está <strong>estirado</strong>: algunas direcciones tienen mucha más varianza que otras. El whitening usa la <strong>covarianza y su raíz inversa</strong> para &quot;desinflar&quot; las direcciones gordas y &quot;engordar&quot; las flacas, dejando la nube como una <strong>esfera perfecta</strong> (covarianza identidad).</p>
+<p>Es el arreglo más completo del cono — pero ojo, también el más agresivo: a veces esas direcciones de mucha varianza contienen información útil, así que aplanar todo puede borrar señal. Por eso en la práctica el centrado simple suele ser suficiente, y el whitening se reserva para cuando lo medís y conviene.</p></section><section class='md'><h2>🏁 Cierre</h2>
+<p>| Concepto | Álgebra lineal | Para qué sirve |</p>
+<p>|---|---|---|</p>
+<p>| Embedding | vector / matriz <code>E</code> | representar significado |</p>
+<p>| Parecido | matriz de Gram <code>Ê·Êᵀ</code> | buscar, comparar |</p>
+<p>| Cono | dirección media <code>μ</code> | entender por qué &quot;todo se parece un poco&quot; |</p>
+<p>| Centrar | resta <code>E−μ</code> | mejora el coseno y el clustering por coseno |</p>
+<p>| PCA/SVD | <code>UΣVᵀ</code> | comprimir, dimensión efectiva, interpretar ejes |</p>
+<p>| Analogías | suma/resta de vectores | relaciones semánticas |</p>
+<p>| Ejes de concepto | producto punto | rankear por un atributo |</p>
+<p>| Rotación | matriz ortogonal <code>Q</code> | el coseno solo ve ángulos |</p>
+<p>| Compresión | rango bajo (Eckart-Young) | menos memoria, casi sin pérdida |</p>
+<p>| Random projection | <code>E·R</code> (Johnson-Lindenstrauss) | comprimir preservando distancias |</p>
+<p>| Morphing | combinación convexa | transición de significado |</p>
+<p>| Whitening | raíz inversa de la covarianza | isotropización total |</p>
+<p><strong>La idea de fondo:</strong> los embeddings no son magia — son <strong>puntos en un mapa</strong>, y casi todo lo interesante que podés hacer con ellos es <strong>álgebra lineal</strong> sobre ese mapa. 🇦🇷⚽</p></section></div></body></html>

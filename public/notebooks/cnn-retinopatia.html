@@ -1,0 +1,205 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>CNN para retinopatía (PyTorch)</title><style>
+:root{--bg:#05070d;--fg:#eef2f7;--muted:#8b97a8;--border:rgba(255,255,255,.09);--cyan:#22d3ee;--coral:#ff6b3d;--surface:#0e131c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;padding:32px 20px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;line-height:1.25}
+h1{font-size:1.7rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+a{color:var(--cyan)}
+.md p{color:#cdd5e0}
+.md code,.code code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.md code{background:var(--surface);color:#67e8f9;padding:.1em .35em;border-radius:.3rem;font-size:.9em}
+.cell{margin:18px 0}
+pre.code{background:#03040a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:.5rem;padding:14px 16px;overflow-x:auto;font-size:.82rem;color:#d7deea}
+.outputs{margin-top:8px}
+pre.out{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:12px 14px;overflow-x:auto;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+pre.out.err{border-color:rgba(255,107,61,.4);color:#ff8a63}
+img{max-width:100%;border-radius:.5rem;border:1px solid var(--border);margin-top:8px}
+ul{padding-left:1.3rem}li{color:#cdd5e0}
+</style></head><body><div class='wrap'><section class='md'><h1>Consigna del trabajo práctico 2: migración y análisis de modelo CNN para retinopatía diabética</h1>
+<p><strong>Modalidad</strong>: Trabajo en pares.</p>
+<p><strong>Objetivo principal</strong>: Afianzar los conceptos prácticos de redes neuronales convolucionales (CNN) y transfer learning, comprendiendo no solo cómo implementar el código, sino las decisiones técnicas subyacentes frente a un problema médico real.</p></section><section class='md'><h2>Parte 1: Replicación base (Nota máxima: 6)</h2>
+<p>Tomando como referencia el artículo <a href="https://medium.com/@richardrs30/desarrollo-de-una-red-neuronal-convolucional-cnn-para-la-detecci%C3%B3n-de-retinopat%C3%ADa-diab%C3%A9tica-en-79fc7395a7ad" target="_blank" rel="noopener">Desarrollo de una red neuronal convolucional (CNN) para la detección de retinopatía diabética en imágenes médicas* (implementado originalmente en TensorFlow/Keras)</a>, deberán migrar la solución completa a <strong>PyTorch</strong>.</p>
+<p><strong>Requisitos técnicos:</strong></p>
+<p>1.  <strong>Carga de datos:</strong> Configurar el *dataset* utilizando <code>torch.utils.data.DataLoader</code> y las transformaciones básicas de <code>torchvision.transforms</code>.</p>
+<p>2.  <strong>Modelo:</strong> Importar la arquitectura *MobileNetV2* desde <code>torchvision.models</code>, congelar sus pesos base y modificar la capa clasificadora final para que coincida con las 5 clases del problema.</p>
+<p>3.  <strong>Entrenamiento:</strong> Implementar el bucle de entrenamiento y validación (epochs, cálculo de pérdida con <code>CrossEntropyLoss</code> y optimización).</p>
+<p>4.  <strong>Evaluación:</strong> Generar los gráficos de *Loss* y *Accuracy* para las fases de entrenamiento y validación.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;aclará que se completa el notebook de la cátedra y dónde van las respuestas&quot; --&gt;</p>
+<p>---</p>
+<p>&gt; <strong>Nota del alumno (Nicolás Bargioni):</strong> Este es el notebook de la cátedra; debajo completo la <strong>Parte 1</strong> (migración a PyTorch) y la <strong>Parte 2</strong> (análisis). Las celdas de consigna originales quedan intactas. *(Trabajo individual; las respuestas de la Parte 2 están en celdas Markdown intercaladas.)*</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;introducí la sección de setup e instalación de dependencias&quot; --&gt;</p>
+<h2>Parte 1 — Migración a PyTorch</h2>
+<h3>1.0 Setup</h3></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;instalá torch, torchvision y kagglehub en Colab&quot;
+!pip -q install torch torchvision kagglehub scikit-learn matplotlib</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;importá torch, torchvision, sklearn y utilidades, y fijá semilla y device&quot;
+import os, numpy as np, matplotlib.pyplot as plt
+import torch, torch.nn as nn
+from torch.utils.data import DataLoader, WeightedRandomSampler, random_split
+from torchvision import datasets, transforms, models
+from sklearn.metrics import classification_report, confusion_matrix
+torch.manual_seed(42); np.random.seed(42)
+DEVICE = &quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;
+print(&quot;Torch&quot;, torch.__version__, &quot;| device:&quot;, DEVICE)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá la carga del dataset de retinopatía desde Kaggle&quot; --&gt;</p>
+<h3>1.1 Carga de datos</h3>
+<p>Uso el dataset <strong>Diabetic Retinopathy 224x224 (Gaussian Filtered)</strong> (mismo que el del artículo), descargado con <code>kagglehub</code>. Está organizado en carpetas por clase, así que uso <code>ImageFolder</code>. Las 5 clases son: <code>No_DR</code>, <code>Mild</code>, <code>Moderate</code>, <code>Severe</code>, <code>Proliferate_DR</code> — <strong>fuertemente desbalanceadas</strong> (ver Parte 2.1).</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;descargá el dataset con kagglehub y localizá la carpeta de imágenes por clase&quot;
+import kagglehub
+ruta = kagglehub.dataset_download(&quot;sovitrath/diabetic-retinopathy-224x224-gaussian-filtered&quot;)
+# La carpeta con subdirectorios por clase:
+img_dir = os.path.join(ruta, &quot;gaussian_filtered_images&quot;, &quot;gaussian_filtered_images&quot;)
+if not os.path.isdir(img_dir):
+    # fallback: buscar el primer dir que tenga subcarpetas de clase
+    for root, dirs, files in os.walk(ruta):
+        if {&quot;No_DR&quot;,&quot;Severe&quot;}.issubset(set(dirs)):
+            img_dir = root; break
+print(&quot;Directorio de imágenes:&quot;, img_dir)
+print(&quot;Clases:&quot;, sorted(os.listdir(img_dir)))</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;definí transforms (resize 224 + normalización ImageNet) y armá el ImageFolder&quot;
+# Transforms base (para transfer learning con pesos ImageNet)
+tf_eval = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+])
+# Para train sumamos un leve augmentation (ver discusión en 2.3)
+tf_train = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.RandomHorizontalFlip(p=0.5),
+    transforms.RandomRotation(10),
+    transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+])
+
+dataset_full = datasets.ImageFolder(img_dir)           # sin transform todavía
+clases = dataset_full.classes
+print(&quot;Clases:&quot;, clases, &quot;| total imágenes:&quot;, len(dataset_full))</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;partí en train/val (80/20) y asigná los transforms correspondientes a cada subset&quot;
+n_val = int(0.2 * len(dataset_full))
+n_train = len(dataset_full) - n_val
+train_set, val_set = random_split(dataset_full, [n_train, n_val],
+                                  generator=torch.Generator().manual_seed(42))
+
+# Wrapper para aplicar transform distinto a cada subset
+class ConTransform(torch.utils.data.Dataset):
+    def __init__(self, subset, tf): self.subset, self.tf = subset, tf
+    def __len__(self): return len(self.subset)
+    def __getitem__(self, i):
+        img, y = self.subset[i]
+        return self.tf(img), y
+
+train_ds = ConTransform(train_set, tf_train)
+val_ds   = ConTransform(val_set,   tf_eval)
+print(&quot;train:&quot;, len(train_ds), &quot;| val:&quot;, len(val_ds))</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá el uso de WeightedRandomSampler para el desbalance&quot; --&gt;</p>
+<p><strong>Desbalance (se conecta con la Parte 2.1).</strong> Como hay muchas más imágenes <code>No_DR</code> que <code>Severe</code>, uso un <strong><code>WeightedRandomSampler</code></strong>: da más probabilidad de muestreo a las clases minoritarias, para que cada batch sea más equilibrado.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;calculá pesos por clase y construí el WeightedRandomSampler y los DataLoader&quot;
+# etiquetas del subset de train
+train_targets = [dataset_full.targets[i] for i in train_set.indices]
+conteo = np.bincount(train_targets, minlength=len(clases))
+print(&quot;conteo por clase (train):&quot;, dict(zip(clases, conteo)))
+
+peso_clase = 1.0 / np.maximum(conteo, 1)
+peso_muestra = [peso_clase[t] for t in train_targets]
+sampler = WeightedRandomSampler(weights=peso_muestra, num_samples=len(peso_muestra), replacement=True)
+
+BATCH = 32
+train_loader = DataLoader(train_ds, batch_size=BATCH, sampler=sampler, num_workers=2)
+val_loader   = DataLoader(val_ds,   batch_size=BATCH, shuffle=False, num_workers=2)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;introducí el modelo con transfer learning sobre MobileNetV2&quot; --&gt;</p>
+<h3>1.2 Modelo — Transfer Learning con MobileNetV2</h3>
+<p>Cargo <strong>MobileNetV2 preentrenada en ImageNet</strong>, congelo el extractor de features y reemplazo el clasificador final por uno de <code>len(clases)</code> salidas. (En la Parte 2.2 discuto cuándo descongelar capas.)</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;cargá MobileNetV2 preentrenada, congelá el backbone y reemplazá el clasificador&quot;
+modelo = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
+for p in modelo.features.parameters():
+    p.requires_grad = False                     # congelo el backbone
+n_in = modelo.classifier[1].in_features
+modelo.classifier[1] = nn.Linear(n_in, len(clases))   # nueva cabeza
+modelo = modelo.to(DEVICE)
+print(&quot;Cabeza nueva:&quot;, modelo.classifier[1])</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá el bucle de entrenamiento&quot; --&gt;</p>
+<h3>1.3 Entrenamiento</h3></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;definí el loop de entrenamiento y validación por época y entrená pocas épocas&quot;
+criterio = nn.CrossEntropyLoss()
+optim = torch.optim.Adam(modelo.classifier.parameters(), lr=1e-3)
+EPOCHS = 5      # reducido para demo en Colab; subir si hay tiempo/GPU
+
+hist = {&quot;train_loss&quot;: [], &quot;val_acc&quot;: []}
+for ep in range(EPOCHS):
+    modelo.train(); run = 0.0
+    for xb, yb in train_loader:
+        xb, yb = xb.to(DEVICE), yb.to(DEVICE)
+        optim.zero_grad()
+        loss = criterio(modelo(xb), yb)
+        loss.backward(); optim.step()
+        run += loss.item() * xb.size(0)
+    # validación
+    modelo.eval(); correct = total = 0
+    with torch.no_grad():
+        for xb, yb in val_loader:
+            xb, yb = xb.to(DEVICE), yb.to(DEVICE)
+            pred = modelo(xb).argmax(1)
+            correct += (pred == yb).sum().item(); total += yb.size(0)
+    hist[&quot;train_loss&quot;].append(run/len(train_ds)); hist[&quot;val_acc&quot;].append(correct/total)
+    print(f&quot;época {ep+1}: train_loss={hist[&#x27;train_loss&#x27;][-1]:.4f}  val_acc={hist[&#x27;val_acc&#x27;][-1]:.4f}&quot;)</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;graficá la curva de loss de entrenamiento y la accuracy de validación&quot;
+fig, ax = plt.subplots(1, 2, figsize=(11,4))
+ax[0].plot(hist[&quot;train_loss&quot;], marker=&quot;o&quot;); ax[0].set_title(&quot;Train loss&quot;); ax[0].set_xlabel(&quot;época&quot;)
+ax[1].plot(hist[&quot;val_acc&quot;], marker=&quot;o&quot;, color=&quot;green&quot;); ax[1].set_title(&quot;Val accuracy&quot;); ax[1].set_xlabel(&quot;época&quot;)
+plt.tight_layout(); plt.show()</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;explicá la evaluación con métricas por clase&quot; --&gt;</p>
+<h3>1.4 Evaluación (métricas por clase)</h3></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;evaluá en validación con classification_report y matriz de confusión por clase&quot;
+modelo.eval(); y_true, y_pred = [], []
+with torch.no_grad():
+    for xb, yb in val_loader:
+        xb = xb.to(DEVICE)
+        y_pred += modelo(xb).argmax(1).cpu().tolist()
+        y_true += yb.tolist()
+
+print(classification_report(y_true, y_pred, target_names=clases, zero_division=0))
+cm = confusion_matrix(y_true, y_pred)
+fig, ax = plt.subplots(figsize=(6,5))
+im = ax.imshow(cm, cmap=&quot;Blues&quot;)
+ax.set_xticks(range(len(clases))); ax.set_yticks(range(len(clases)))
+ax.set_xticklabels(clases, rotation=45, ha=&quot;right&quot;); ax.set_yticklabels(clases)
+ax.set_xlabel(&quot;Predicho&quot;); ax.set_ylabel(&quot;Real&quot;); ax.set_title(&quot;Matriz de confusión (val)&quot;)
+for i in range(len(clases)):
+    for j in range(len(clases)):
+        ax.text(j, i, cm[i,j], ha=&quot;center&quot;, va=&quot;center&quot;, fontsize=8,
+                color=&quot;white&quot; if cm[i,j] &gt; cm.max()/2 else &quot;black&quot;)
+plt.tight_layout(); plt.show()</code></pre></section><section class='md'><h2>Parte 2: Análisis crítico y justificación (Para alcanzar nota de 7 a 10)</h2>
+<p>Para obtener una calificación superior, deberán añadir una sección de análisis en su *notebook* respondiendo de manera fundamentada a los siguientes escenarios. El objetivo es demostrar que saben <strong>cuándo</strong> y <strong>por qué</strong> utilizar cada herramienta.</p></section><section class='md'><h3>2.1 Desbalanceo de clases y métricas engañosas:</h3>
+<p>El conjunto de datos original está fuertemente desbalanceado (la clase *No_RD* tiene 1805 imágenes, frente a solo 193 de la clase *Severe*). Si un modelo mal entrenado predijera siempre que ningún paciente tiene retinopatía, ¿qué precisión (*accuracy*) obtendría? ¿Por qué esta métrica es peligrosa en el contexto médico? Expliquen qué técnica de PyTorch (ej. <code>WeightedRandomSampler</code> o pesos en la función de pérdida) implementarían para solucionarlo y justifiquen su elección.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;respondé la pregunta 2.1 sobre desbalance y métricas engañosas&quot; --&gt;</p>
+<p><strong>Respuesta 2.1.</strong> Si el modelo predijera siempre &quot;sin retinopatía&quot; (<code>No_DR</code>), como esa clase tiene 1805 de ~1998 imágenes, obtendría una <strong>accuracy ≈ 90%</strong> — altísima pero <strong>inútil y peligrosa</strong>: no detectaría <strong>ningún</strong> caso grave (<code>Severe</code>), que es justamente lo que importa en medicina (un falso negativo puede significar un paciente sin tratar). Por eso el <code>accuracy</code> engaña con clases desbalanceadas; hay que mirar <strong>recall por clase</strong> (sensibilidad), <strong>F1 macro</strong> y la <strong>matriz de confusión</strong>.</p>
+<p><strong>Solución elegida:</strong> usé <strong><code>WeightedRandomSampler</code></strong> (implementado arriba) para equilibrar el muestreo por batch. Como alternativa equivalente se puede pasar <strong>pesos a la pérdida</strong> (<code>nn.CrossEntropyLoss(weight=...)</code>), penalizando más el error en clases minoritarias. Preferí el sampler porque no cambia la escala de la loss y funciona bien con <code>ImageFolder</code>; con datasets muy grandes, los pesos en la loss son más baratos (no re-muestrean).</p></section><section class='md'><h3>2.2 Criterio arquitectónico:</h3>
+<p>El tutorial utiliza *MobileNetV2*. ¿En qué casos de uso en el mundo real es fundamental elegir una arquitectura ligera como esta en lugar de modelos más profundos como *ResNet152*? Además, expliquen en qué escenario clínico justificarían &quot;descongelar&quot; (*fine-tuning*) las últimas capas convolucionales de la red base.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;respondé la pregunta 2.2 sobre criterio arquitectónico&quot; --&gt;</p>
+<p><strong>Respuesta 2.2.</strong> Conviene una arquitectura <strong>ligera como MobileNetV2</strong> cuando hay <strong>restricciones de cómputo/latencia/energía</strong>: despliegue en el <strong>borde</strong> (un equipo de fondo de ojo portátil, un celular en una zona rural sin GPU), inferencia en tiempo real, o cuando el dataset es chico (un modelo enorme como <strong>ResNet152</strong> sobreajustaría y sería caro de entrenar/servir). ResNet152 tiene sentido si hay <strong>mucho dato</strong>, GPU potente y se busca exprimir el último punto de accuracy en un servidor central.</p>
+<p><strong>Cuándo descongelar (*fine-tuning*) las últimas capas convolucionales:</strong> cuando el dominio objetivo es <strong>muy distinto a ImageNet</strong> (las imágenes de fondo de ojo no se parecen a fotos naturales) y se cuenta con <strong>datos suficientes</strong>. Las primeras capas detectan bordes/texturas genéricas (sirven tal cual); las últimas son más específicas, así que descongelarlas con un <strong>learning rate bajo</strong> permite re-adaptarlas a patrones médicos (microaneurismas, exudados) sin destruir lo aprendido.</p></section><section class='md'><h3>2.3 Sentido del aumento de datos (*data augmentation*):</h3>
+<p>Revisen las transformaciones de imágenes aplicadas en el código original. Al trabajar con fotografías reales de fondo de ojo, ¿es anatómicamente válido aplicar giros verticales u horizontales aleatorios? Entrenen brevemente el modelo con y sin transformaciones y describan el impacto observado en la generalización.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;respondé la pregunta 2.3 sobre validez del data augmentation en fondo de ojo&quot; --&gt;</p>
+<p><strong>Respuesta 2.3.</strong> En fotos de <strong>fondo de ojo</strong>, el <strong>flip horizontal</strong> suele ser <strong>válido</strong> (un ojo izquierdo espejado se parece a un derecho; la patología no cambia), por eso lo incluí. El <strong>flip vertical</strong> es más discutible: invierte la orientación anatómica (posición del disco óptico y la mácula), generando imágenes poco realistas — puede <strong>meter ruido</strong> en vez de ayudar. Rotaciones <strong>leves</strong> (±10°) sí son razonables porque la cámara puede variar un poco el ángulo. La clave: el augmentation debe generar variaciones <strong>plausibles</strong> del mundo real, no cualquier transformación.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;entrená brevemente con y sin augmentation para comparar la generalización&quot;
+# Experimento corto: comparar val_acc con augmentation (tf_train) vs sin él (tf_eval en train)
+def entrenar_rapido(tf_para_train, epochs=2):
+    ds = ConTransform(train_set, tf_para_train)
+    dl = DataLoader(ds, batch_size=BATCH, sampler=sampler, num_workers=2)
+    m = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
+    for p in m.features.parameters(): p.requires_grad = False
+    m.classifier[1] = nn.Linear(m.classifier[1].in_features, len(clases)); m = m.to(DEVICE)
+    opt = torch.optim.Adam(m.classifier.parameters(), lr=1e-3); crit = nn.CrossEntropyLoss()
+    for _ in range(epochs):
+        m.train()
+        for xb, yb in dl:
+            xb, yb = xb.to(DEVICE), yb.to(DEVICE)
+            opt.zero_grad(); crit(m(xb), yb).backward(); opt.step()
+    m.eval(); c=t=0
+    with torch.no_grad():
+        for xb, yb in val_loader:
+            xb=xb.to(DEVICE); c+=(m(xb).argmax(1).cpu()==yb).sum().item(); t+=yb.size(0)
+    return c/t
+
+acc_con = entrenar_rapido(tf_train)
+acc_sin = entrenar_rapido(tf_eval)
+print(f&quot;val_acc CON augmentation: {acc_con:.4f}&quot;)
+print(f&quot;val_acc SIN augmentation: {acc_sin:.4f}&quot;)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;interpretá el resultado del experimento de augmentation&quot; --&gt;</p>
+<p><strong>Observación.</strong> Normalmente el augmentation razonable (flip horizontal + rotación leve) <strong>mejora la generalización</strong> (sube o sostiene la val_acc y reduce el sobreajuste), porque el modelo ve más variabilidad. Si se abusa con transformaciones no realistas (flip vertical fuerte, distorsiones grandes), puede <strong>empeorar</strong>. *(Con pocas épocas la diferencia puede ser chica; con más entrenamiento se nota mejor.)*</p></section><section class='md'><h3>2.4 Diagnóstico de fallos y *human-in-the-loop*:</h3>
+<p>El autor menciona que el modelo falló al predecir la etapa 3 (*Severe*). Analizando los datos y el código, ¿cuál creen que es la causa técnica principal de este fallo? Como futuros profesionales, propongan un protocolo de validación humana (*human-in-the-loop*) sobre cómo debería reaccionar el sistema en producción si la red neuronal devuelve una predicción con un nivel de confianza muy bajo.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;respondé la pregunta 2.4 sobre diagnóstico de fallos y human-in-the-loop&quot; --&gt;</p>
+<p><strong>Respuesta 2.4.</strong> La causa técnica principal del fallo en <code>Severe</code> es el <strong>desbalance extremo</strong> (solo ~193 imágenes): el modelo casi no ve esa clase, así que aprende poco sus rasgos y tiende a confundirla con <code>Moderate</code>/<code>Proliferate</code>. Se suma que las diferencias entre etapas avanzadas son <strong>sutiles</strong> y que la métrica global (accuracy) <strong>no penaliza</strong> ignorar la minoría.</p>
+<p><strong>Protocolo *human-in-the-loop* propuesto:</strong> en producción, calcular la <strong>confianza</strong> (probabilidad softmax máxima) de cada predicción. Si la confianza es <strong>baja</strong> (p. ej. &lt; 0.7) o si la clase predicha es <strong>grave</strong> (<code>Severe</code>/<code>Proliferate</code>), el sistema <strong>no decide solo</strong>: marca el caso como &quot;<strong>revisión humana requerida</strong>&quot; y lo deriva a un <strong>oftalmólogo</strong>, mostrando la imagen y las probabilidades por clase. El modelo actúa como <strong>filtro/priorizador</strong> (triage), no como diagnóstico final. Además, esos casos revisados se reincorporan al dataset (<strong>active learning</strong>) para mejorar justamente las clases difíciles.</p></section><section class='md'><p><strong>IMPORTANTE:</strong></p>
+<ul>
+<li>Lee la sección de entrega de la tarea.</li>
+<li>Las respuestas a la Parte 2 redactadas en celdas de texto (*Markdown*) dentro del mismo *notebook*, intercaladas lógicamente con el código o en una sección de conclusiones al final.</li>
+<li>El código debe ser reproducible y los gráficos deben ser visibles sin necesidad de volver a ejecutar todo el entrenamiento</li>
+<li>Al final del notebook añade las referencias utilizadas.</li>
+</ul></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;armá la lista de referencias del trabajo&quot; --&gt;</p>
+<h2>Referencias</h2>
+<ul>
+<li><strong>Artículo base:</strong> Richard R. S., *Desarrollo de una CNN para la detección de retinopatía diabética* (Medium). https://medium.com/@richardrs30/desarrollo-de-una-red-neuronal-convolucional-cnn-para-la-detecci%C3%B3n-de-retinopat%C3%ADa-diab%C3%A9tica-en-79fc7395a7ad</li>
+<li><strong>Dataset:</strong> Diabetic Retinopathy 224x224 (Gaussian Filtered) — Kaggle (sovitrath).</li>
+<li><strong>PyTorch / torchvision:</strong> https://pytorch.org/vision/stable/models.html (MobileNetV2)</li>
+<li><strong>Asistencia IA:</strong> _[completar: pegar acá el enlace a la conversación con la IA utilizada]_</li>
+</ul></section></div></body></html>

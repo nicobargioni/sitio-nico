@@ -1,0 +1,181 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Q-learning — Taxi (Gymnasium)</title><style>
+:root{--bg:#05070d;--fg:#eef2f7;--muted:#8b97a8;--border:rgba(255,255,255,.09);--cyan:#22d3ee;--coral:#ff6b3d;--surface:#0e131c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;padding:32px 20px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;line-height:1.25}
+h1{font-size:1.7rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+a{color:var(--cyan)}
+.md p{color:#cdd5e0}
+.md code,.code code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.md code{background:var(--surface);color:#67e8f9;padding:.1em .35em;border-radius:.3rem;font-size:.9em}
+.cell{margin:18px 0}
+pre.code{background:#03040a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:.5rem;padding:14px 16px;overflow-x:auto;font-size:.82rem;color:#d7deea}
+.outputs{margin-top:8px}
+pre.out{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:12px 14px;overflow-x:auto;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+pre.out.err{border-color:rgba(255,107,61,.4);color:#ff8a63}
+img{max-width:100%;border-radius:.5rem;border:1px solid var(--border);margin-top:8px}
+ul{padding-left:1.3rem}li{color:#cdd5e0}
+</style></head><body><div class='wrap'><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Portada del TP4 de RL con Q-learning tabular sobre Taxi-v3 en Gymnasium; justificá la originalidad del entorno.&quot; --&gt;</p>
+<h1>TP4 — Aprendizaje por Refuerzo: Q-learning tabular en Taxi-v3</h1>
+<h3>Aprendizaje Automático 2 (AA2) · ISSD · 5° IAR</h3>
+<p><strong>Alumno:</strong> Nicolás Bargioni</p>
+<p><strong>Entorno elegido:</strong> <strong><code>Taxi-v3</code></strong> de <strong>Gymnasium</strong> — un taxi debe recoger a un pasajero en una de 4 ubicaciones y dejarlo en su destino, en una grilla 5×5. Es un MDP <strong>discreto</strong> (500 estados × 6 acciones), perfecto para <strong>Q-learning tabular</strong>.</p>
+<p><strong>Enfoque:</strong> sigo la lógica del tutorial oficial <strong>&quot;Blackjack con Q-learning&quot;</strong> de Gymnasium (opción 1.a de la consigna), pero <strong>lo aplico a Taxi-v3</strong>, un entorno más rico (recompensas con penalización por movimiento y por *pickup/dropoff* ilegal). Implemento el agente Q-learning tabular, el loop de entrenamiento, la curva de recompensa y la evaluación de la política aprendida.</p>
+<p><strong>¿Por qué es original?</strong> Los compañeros del foro eligieron <strong>A2C en LunarLander</strong> y otros tutoriales. <strong>Nadie usó Taxi-v3 con Q-learning tabular</strong>, así que el entorno y el algoritmo son propios.</p>
+<p><strong>Objetivo (consigna TP4):</strong></p>
+<p>1. Reproducir/adaptar la lógica del tutorial en Colab (comentado en español).</p>
+<p>2. Entrenar el agente y <strong>agregar las gráficas de desempeño</strong> (recompensa y tasa de éxito en el tiempo).</p>
+<p>3. Evaluar la política y redactar conclusiones.</p>
+<p>&gt; ⚠️ <strong>Ejecución en Colab.</strong> Q-learning tabular en Taxi corre en <strong>CPU</strong> sin problema. Usamos un número de episodios moderado para que la demo sea rápida; se indica el valor.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Celda de instalación de gymnasium para Colab y verificación de versión.&quot; --&gt;</p>
+<h2>0. Preparación del entorno</h2>
+<p>Instalamos <strong>Gymnasium</strong> (el sucesor mantenido de Gym).</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Instalá gymnasium en Colab e importá numpy, matplotlib y gymnasium.&quot;
+!pip -q install &quot;gymnasium[toy-text]&quot;
+
+import numpy as np
+import matplotlib.pyplot as plt
+from collections import defaultdict, deque
+import gymnasium as gym
+
+SEED = 42
+np.random.seed(SEED)
+print(&quot;gymnasium&quot;, gym.__version__)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Creá el entorno Taxi-v3 y describí su espacio de estados y acciones.&quot; --&gt;</p>
+<h2>1. El entorno Taxi-v3</h2>
+<ul>
+<li><strong>Estados:</strong> 500 (posición del taxi × ubicación del pasajero × destino).</li>
+<li><strong>Acciones:</strong> 6 — Sur, Norte, Este, Oeste, *Pickup*, *Dropoff*.</li>
+<li><strong>Recompensas:</strong> −1 por cada paso, <strong>+20</strong> por dejar al pasajero bien, <strong>−10</strong> por *pickup/dropoff* ilegal. El agente debe aprender a minimizar pasos y entregar correctamente.</li>
+</ul></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Creá el entorno Taxi de forma robusta (v3 en Colab, v4 en versiones nuevas) y mostrá tamaños de espacios.&quot;
+def make_taxi(render_mode=None):
+    # En Colab gymnasium suele traer &#x27;Taxi-v3&#x27;; en versiones nuevas se renombró a &#x27;Taxi-v4&#x27;.
+    # La API (estados, acciones, step/reset) es idéntica, así que probamos en orden.
+    for vid in (&quot;Taxi-v3&quot;, &quot;Taxi-v4&quot;):
+        try:
+            return gym.make(vid, render_mode=render_mode)
+        except Exception:
+            continue
+    raise RuntimeError(&quot;No se encontró el entorno Taxi en esta versión de gymnasium&quot;)
+
+env = make_taxi()
+n_states = env.observation_space.n
+n_actions = env.action_space.n
+print(&quot;Estados:&quot;, n_states, &quot;| Acciones:&quot;, n_actions)
+
+obs, info = env.reset(seed=SEED)
+print(&quot;Estado inicial:&quot;, obs)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Implementá un agente Q-learning tabular con epsilon-greedy y decaimiento de epsilon, estilo tutorial de Gymnasium.&quot; --&gt;</p>
+<h2>2. Agente Q-learning tabular</h2>
+<p>Implemento el agente al estilo del tutorial de Blackjack: una <strong>tabla Q</strong> (<code>defaultdict</code>), política <strong>ε-greedy</strong> con <strong>decaimiento de ε</strong>, y la actualización por la <strong>ecuación de Bellman</strong>:</p>
+<p>$$Q(s,a) \leftarrow Q(s,a) + \alpha \big[ r + \gamma \max_{a&#x27;} Q(s&#x27;,a&#x27;) - Q(s,a) \big]$$</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Definí la clase QLearningAgent con get_action epsilon-greedy, update Bellman y decay_epsilon.&quot;
+class QLearningAgent:
+    def __init__(self, n_actions, lr=0.1, gamma=0.99,
+                 eps_start=1.0, eps_min=0.05, eps_decay=0.0005):
+        self.n_actions = n_actions
+        self.lr = lr
+        self.gamma = gamma
+        self.epsilon = eps_start
+        self.eps_min = eps_min
+        self.eps_decay = eps_decay
+        self.q = defaultdict(lambda: np.zeros(n_actions))
+
+    def get_action(self, state, greedy=False):
+        if (not greedy) and np.random.random() &lt; self.epsilon:
+            return np.random.randint(self.n_actions)   # exploración
+        return int(np.argmax(self.q[state]))           # explotación
+
+    def update(self, s, a, r, s_next, done):
+        target = r + (0 if done else self.gamma * np.max(self.q[s_next]))
+        self.q[s][a] += self.lr * (target - self.q[s][a])
+
+    def decay_epsilon(self):
+        self.epsilon = max(self.eps_min, self.epsilon - self.eps_decay)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Escribí el loop de entrenamiento del agente registrando recompensa por episodio y si fue exitoso.&quot; --&gt;</p>
+<h2>3. Entrenamiento</h2>
+<p>Loop estándar de RL: por cada episodio el agente actúa, observa <code>(s&#x27;, r, done)</code>, actualiza su Q y decae ε. Registramos la <strong>recompensa total</strong> y si el episodio fue <strong>exitoso</strong> (terminó por entrega correcta, no por truncamiento).</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Entrená el agente N_EPISODIOS guardando recompensa por episodio y flag de éxito.&quot;
+N_EPISODIOS = 8000   # suficiente para converger en Taxi; subir si se quiere
+agent = QLearningAgent(n_actions, lr=0.1, gamma=0.99,
+                       eps_start=1.0, eps_min=0.05, eps_decay=1.0 / (N_EPISODIOS * 0.6))
+
+rewards_hist, exito_hist = [], []
+for ep in range(N_EPISODIOS):
+    state, _ = env.reset()
+    done, total_r = False, 0
+    while not done:
+        action = agent.get_action(state)
+        next_state, reward, terminated, truncated, _ = env.step(action)
+        done = terminated or truncated
+        agent.update(state, action, reward, next_state, terminated)
+        state = next_state
+        total_r += reward
+    agent.decay_epsilon()
+    rewards_hist.append(total_r)
+    exito_hist.append(1 if terminated else 0)   # terminated=True -&gt; entrega correcta
+
+    if (ep + 1) % 1000 == 0:
+        media = np.mean(rewards_hist[-1000:])
+        tasa = np.mean(exito_hist[-1000:])
+        print(f&quot;Episodio {ep+1:5d} | recompensa media {media:6.1f} | éxito {tasa:.2%} | eps {agent.epsilon:.3f}&quot;)
+
+print(&quot;\nEstados visitados en la tabla Q:&quot;, len(agent.q))</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Graficá la curva de recompensa (media móvil) y la tasa de éxito durante el entrenamiento.&quot; --&gt;</p>
+<h2>4. Curvas de desempeño</h2>
+<p>La consigna pide agregar las gráficas de desempeño del agente: <strong>recompensa por episodio</strong> (con media móvil para suavizar el ruido) y <strong>tasa de éxito</strong>.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Graficá la media móvil de recompensa y la tasa de éxito por ventana a lo largo del entrenamiento.&quot;
+def media_movil(x, w=200):
+    return np.convolve(x, np.ones(w) / w, mode=&quot;valid&quot;)
+
+fig, ax = plt.subplots(1, 2, figsize=(15, 5))
+ax[0].plot(media_movil(rewards_hist, 200))
+ax[0].set_title(&quot;Recompensa por episodio (media móvil 200)&quot;)
+ax[0].set_xlabel(&quot;episodio&quot;); ax[0].set_ylabel(&quot;recompensa&quot;)
+
+ax[1].plot(media_movil(exito_hist, 200), color=&quot;green&quot;)
+ax[1].set_title(&quot;Tasa de éxito (media móvil 200)&quot;)
+ax[1].set_xlabel(&quot;episodio&quot;); ax[1].set_ylabel(&quot;proporción de entregas correctas&quot;)
+ax[1].set_ylim(0, 1.05)
+plt.tight_layout(); plt.show()</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Interpretá la curva de recompensa y la tasa de éxito como evidencia de convergencia del Q-learning.&quot; --&gt;</p>
+<p><strong>Lectura de las curvas.</strong> Al principio la recompensa es <strong>muy negativa</strong> (el taxi se mueve al azar y acumula penalizaciones y entregas ilegales). A medida que ε decae y la tabla Q se llena, la recompensa <strong>sube y se estabiliza</strong> cerca del óptimo (recompensas positivas, pocos pasos) y la <strong>tasa de éxito tiende a ~100%</strong>. Esa es la firma típica de un Q-learning que convergió.</p></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Evaluá la política aprendida en modo greedy sobre varios episodios y reportá recompensa media y pasos.&quot; --&gt;</p>
+<h2>5. Evaluación de la política</h2>
+<p>Evaluamos la política aprendida en modo <strong>greedy</strong> (sin exploración, <code>epsilon=0</code>) sobre varios episodios y medimos recompensa media y pasos promedio.</p></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Evaluá 1000 episodios en modo greedy y reportá recompensa media, pasos medios y tasa de éxito.&quot;
+def evaluar(agent, env, episodios=1000):
+    recompensas, pasos, exitos = [], [], 0
+    for _ in range(episodios):
+        state, _ = env.reset()
+        done, total_r, n = False, 0, 0
+        while not done:
+            action = agent.get_action(state, greedy=True)
+            state, reward, terminated, truncated, _ = env.step(action)
+            done = terminated or truncated
+            total_r += reward; n += 1
+        recompensas.append(total_r); pasos.append(n)
+        exitos += int(terminated)
+    return np.mean(recompensas), np.mean(pasos), exitos / episodios
+
+r_med, p_med, tasa = evaluar(agent, env, 1000)
+print(f&quot;Recompensa media (greedy): {r_med:.2f}&quot;)
+print(f&quot;Pasos promedio por episodio: {p_med:.2f}&quot;)
+print(f&quot;Tasa de éxito: {tasa:.2%}&quot;)</code></pre></section><section class='cell'><pre class='code'><code># 🧠 Prompt: &quot;Renderizá en texto un episodio resuelto por la política aprendida para inspeccionar el comportamiento.&quot;
+# Render en modo texto (ANSI) de un episodio resuelto con la política aprendida
+demo_env = make_taxi(render_mode=&quot;ansi&quot;)
+state, _ = demo_env.reset(seed=123)
+done, n = False, 0
+print(&quot;=== Episodio de demostración (política greedy) ===&quot;)
+while not done and n &lt; 30:
+    action = agent.get_action(state, greedy=True)
+    state, reward, terminated, truncated, _ = demo_env.step(action)
+    done = terminated or truncated
+    n += 1
+print(demo_env.render())   # estado final del entorno
+print(f&quot;Resuelto en {n} pasos | terminado correctamente: {terminated}&quot;)</code></pre></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Conclusiones del TP4: lo aprendido sobre Q-learning, exploración-explotación y dificultades.&quot; --&gt;</p>
+<h2>6. Conclusiones</h2>
+<ul>
+<li><strong>Qué construí:</strong> un agente <strong>Q-learning tabular</strong> completo para <code>Taxi-v3</code> (tabla Q, ε-greedy con decaimiento, actualización de Bellman), su loop de entrenamiento, las <strong>curvas de recompensa y tasa de éxito</strong>, y la evaluación de la política aprendida + un episodio de demostración.</li>
+<li><strong>Adaptación a Colab:</strong> Gymnasium se instala con <code>pip install &quot;gymnasium[toy-text]&quot;</code>; el render se hace en modo <strong><code>ansi</code></strong> (texto), ya que Colab no tiene ventana gráfica para <code>human</code>. Para ser robusto a la versión de gymnasium uso una función <code>make_taxi()</code> que prueba <strong><code>Taxi-v3</code></strong> (la de Colab) y cae a <strong><code>Taxi-v4</code></strong> (gymnasium reciente), porque la API es idéntica.</li>
+<li><strong>Aprendizajes:</strong> el <strong>trade-off exploración/explotación</strong> es central — sin decaimiento de ε el agente nunca explota lo aprendido; con un decaimiento demasiado rápido se queda con una política subóptima. El <strong>factor de descuento</strong> γ alto (0.99) es importante porque la recompensa grande (+20) llega al final del episodio.</li>
+<li><strong>Dificultad superada:</strong> distinguir <code>terminated</code> (entrega correcta = éxito) de <code>truncated</code> (se acabó el tiempo) para medir bien la tasa de éxito y para no descontar el valor futuro tras una terminación real.</li>
+<li><strong>Duda que queda:</strong> cómo escalaría esto a entornos con <strong>estados continuos</strong> (donde la tabla Q ya no sirve) y haría falta <strong>DQN</strong> con una red neuronal aproximando Q — el puente natural hacia el deep RL.</li>
+</ul></section><section class='md'><p>&lt;!-- 🧠 Prompt: &quot;Referencias del TP4: tutorial de Gymnasium, doc de Taxi-v3 y placeholder de la conversación con IA.&quot; --&gt;</p>
+<h2>7. Referencias</h2>
+<ul>
+<li>Gymnasium — *Solving Blackjack with Q-Learning* (tutorial base): https://gymnasium.farama.org/tutorials/training_agents/blackjack_q_learning/</li>
+<li>Gymnasium — *Taxi-v3 environment*: https://gymnasium.farama.org/environments/toy_text/taxi/</li>
+<li>Sutton &amp; Barto. *Reinforcement Learning: An Introduction* (Q-learning, cap. 6).</li>
+<li>Material de clase AA2 (aprendizaje por refuerzo).</li>
+<li>Conversación con IA generativa usada como apoyo: _[completar: link a conversación IA]_</li>
+</ul></section></div></body></html>

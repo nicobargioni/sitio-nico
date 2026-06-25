@@ -1,0 +1,898 @@
+[
+ {
+  "slug": "anscombe-cuarteto",
+  "title": "El cuarteto de Anscombe: cuatro datasets idénticos en los números, opuestos en el gráfico",
+  "category": "data-ml",
+  "subcategory": "eda",
+  "url": "/data-ml/eda/anscombe-cuarteto"
+ },
+ {
+  "slug": "datasaurio-docena",
+  "title": "El Datasaurio: doce datasets con la misma estadística que esconden un dinosaurio",
+  "category": "data-ml",
+  "subcategory": "eda",
+  "url": "/data-ml/eda/datasaurio-docena"
+ },
+ {
+  "slug": "paradoja-simpson",
+  "title": "La paradoja de Simpson: cuando una tendencia se da vuelta al juntar los datos",
+  "category": "data-ml",
+  "subcategory": "eda",
+  "url": "/data-ml/eda/paradoja-simpson"
+ },
+ {
+  "slug": "valores-faltantes-gritan",
+  "title": "Lo que los valores faltantes te están gritando",
+  "category": "data-ml",
+  "subcategory": "eda",
+  "url": "/data-ml/eda/valores-faltantes-gritan"
+ },
+ {
+  "slug": "correlacion-espuria",
+  "title": "Correlaciones espurias: el queso, las sábanas y los doctorados",
+  "category": "data-ml",
+  "subcategory": "eda",
+  "url": "/data-ml/eda/correlacion-espuria"
+ },
+ {
+  "slug": "paradoja-cumpleanos",
+  "title": "La paradoja del cumpleaños: con 23 personas, apostá a que dos cumplen el mismo día",
+  "category": "data-ml",
+  "subcategory": "estadistica",
+  "url": "/data-ml/estadistica/paradoja-cumpleanos"
+ },
+ {
+  "slug": "ley-benford",
+  "title": "La ley de Benford: por qué el 1 aparece más y cómo atrapa fraudes",
+  "category": "data-ml",
+  "subcategory": "estadistica",
+  "url": "/data-ml/estadistica/ley-benford"
+ },
+ {
+  "slug": "monty-hall",
+  "title": "Monty Hall: por qué cambiar de puerta duplica tus chances",
+  "category": "data-ml",
+  "subcategory": "estadistica",
+  "url": "/data-ml/estadistica/monty-hall"
+ },
+ {
+  "slug": "tanque-aleman",
+  "title": "El problema del tanque alemán: estimar producción enemiga con números de serie",
+  "category": "data-ml",
+  "subcategory": "estadistica",
+  "url": "/data-ml/estadistica/tanque-aleman"
+ },
+ {
+  "slug": "p-valor-malentendido",
+  "title": "Lo que un p-valor NO significa (y casi todos creen que sí)",
+  "category": "data-ml",
+  "subcategory": "estadistica",
+  "url": "/data-ml/estadistica/p-valor-malentendido"
+ },
+ {
+  "slug": "maldicion-dimensionalidad",
+  "title": "La maldición de la dimensionalidad: por qué en muchas dimensiones todo está lejos",
+  "category": "data-ml",
+  "subcategory": "clustering-pca",
+  "url": "/data-ml/clustering-pca/maldicion-dimensionalidad"
+ },
+ {
+  "slug": "kmeans-trampas",
+  "title": "Las trampas de K-Means: cuando los clusters que ves no existen",
+  "category": "data-ml",
+  "subcategory": "clustering-pca",
+  "url": "/data-ml/clustering-pca/kmeans-trampas"
+ },
+ {
+  "slug": "pca-sombra",
+  "title": "PCA explicado sin álgebra: la sombra que conserva más información",
+  "category": "data-ml",
+  "subcategory": "clustering-pca",
+  "url": "/data-ml/clustering-pca/pca-sombra"
+ },
+ {
+  "slug": "codo-vs-silueta",
+  "title": "Codo vs silueta: cómo elegir k sin engañarte",
+  "category": "data-ml",
+  "subcategory": "clustering-pca",
+  "url": "/data-ml/clustering-pca/codo-vs-silueta"
+ },
+ {
+  "slug": "tsne-umap-mienten",
+  "title": "t-SNE y UMAP: mapas hermosos que a veces mienten",
+  "category": "data-ml",
+  "subcategory": "clustering-pca",
+  "url": "/data-ml/clustering-pca/tsne-umap-mienten"
+ },
+ {
+  "slug": "aproximacion-universal",
+  "title": "El teorema que dice que una red puede aprender casi cualquier cosa (y por qué no alcanza)",
+  "category": "data-ml",
+  "subcategory": "deep-learning",
+  "url": "/data-ml/deep-learning/aproximacion-universal"
+ },
+ {
+  "slug": "doble-descenso",
+  "title": "Doble descenso: cuando tener más parámetros que datos mejora el modelo",
+  "category": "data-ml",
+  "subcategory": "deep-learning",
+  "url": "/data-ml/deep-learning/doble-descenso"
+ },
+ {
+  "slug": "panda-gibon",
+  "title": "El panda que la red ve como gibón: ejemplos adversarios",
+  "category": "data-ml",
+  "subcategory": "deep-learning",
+  "url": "/data-ml/deep-learning/panda-gibon"
+ },
+ {
+  "slug": "dropout-azar",
+  "title": "Dropout: por qué apagar neuronas al azar evita el sobreajuste",
+  "category": "data-ml",
+  "subcategory": "deep-learning",
+  "url": "/data-ml/deep-learning/dropout-azar"
+ },
+ {
+  "slug": "billete-loteria",
+  "title": "La hipótesis del billete de lotería: redes diminutas escondidas en las grandes",
+  "category": "data-ml",
+  "subcategory": "deep-learning",
+  "url": "/data-ml/deep-learning/billete-loteria"
+ },
+ {
+  "slug": "por-que-funciona-transfer",
+  "title": "Por qué una red entrenada en gatos sirve para radiografías",
+  "category": "data-ml",
+  "subcategory": "transfer-learning",
+  "url": "/data-ml/transfer-learning/por-que-funciona-transfer"
+ },
+ {
+  "slug": "congelar-o-no",
+  "title": "Fine-tuning vs feature extraction: cuándo congelar y cuándo descongelar capas",
+  "category": "data-ml",
+  "subcategory": "transfer-learning",
+  "url": "/data-ml/transfer-learning/congelar-o-no"
+ },
+ {
+  "slug": "olvido-catastrofico",
+  "title": "Olvido catastrófico: cuando aprender algo nuevo borra lo viejo",
+  "category": "data-ml",
+  "subcategory": "transfer-learning",
+  "url": "/data-ml/transfer-learning/olvido-catastrofico"
+ },
+ {
+  "slug": "momento-imagenet",
+  "title": "El momento ImageNet 2012: el experimento que cambió todo",
+  "category": "data-ml",
+  "subcategory": "transfer-learning",
+  "url": "/data-ml/transfer-learning/momento-imagenet"
+ },
+ {
+  "slug": "few-shot",
+  "title": "Aprender de pocos ejemplos: few-shot y el poder de lo preentrenado",
+  "category": "data-ml",
+  "subcategory": "transfer-learning",
+  "url": "/data-ml/transfer-learning/few-shot"
+ },
+ {
+  "slug": "reward-hacking",
+  "title": "Reward hacking: agentes que hacen trampa para ganar puntos",
+  "category": "data-ml",
+  "subcategory": "reinforcement-learning",
+  "url": "/data-ml/reinforcement-learning/reward-hacking"
+ },
+ {
+  "slug": "explorar-explotar",
+  "title": "Explorar vs explotar: el dilema del bandido de varios brazos",
+  "category": "data-ml",
+  "subcategory": "reinforcement-learning",
+  "url": "/data-ml/reinforcement-learning/explorar-explotar"
+ },
+ {
+  "slug": "alphago-jugada-37",
+  "title": "La jugada 37 de AlphaGo: la creatividad que ningún humano jugaría",
+  "category": "data-ml",
+  "subcategory": "reinforcement-learning",
+  "url": "/data-ml/reinforcement-learning/alphago-jugada-37"
+ },
+ {
+  "slug": "recompensa-escasa",
+  "title": "El problema de la recompensa escasa: cuando el premio llega tarde",
+  "category": "data-ml",
+  "subcategory": "reinforcement-learning",
+  "url": "/data-ml/reinforcement-learning/recompensa-escasa"
+ },
+ {
+  "slug": "rl-vs-supervisado",
+  "title": "Por qué el RL no es como el aprendizaje supervisado",
+  "category": "data-ml",
+  "subcategory": "reinforcement-learning",
+  "url": "/data-ml/reinforcement-learning/rl-vs-supervisado"
+ },
+ {
+  "slug": "cisne-negro",
+  "title": "Cisnes negros: por qué lo raro es justo lo que más importa",
+  "category": "data-ml",
+  "subcategory": "deteccion-anomalias",
+  "url": "/data-ml/deteccion-anomalias/cisne-negro"
+ },
+ {
+  "slug": "isolation-forest",
+  "title": "Isolation Forest: aislar lo anómalo en pocas preguntas",
+  "category": "data-ml",
+  "subcategory": "deteccion-anomalias",
+  "url": "/data-ml/deteccion-anomalias/isolation-forest"
+ },
+ {
+  "slug": "fraude-desbalance",
+  "title": "Detección de fraude: cuando el 0,1% es todo lo que importa",
+  "category": "data-ml",
+  "subcategory": "deteccion-anomalias",
+  "url": "/data-ml/deteccion-anomalias/fraude-desbalance"
+ },
+ {
+  "slug": "mantenimiento-predictivo",
+  "title": "Mantenimiento predictivo: escuchar una máquina antes de que falle",
+  "category": "data-ml",
+  "subcategory": "deteccion-anomalias",
+  "url": "/data-ml/deteccion-anomalias/mantenimiento-predictivo"
+ },
+ {
+  "slug": "costo-falsos-positivos",
+  "title": "El costo oculto de los falsos positivos en detección de anomalías",
+  "category": "data-ml",
+  "subcategory": "deteccion-anomalias",
+  "url": "/data-ml/deteccion-anomalias/costo-falsos-positivos"
+ },
+ {
+  "slug": "panales-cerveza",
+  "title": "Pañales y cerveza: la regla de asociación más famosa (¿y falsa?)",
+  "category": "data-ml",
+  "subcategory": "mineria-de-datos",
+  "url": "/data-ml/mineria-de-datos/panales-cerveza"
+ },
+ {
+  "slug": "soporte-confianza-lift",
+  "title": "Reglas de asociación: soporte, confianza y lift sin misterio",
+  "category": "data-ml",
+  "subcategory": "mineria-de-datos",
+  "url": "/data-ml/mineria-de-datos/soporte-confianza-lift"
+ },
+ {
+  "slug": "apriori-vs-fpgrowth",
+  "title": "Apriori vs FP-Growth: minar patrones sin que explote la combinatoria",
+  "category": "data-ml",
+  "subcategory": "mineria-de-datos",
+  "url": "/data-ml/mineria-de-datos/apriori-vs-fpgrowth"
+ },
+ {
+  "slug": "mineria-vs-ml",
+  "title": "Minería de datos vs machine learning: no son lo mismo",
+  "category": "data-ml",
+  "subcategory": "mineria-de-datos",
+  "url": "/data-ml/mineria-de-datos/mineria-vs-ml"
+ },
+ {
+  "slug": "sesgo-superviviente",
+  "title": "El sesgo del superviviente: los aviones de Wald y los datos que no ves",
+  "category": "data-ml",
+  "subcategory": "mineria-de-datos",
+  "url": "/data-ml/mineria-de-datos/sesgo-superviviente"
+ },
+ {
+  "slug": "temperatura-llm",
+  "title": "La temperatura de un LLM: el dial entre el robot y el poeta",
+  "category": "ia-agentes",
+  "subcategory": "llms-prompting",
+  "url": "/ia-agentes/llms-prompting/temperatura-llm"
+ },
+ {
+  "slug": "tokens-no-palabras",
+  "title": "Los LLM no leen palabras: el mundo visto en tokens",
+  "category": "ia-agentes",
+  "subcategory": "llms-prompting",
+  "url": "/ia-agentes/llms-prompting/tokens-no-palabras"
+ },
+ {
+  "slug": "cadena-pensamiento",
+  "title": "Chain-of-thought: por qué pedirle que 'piense paso a paso' funciona",
+  "category": "ia-agentes",
+  "subcategory": "llms-prompting",
+  "url": "/ia-agentes/llms-prompting/cadena-pensamiento"
+ },
+ {
+  "slug": "por-que-alucinan",
+  "title": "Por qué los LLM alucinan con tanta seguridad",
+  "category": "ia-agentes",
+  "subcategory": "llms-prompting",
+  "url": "/ia-agentes/llms-prompting/por-que-alucinan"
+ },
+ {
+  "slug": "ventana-contexto",
+  "title": "La ventana de contexto: la memoria de trabajo de un LLM",
+  "category": "ia-agentes",
+  "subcategory": "llms-prompting",
+  "url": "/ia-agentes/llms-prompting/ventana-contexto"
+ },
+ {
+  "slug": "rey-reina-embeddings",
+  "title": "Rey − hombre + mujer = reina: la aritmética de los embeddings",
+  "category": "ia-agentes",
+  "subcategory": "rag-embeddings",
+  "url": "/ia-agentes/rag-embeddings/rey-reina-embeddings"
+ },
+ {
+  "slug": "similitud-coseno",
+  "title": "Por qué el coseno y no la distancia para comparar significados",
+  "category": "ia-agentes",
+  "subcategory": "rag-embeddings",
+  "url": "/ia-agentes/rag-embeddings/similitud-coseno"
+ },
+ {
+  "slug": "rag-apuntes-examen",
+  "title": "RAG: darle a un LLM los apuntes antes del examen",
+  "category": "ia-agentes",
+  "subcategory": "rag-embeddings",
+  "url": "/ia-agentes/rag-embeddings/rag-apuntes-examen"
+ },
+ {
+  "slug": "chunking-arte",
+  "title": "El arte de partir documentos: chunking que no rompe el sentido",
+  "category": "ia-agentes",
+  "subcategory": "rag-embeddings",
+  "url": "/ia-agentes/rag-embeddings/chunking-arte"
+ },
+ {
+  "slug": "sesgos-embeddings",
+  "title": "Los sesgos escondidos en los embeddings",
+  "category": "ia-agentes",
+  "subcategory": "rag-embeddings",
+  "url": "/ia-agentes/rag-embeddings/sesgos-embeddings"
+ },
+ {
+  "slug": "react-razonar-actuar",
+  "title": "ReAct: agentes que razonan y actúan en bucle",
+  "category": "ia-agentes",
+  "subcategory": "agentes",
+  "url": "/ia-agentes/agentes/react-razonar-actuar"
+ },
+ {
+  "slug": "function-calling",
+  "title": "Function calling: cómo un LLM aprende a usar herramientas",
+  "category": "ia-agentes",
+  "subcategory": "agentes",
+  "url": "/ia-agentes/agentes/function-calling"
+ },
+ {
+  "slug": "agente-vs-pipeline",
+  "title": "Agente vs pipeline: cuándo conviene dejar que decida solo",
+  "category": "ia-agentes",
+  "subcategory": "agentes",
+  "url": "/ia-agentes/agentes/agente-vs-pipeline"
+ },
+ {
+  "slug": "agente-en-bucle",
+  "title": "Cuando un agente entra en bucle: los riesgos de la autonomía",
+  "category": "ia-agentes",
+  "subcategory": "agentes",
+  "url": "/ia-agentes/agentes/agente-en-bucle"
+ },
+ {
+  "slug": "multiagente",
+  "title": "Sistemas multiagente: cuando varios LLM colaboran (y discuten)",
+  "category": "ia-agentes",
+  "subcategory": "agentes",
+  "url": "/ia-agentes/agentes/multiagente"
+ },
+ {
+  "slug": "como-ve-una-cnn",
+  "title": "Cómo 've' una CNN: de bordes a conceptos",
+  "category": "ia-agentes",
+  "subcategory": "vision",
+  "url": "/ia-agentes/vision/como-ve-una-cnn"
+ },
+ {
+  "slug": "ilusiones-redes",
+  "title": "Las ilusiones ópticas de las redes neuronales",
+  "category": "ia-agentes",
+  "subcategory": "vision",
+  "url": "/ia-agentes/vision/ilusiones-redes"
+ },
+ {
+  "slug": "data-augmentation",
+  "title": "Data augmentation: enseñar con la misma foto mil veces",
+  "category": "ia-agentes",
+  "subcategory": "vision",
+  "url": "/ia-agentes/vision/data-augmentation"
+ },
+ {
+  "slug": "clasificar-detectar-segmentar",
+  "title": "Clasificar, detectar, segmentar: tres tareas distintas en visión",
+  "category": "ia-agentes",
+  "subcategory": "vision",
+  "url": "/ia-agentes/vision/clasificar-detectar-segmentar"
+ },
+ {
+  "slug": "sticker-adversario",
+  "title": "Un sticker que engaña a un auto autónomo",
+  "category": "ia-agentes",
+  "subcategory": "vision",
+  "url": "/ia-agentes/vision/sticker-adversario"
+ },
+ {
+  "slug": "espectrograma",
+  "title": "El espectrograma: ver el sonido para que la IA lo entienda",
+  "category": "ia-agentes",
+  "subcategory": "procesamiento-habla",
+  "url": "/ia-agentes/procesamiento-habla/espectrograma"
+ },
+ {
+  "slug": "whisper-99-idiomas",
+  "title": "Whisper: el modelo que transcribe en 99 idiomas",
+  "category": "ia-agentes",
+  "subcategory": "procesamiento-habla",
+  "url": "/ia-agentes/procesamiento-habla/whisper-99-idiomas"
+ },
+ {
+  "slug": "mfcc-oido-humano",
+  "title": "MFCC: cómo se imita el oído humano para extraer features",
+  "category": "ia-agentes",
+  "subcategory": "procesamiento-habla",
+  "url": "/ia-agentes/procesamiento-habla/mfcc-oido-humano"
+ },
+ {
+  "slug": "valle-inquietante-voz",
+  "title": "Voces sintéticas y el valle inquietante del audio",
+  "category": "ia-agentes",
+  "subcategory": "procesamiento-habla",
+  "url": "/ia-agentes/procesamiento-habla/valle-inquietante-voz"
+ },
+ {
+  "slug": "wake-word",
+  "title": "'Hey Siri': cómo un dispositivo te escucha sin escuchar",
+  "category": "ia-agentes",
+  "subcategory": "procesamiento-habla",
+  "url": "/ia-agentes/procesamiento-habla/wake-word"
+ },
+ {
+  "slug": "a-estrella-gps",
+  "title": "A*: el GPS que combina lo recorrido y lo que falta",
+  "category": "ia-agentes",
+  "subcategory": "busqueda-heuristica",
+  "url": "/ia-agentes/busqueda-heuristica/a-estrella-gps"
+ },
+ {
+  "slug": "heuristica-admisible",
+  "title": "Heurística admisible: la promesa que garantiza el camino óptimo",
+  "category": "ia-agentes",
+  "subcategory": "busqueda-heuristica",
+  "url": "/ia-agentes/busqueda-heuristica/heuristica-admisible"
+ },
+ {
+  "slug": "dijkstra-vs-astar",
+  "title": "Dijkstra vs A*: la diferencia que hace una buena pista",
+  "category": "ia-agentes",
+  "subcategory": "busqueda-heuristica",
+  "url": "/ia-agentes/busqueda-heuristica/dijkstra-vs-astar"
+ },
+ {
+  "slug": "8-puzzle-juguete",
+  "title": "El 8-puzzle: el juguete que enseñó a planificar a las máquinas",
+  "category": "ia-agentes",
+  "subcategory": "busqueda-heuristica",
+  "url": "/ia-agentes/busqueda-heuristica/8-puzzle-juguete"
+ },
+ {
+  "slug": "factor-ramificacion",
+  "title": "El factor de ramificación: por qué el ajedrez es tan difícil",
+  "category": "ia-agentes",
+  "subcategory": "busqueda-heuristica",
+  "url": "/ia-agentes/busqueda-heuristica/factor-ramificacion"
+ },
+ {
+  "slug": "rpa-no-es-ia",
+  "title": "RPA no es IA: el robot que copia y pega (y por qué importa)",
+  "category": "hiperautomatizacion",
+  "subcategory": "rpa",
+  "url": "/hiperautomatizacion/rpa/rpa-no-es-ia"
+ },
+ {
+  "slug": "rpa-deuda-tecnica",
+  "title": "La deuda técnica oculta de los bots de RPA",
+  "category": "hiperautomatizacion",
+  "subcategory": "rpa",
+  "url": "/hiperautomatizacion/rpa/rpa-deuda-tecnica"
+ },
+ {
+  "slug": "rpa-vs-api",
+  "title": "RPA vs API: automatizar por la ventana o por la puerta",
+  "category": "hiperautomatizacion",
+  "subcategory": "rpa",
+  "url": "/hiperautomatizacion/rpa/rpa-vs-api"
+ },
+ {
+  "slug": "swivel-chair",
+  "title": "El 'swivel chair' que RPA vino a matar",
+  "category": "hiperautomatizacion",
+  "subcategory": "rpa",
+  "url": "/hiperautomatizacion/rpa/swivel-chair"
+ },
+ {
+  "slug": "rpa-a-hiperautomatizacion",
+  "title": "De RPA a hiperautomatización: el salto que cambia el ROI",
+  "category": "hiperautomatizacion",
+  "subcategory": "rpa",
+  "url": "/hiperautomatizacion/rpa/rpa-a-hiperautomatizacion"
+ },
+ {
+  "slug": "techo-nocode",
+  "title": "El techo del no-code: hasta dónde llegan n8n y Make",
+  "category": "hiperautomatizacion",
+  "subcategory": "n8n-make",
+  "url": "/hiperautomatizacion/n8n-make/techo-nocode"
+ },
+ {
+  "slug": "webhooks-pegamento",
+  "title": "Webhooks: el pegamento invisible de las automatizaciones",
+  "category": "hiperautomatizacion",
+  "subcategory": "n8n-make",
+  "url": "/hiperautomatizacion/n8n-make/webhooks-pegamento"
+ },
+ {
+  "slug": "idempotencia",
+  "title": "Idempotencia: por qué tu automatización no debe ejecutarse dos veces",
+  "category": "hiperautomatizacion",
+  "subcategory": "n8n-make",
+  "url": "/hiperautomatizacion/n8n-make/idempotencia"
+ },
+ {
+  "slug": "n8n-vs-make",
+  "title": "n8n vs Make: open source vs comodidad",
+  "category": "hiperautomatizacion",
+  "subcategory": "n8n-make",
+  "url": "/hiperautomatizacion/n8n-make/n8n-vs-make"
+ },
+ {
+  "slug": "rate-limits",
+  "title": "Rate limits: el muro contra el que choca toda automatización",
+  "category": "hiperautomatizacion",
+  "subcategory": "n8n-make",
+  "url": "/hiperautomatizacion/n8n-make/rate-limits"
+ },
+ {
+  "slug": "chatbot-vs-agente",
+  "title": "Chatbot vs agente conversacional: el salto de FAQ a acción",
+  "category": "hiperautomatizacion",
+  "subcategory": "agentes-conversacionales",
+  "url": "/hiperautomatizacion/agentes-conversacionales/chatbot-vs-agente"
+ },
+ {
+  "slug": "intent-vs-llm",
+  "title": "Del intent clásico al LLM: cómo cambió el chatbot",
+  "category": "hiperautomatizacion",
+  "subcategory": "agentes-conversacionales",
+  "url": "/hiperautomatizacion/agentes-conversacionales/intent-vs-llm"
+ },
+ {
+  "slug": "fallback-humano",
+  "title": "El arte del 'te paso con un humano'",
+  "category": "hiperautomatizacion",
+  "subcategory": "agentes-conversacionales",
+  "url": "/hiperautomatizacion/agentes-conversacionales/fallback-humano"
+ },
+ {
+  "slug": "memoria-conversacion",
+  "title": "Mantener el hilo: memoria en conversaciones largas",
+  "category": "hiperautomatizacion",
+  "subcategory": "agentes-conversacionales",
+  "url": "/hiperautomatizacion/agentes-conversacionales/memoria-conversacion"
+ },
+ {
+  "slug": "metricas-chatbot",
+  "title": "Las métricas que dicen si tu chatbot sirve",
+  "category": "hiperautomatizacion",
+  "subcategory": "agentes-conversacionales",
+  "url": "/hiperautomatizacion/agentes-conversacionales/metricas-chatbot"
+ },
+ {
+  "slug": "process-mining-rayos-x",
+  "title": "Process mining: la radiografía de cómo trabaja tu empresa",
+  "category": "hiperautomatizacion",
+  "subcategory": "bpmn",
+  "url": "/hiperautomatizacion/bpmn/process-mining-rayos-x"
+ },
+ {
+  "slug": "proceso-real-vs-dibujado",
+  "title": "El proceso que dibujaste vs el que de verdad ocurre",
+  "category": "hiperautomatizacion",
+  "subcategory": "bpmn",
+  "url": "/hiperautomatizacion/bpmn/proceso-real-vs-dibujado"
+ },
+ {
+  "slug": "bpmn-lenguaje-universal",
+  "title": "BPMN: el lenguaje universal de los procesos",
+  "category": "hiperautomatizacion",
+  "subcategory": "bpmn",
+  "url": "/hiperautomatizacion/bpmn/bpmn-lenguaje-universal"
+ },
+ {
+  "slug": "cuello-botella-invisible",
+  "title": "Cuellos de botella invisibles que solo el dato revela",
+  "category": "hiperautomatizacion",
+  "subcategory": "bpmn",
+  "url": "/hiperautomatizacion/bpmn/cuello-botella-invisible"
+ },
+ {
+  "slug": "happy-path-mentira",
+  "title": "El 'happy path' que esconde el 80% del trabajo real",
+  "category": "hiperautomatizacion",
+  "subcategory": "bpmn",
+  "url": "/hiperautomatizacion/bpmn/happy-path-mentira"
+ },
+ {
+  "slug": "ocr-no-alcanza",
+  "title": "Por qué el OCR no alcanza para entender un documento",
+  "category": "hiperautomatizacion",
+  "subcategory": "idp",
+  "url": "/hiperautomatizacion/idp/ocr-no-alcanza"
+ },
+ {
+  "slug": "layout-importa",
+  "title": "El layout importa: leer una factura no es leer texto",
+  "category": "hiperautomatizacion",
+  "subcategory": "idp",
+  "url": "/hiperautomatizacion/idp/layout-importa"
+ },
+ {
+  "slug": "idp-pipeline",
+  "title": "De PDF a dato estructurado: el pipeline de IDP",
+  "category": "hiperautomatizacion",
+  "subcategory": "idp",
+  "url": "/hiperautomatizacion/idp/idp-pipeline"
+ },
+ {
+  "slug": "datos-no-estructurados",
+  "title": "El 80% de los datos de una empresa que nadie usa",
+  "category": "hiperautomatizacion",
+  "subcategory": "idp",
+  "url": "/hiperautomatizacion/idp/datos-no-estructurados"
+ },
+ {
+  "slug": "human-in-the-loop",
+  "title": "Human-in-the-loop: cuándo confiar en la extracción automática",
+  "category": "hiperautomatizacion",
+  "subcategory": "idp",
+  "url": "/hiperautomatizacion/idp/human-in-the-loop"
+ },
+ {
+  "slug": "vertex-sin-modelo",
+  "title": "Vertex AI: entrenar un modelo sin escribir el modelo",
+  "category": "cloud",
+  "subcategory": "gcp",
+  "url": "/cloud/gcp/vertex-sin-modelo"
+ },
+ {
+  "slug": "region-importa",
+  "title": "Por qué la región de tu nube cambia la latencia y la factura",
+  "category": "cloud",
+  "subcategory": "gcp",
+  "url": "/cloud/gcp/region-importa"
+ },
+ {
+  "slug": "maquinas-preemptibles",
+  "title": "Máquinas preemptibles: 80% más baratas si tolerás que se apaguen",
+  "category": "cloud",
+  "subcategory": "gcp",
+  "url": "/cloud/gcp/maquinas-preemptibles"
+ },
+ {
+  "slug": "vertex-vs-diy",
+  "title": "Vertex AI vs montarlo vos: el cálculo real",
+  "category": "cloud",
+  "subcategory": "gcp",
+  "url": "/cloud/gcp/vertex-vs-diy"
+ },
+ {
+  "slug": "cuotas-gcp",
+  "title": "Las cuotas de GCP: el límite que descubrís en producción",
+  "category": "cloud",
+  "subcategory": "gcp",
+  "url": "/cloud/gcp/cuotas-gcp"
+ },
+ {
+  "slug": "cold-start",
+  "title": "Cold starts: el medio segundo que arruina la experiencia",
+  "category": "cloud",
+  "subcategory": "cloud-run",
+  "url": "/cloud/cloud-run/cold-start"
+ },
+ {
+  "slug": "scale-to-zero",
+  "title": "Escalar a cero: pagar exactamente por lo que usás",
+  "category": "cloud",
+  "subcategory": "cloud-run",
+  "url": "/cloud/cloud-run/scale-to-zero"
+ },
+ {
+  "slug": "stateless-obligado",
+  "title": "Por qué Cloud Run te obliga a ser stateless",
+  "category": "cloud",
+  "subcategory": "cloud-run",
+  "url": "/cloud/cloud-run/stateless-obligado"
+ },
+ {
+  "slug": "min-instances-factura",
+  "title": "min-instances: el truco caliente que infla la factura",
+  "category": "cloud",
+  "subcategory": "cloud-run",
+  "url": "/cloud/cloud-run/min-instances-factura"
+ },
+ {
+  "slug": "concurrency-dial",
+  "title": "Concurrency en Cloud Run: el dial que casi nadie toca",
+  "category": "cloud",
+  "subcategory": "cloud-run",
+  "url": "/cloud/cloud-run/concurrency-dial"
+ },
+ {
+  "slug": "columnar-terabytes",
+  "title": "Por qué BigQuery escanea terabytes en segundos: el formato columnar",
+  "category": "cloud",
+  "subcategory": "bigquery",
+  "url": "/cloud/bigquery/columnar-terabytes"
+ },
+ {
+  "slug": "select-star-caro",
+  "title": "SELECT * es caro: cómo BigQuery te cobra por columna",
+  "category": "cloud",
+  "subcategory": "bigquery",
+  "url": "/cloud/bigquery/select-star-caro"
+ },
+ {
+  "slug": "particionar-clusterizar",
+  "title": "Particionar y clusterizar: la diferencia entre $1 y $100 por query",
+  "category": "cloud",
+  "subcategory": "bigquery",
+  "url": "/cloud/bigquery/particionar-clusterizar"
+ },
+ {
+  "slug": "bigquery-ml-sql",
+  "title": "BQML: entrenar modelos de machine learning con SQL",
+  "category": "cloud",
+  "subcategory": "bigquery",
+  "url": "/cloud/bigquery/bigquery-ml-sql"
+ },
+ {
+  "slug": "slots-moneda",
+  "title": "Slots: la moneda invisible del cómputo en BigQuery",
+  "category": "cloud",
+  "subcategory": "bigquery",
+  "url": "/cloud/bigquery/slots-moneda"
+ },
+ {
+  "slug": "funciona-en-mi-maquina",
+  "title": "'Funciona en mi máquina': el problema que Docker mató",
+  "category": "cloud",
+  "subcategory": "docker",
+  "url": "/cloud/docker/funciona-en-mi-maquina"
+ },
+ {
+  "slug": "capas-cache",
+  "title": "Las capas de Docker: por qué el orden del Dockerfile importa",
+  "category": "cloud",
+  "subcategory": "docker",
+  "url": "/cloud/docker/capas-cache"
+ },
+ {
+  "slug": "imagen-gigante",
+  "title": "Tu imagen pesa 2GB y no debería: multi-stage builds",
+  "category": "cloud",
+  "subcategory": "docker",
+  "url": "/cloud/docker/imagen-gigante"
+ },
+ {
+  "slug": "contenedor-vs-vm",
+  "title": "Contenedor vs máquina virtual: la analogía del departamento",
+  "category": "cloud",
+  "subcategory": "docker",
+  "url": "/cloud/docker/contenedor-vs-vm"
+ },
+ {
+  "slug": "distroless",
+  "title": "Imágenes distroless: menos es más seguro",
+  "category": "cloud",
+  "subcategory": "docker",
+  "url": "/cloud/docker/distroless"
+ },
+ {
+  "slug": "serverless-igual-tiene-server",
+  "title": "Serverless igual tiene servidores (solo que no son tuyos)",
+  "category": "cloud",
+  "subcategory": "serverless",
+  "url": "/cloud/serverless/serverless-igual-tiene-server"
+ },
+ {
+  "slug": "event-driven",
+  "title": "Arquitectura por eventos: el código que reacciona",
+  "category": "cloud",
+  "subcategory": "serverless",
+  "url": "/cloud/serverless/event-driven"
+ },
+ {
+  "slug": "cold-start-serverless",
+  "title": "El cold start, el talón de Aquiles de lo serverless",
+  "category": "cloud",
+  "subcategory": "serverless",
+  "url": "/cloud/serverless/cold-start-serverless"
+ },
+ {
+  "slug": "costo-por-invocacion",
+  "title": "Pagar por invocación: cuándo conviene y cuándo no",
+  "category": "cloud",
+  "subcategory": "serverless",
+  "url": "/cloud/serverless/costo-por-invocacion"
+ },
+ {
+  "slug": "vendor-lock-in",
+  "title": "Vendor lock-in: la letra chica de lo serverless",
+  "category": "cloud",
+  "subcategory": "serverless",
+  "url": "/cloud/serverless/vendor-lock-in"
+ },
+ {
+  "slug": "pipeline-rojo",
+  "title": "El pipeline en rojo: por qué romper el build es sagrado",
+  "category": "cloud",
+  "subcategory": "cicd",
+  "url": "/cloud/cicd/pipeline-rojo"
+ },
+ {
+  "slug": "blue-green",
+  "title": "Deploy blue-green: cambiar el motor en pleno vuelo",
+  "category": "cloud",
+  "subcategory": "cicd",
+  "url": "/cloud/cicd/blue-green"
+ },
+ {
+  "slug": "rollback",
+  "title": "El arte del rollback: deshacer un deploy en un click",
+  "category": "cloud",
+  "subcategory": "cicd",
+  "url": "/cloud/cicd/rollback"
+ },
+ {
+  "slug": "tests-portero",
+  "title": "Tests como portero: lo que no pasa, no se despliega",
+  "category": "cloud",
+  "subcategory": "cicd",
+  "url": "/cloud/cicd/tests-portero"
+ },
+ {
+  "slug": "infra-como-codigo",
+  "title": "Infraestructura como código: tu nube entera en un repo",
+  "category": "cloud",
+  "subcategory": "cicd",
+  "url": "/cloud/cicd/infra-como-codigo"
+ },
+ {
+  "slug": "cuando-la-ia-suma",
+  "title": "Cuándo la IA suma de verdad",
+  "category": "ia-agentes",
+  "subcategory": "llms-prompting",
+  "url": "/ia-agentes/llms-prompting/cuando-la-ia-suma"
+ },
+ {
+  "slug": "q-learning-explicado",
+  "title": "Q-learning explicado: cómo una máquina aprende a jugar",
+  "category": "data-ml",
+  "subcategory": "reinforcement-learning",
+  "url": "/data-ml/reinforcement-learning/q-learning-explicado"
+ },
+ {
+  "slug": "seis-pilares-hiperautomatizacion",
+  "title": "De automatización a hiperautomatización: los 6 pilares",
+  "category": "hiperautomatizacion",
+  "subcategory": "bpmn",
+  "url": "/hiperautomatizacion/bpmn/seis-pilares-hiperautomatizacion"
+ }
+]

@@ -1,0 +1,1058 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>EDA — diagnóstico de datos</title><style>
+:root{--bg:#05070d;--fg:#eef2f7;--muted:#8b97a8;--border:rgba(255,255,255,.09);--cyan:#22d3ee;--coral:#ff6b3d;--surface:#0e131c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;padding:32px 20px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3,h4{font-weight:600;letter-spacing:-.01em;line-height:1.25}
+h1{font-size:1.7rem}h2{font-size:1.35rem;margin-top:2rem}h3{font-size:1.1rem}
+a{color:var(--cyan)}
+.md p{color:#cdd5e0}
+.md code,.code code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.md code{background:var(--surface);color:#67e8f9;padding:.1em .35em;border-radius:.3rem;font-size:.9em}
+.cell{margin:18px 0}
+pre.code{background:#03040a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:.5rem;padding:14px 16px;overflow-x:auto;font-size:.82rem;color:#d7deea}
+.outputs{margin-top:8px}
+pre.out{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:12px 14px;overflow-x:auto;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+pre.out.err{border-color:rgba(255,107,61,.4);color:#ff8a63}
+img{max-width:100%;border-radius:.5rem;border:1px solid var(--border);margin-top:8px}
+ul{padding-left:1.3rem}li{color:#cdd5e0}
+</style></head><body><div class='wrap'><section class='cell'><pre class='code'><code>import pandas as pd</code></pre></section><section class='cell'><pre class='code'><code>df = pd.read_csv(&#x27;/content/NY-House-Dataset.csv&#x27;)</code></pre></section><section class='cell'><pre class='code'><code>df.head()</code></pre><div class='outputs'>
+  <div id="df-22e35d5f-99d6-480b-9b96-7ec41622b270" class="colab-df-container">
+    <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>BROKERTITLE</th>
+      <th>TYPE</th>
+      <th>PRICE</th>
+      <th>BEDS</th>
+      <th>BATH</th>
+      <th>PROPERTYSQFT</th>
+      <th>ADDRESS</th>
+      <th>STATE</th>
+      <th>MAIN_ADDRESS</th>
+      <th>ADMINISTRATIVE_AREA_LEVEL_2</th>
+      <th>LOCALITY</th>
+      <th>SUBLOCALITY</th>
+      <th>STREET_NAME</th>
+      <th>LONG_NAME</th>
+      <th>FORMATTED_ADDRESS</th>
+      <th>LATITUDE</th>
+      <th>LONGITUDE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Brokered by Douglas Elliman  -111 Fifth Ave</td>
+      <td>Condo for sale</td>
+      <td>315000</td>
+      <td>2</td>
+      <td>2.000000</td>
+      <td>1400.0</td>
+      <td>2 E 55th St Unit 803</td>
+      <td>New York, NY 10022</td>
+      <td>2 E 55th St Unit 803New York, NY 10022</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>Manhattan</td>
+      <td>East 55th Street</td>
+      <td>Regis Residence</td>
+      <td>Regis Residence, 2 E 55th St #803, New York, N...</td>
+      <td>40.761255</td>
+      <td>-73.974483</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Brokered by Serhant</td>
+      <td>Condo for sale</td>
+      <td>195000000</td>
+      <td>7</td>
+      <td>10.000000</td>
+      <td>17545.0</td>
+      <td>Central Park Tower Penthouse-217 W 57th New Yo...</td>
+      <td>New York, NY 10019</td>
+      <td>Central Park Tower Penthouse-217 W 57th New Yo...</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>West 57th Street</td>
+      <td>217 W 57th St, New York, NY 10019, USA</td>
+      <td>40.766393</td>
+      <td>-73.980991</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Brokered by Sowae Corp</td>
+      <td>House for sale</td>
+      <td>260000</td>
+      <td>4</td>
+      <td>2.000000</td>
+      <td>2015.0</td>
+      <td>620 Sinclair Ave</td>
+      <td>Staten Island, NY 10312</td>
+      <td>620 Sinclair AveStaten Island, NY 10312</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>Richmond County</td>
+      <td>Staten Island</td>
+      <td>Sinclair Avenue</td>
+      <td>620 Sinclair Ave, Staten Island, NY 10312, USA</td>
+      <td>40.541805</td>
+      <td>-74.196109</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Brokered by COMPASS</td>
+      <td>Condo for sale</td>
+      <td>69000</td>
+      <td>3</td>
+      <td>1.000000</td>
+      <td>445.0</td>
+      <td>2 E 55th St Unit 908W33</td>
+      <td>Manhattan, NY 10022</td>
+      <td>2 E 55th St Unit 908W33Manhattan, NY 10022</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>East 55th Street</td>
+      <td>2 E 55th St, New York, NY 10022, USA</td>
+      <td>40.761398</td>
+      <td>-73.974613</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Brokered by Sotheby's International Realty - E...</td>
+      <td>Townhouse for sale</td>
+      <td>55000000</td>
+      <td>7</td>
+      <td>2.373861</td>
+      <td>14175.0</td>
+      <td>5 E 64th St</td>
+      <td>New York, NY 10065</td>
+      <td>5 E 64th StNew York, NY 10065</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>East 64th Street</td>
+      <td>5 E 64th St, New York, NY 10065, USA</td>
+      <td>40.767224</td>
+      <td>-73.969856</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+    <div class="colab-df-buttons">
+
+  <div class="colab-df-container">
+    <button class="colab-df-convert" onclick="convertToInteractive('df-22e35d5f-99d6-480b-9b96-7ec41622b270')"
+            title="Convert this dataframe to an interactive table."
+            style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960">
+    <path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"/>
+  </svg>
+    </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    .colab-df-buttons div {
+      margin-bottom: 4px;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+    <script>
+      const buttonEl =
+        document.querySelector('#df-22e35d5f-99d6-480b-9b96-7ec41622b270 button.colab-df-convert');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      async function convertToInteractive(key) {
+        const element = document.querySelector('#df-22e35d5f-99d6-480b-9b96-7ec41622b270');
+        const dataTable =
+          await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                    [key], {});
+        if (!dataTable) return;
+
+        const docLinkHtml = 'Like what you see? Visit the ' +
+          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+          + ' to learn more about interactive tables.';
+        element.innerHTML = '';
+        dataTable['output_type'] = 'display_data';
+        await google.colab.output.renderOutput(dataTable, element);
+        const docLink = document.createElement('div');
+        docLink.innerHTML = docLinkHtml;
+        element.appendChild(docLink);
+      }
+    </script>
+  </div>
+
+
+    <div id="df-dc3f9ef7-3db7-44b3-bce8-816d756fbc53">
+      <button class="colab-df-quickchart" onclick="quickchart('df-dc3f9ef7-3db7-44b3-bce8-816d756fbc53')"
+                title="Suggest charts"
+                style="display:none;">
+
+<svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+     width="24px">
+    <g>
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+    </g>
+</svg>
+      </button>
+
+<style>
+  .colab-df-quickchart {
+      --bg-color: #E8F0FE;
+      --fill-color: #1967D2;
+      --hover-bg-color: #E2EBFA;
+      --hover-fill-color: #174EA6;
+      --disabled-fill-color: #AAA;
+      --disabled-bg-color: #DDD;
+  }
+
+  [theme=dark] .colab-df-quickchart {
+      --bg-color: #3B4455;
+      --fill-color: #D2E3FC;
+      --hover-bg-color: #434B5C;
+      --hover-fill-color: #FFFFFF;
+      --disabled-bg-color: #3B4455;
+      --disabled-fill-color: #666;
+  }
+
+  .colab-df-quickchart {
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    fill: var(--fill-color);
+    height: 32px;
+    padding: 0;
+    width: 32px;
+  }
+
+  .colab-df-quickchart:hover {
+    background-color: var(--hover-bg-color);
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    fill: var(--button-hover-fill-color);
+  }
+
+  .colab-df-quickchart-complete:disabled,
+  .colab-df-quickchart-complete:disabled:hover {
+    background-color: var(--disabled-bg-color);
+    fill: var(--disabled-fill-color);
+    box-shadow: none;
+  }
+
+  .colab-df-spinner {
+    border: 2px solid var(--fill-color);
+    border-color: transparent;
+    border-bottom-color: var(--fill-color);
+    animation:
+      spin 1s steps(1) infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+      border-left-color: var(--fill-color);
+    }
+    20% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    30% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+      border-right-color: var(--fill-color);
+    }
+    40% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    60% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+    }
+    80% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-bottom-color: var(--fill-color);
+    }
+    90% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+    }
+  }
+</style>
+
+      <script>
+        async function quickchart(key) {
+          const quickchartButtonEl =
+            document.querySelector('#' + key + ' button');
+          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.
+          quickchartButtonEl.classList.add('colab-df-spinner');
+          try {
+            const charts = await google.colab.kernel.invokeFunction(
+                'suggestCharts', [key], {});
+          } catch (error) {
+            console.error('Error during call to suggestCharts:', error);
+          }
+          quickchartButtonEl.classList.remove('colab-df-spinner');
+          quickchartButtonEl.classList.add('colab-df-quickchart-complete');
+        }
+        (() => {
+          let quickchartButtonEl =
+            document.querySelector('#df-dc3f9ef7-3db7-44b3-bce8-816d756fbc53 button');
+          quickchartButtonEl.style.display =
+            google.colab.kernel.accessAllowed ? 'block' : 'none';
+        })();
+      </script>
+    </div>
+
+    </div>
+  </div>
+</div></section><section class='cell'><pre class='code'><code>df[df[&#x27;SUBLOCALITY&#x27;] == &#x27;Brooklyn&#x27;].groupby(&#x27;SUBLOCALITY&#x27;).size()</code></pre><div class='outputs'><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+    </tr>
+    <tr>
+      <th>SUBLOCALITY</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Brooklyn</th>
+      <td>464</td>
+    </tr>
+  </tbody>
+</table>
+</div><br><label><b>dtype:</b> int64</label></div></section><section class='cell'><pre class='code'><code>df.info()</code></pre><div class='outputs'><pre class='out'>&lt;class &#x27;pandas.core.frame.DataFrame&#x27;&gt;
+RangeIndex: 4801 entries, 0 to 4800
+Data columns (total 17 columns):
+ #   Column                       Non-Null Count  Dtype  
+---  ------                       --------------  -----  
+ 0   BROKERTITLE                  4801 non-null   object 
+ 1   TYPE                         4801 non-null   object 
+ 2   PRICE                        4801 non-null   int64  
+ 3   BEDS                         4801 non-null   int64  
+ 4   BATH                         4801 non-null   float64
+ 5   PROPERTYSQFT                 4801 non-null   float64
+ 6   ADDRESS                      4801 non-null   object 
+ 7   STATE                        4801 non-null   object 
+ 8   MAIN_ADDRESS                 4801 non-null   object 
+ 9   ADMINISTRATIVE_AREA_LEVEL_2  4801 non-null   object 
+ 10  LOCALITY                     4801 non-null   object 
+ 11  SUBLOCALITY                  4801 non-null   object 
+ 12  STREET_NAME                  4801 non-null   object 
+ 13  LONG_NAME                    4801 non-null   object 
+ 14  FORMATTED_ADDRESS            4801 non-null   object 
+ 15  LATITUDE                     4801 non-null   float64
+ 16  LONGITUDE                    4801 non-null   float64
+dtypes: float64(4), int64(2), object(11)
+memory usage: 637.8+ KB
+</pre></div></section><section class='cell'><pre class='code'><code>df.dtypes</code></pre><div class='outputs'><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>BROKERTITLE</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>TYPE</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>PRICE</th>
+      <td>int64</td>
+    </tr>
+    <tr>
+      <th>BEDS</th>
+      <td>int64</td>
+    </tr>
+    <tr>
+      <th>BATH</th>
+      <td>float64</td>
+    </tr>
+    <tr>
+      <th>PROPERTYSQFT</th>
+      <td>float64</td>
+    </tr>
+    <tr>
+      <th>ADDRESS</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>STATE</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>MAIN_ADDRESS</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>ADMINISTRATIVE_AREA_LEVEL_2</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>LOCALITY</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>SUBLOCALITY</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>STREET_NAME</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>LONG_NAME</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>FORMATTED_ADDRESS</th>
+      <td>object</td>
+    </tr>
+    <tr>
+      <th>LATITUDE</th>
+      <td>float64</td>
+    </tr>
+    <tr>
+      <th>LONGITUDE</th>
+      <td>float64</td>
+    </tr>
+  </tbody>
+</table>
+</div><br><label><b>dtype:</b> object</label></div></section><section class='md'><p>#Respuestas</p></section><section class='md'><p>1. Cuantas filas tiene el dataset?</p>
+<p>2. Que tipos de datos tienen las columnas?</p>
+<p>3. Cuales columnas son numericas y cuales son categoricas?</p>
+<p>4. Si quisiera hacer un analisis de precio segun la localidad, que columnas eligiria para el analisis?</p>
+<p>5. Cuantas casas son de Brooklyn?</p>
+<p>6. Modificar la columna “Type” y reemplazar los espacios “ “ por guiones “-”</p></section><section class='md'><p>1. El dataset tiene 4801 registros</p>
+<p>2. Categóricos y numéricos</p>
+<p>3. Los campos BROKERTITLE, TYPE, ADDRESS, STATE, MAIN_ADDRESS, ADMINISTRATIVE_AREA_LEVEL_2, LOCALITY, SUBLOCALITY, STREET_NAME, LONG_NAME y FORMATTED_ADDRESS son de tipo object (categóricos), mientras que PRICE y BEDS son enteros (int64), y BATH, PROPERTYSQFT, LATITUDE y LONGITUDE son numéricos decimales (float64)</p>
+<p>4. LOCALITY → representa la localidad o barrio principal (variable categórica clave).</p>
+<p>  PRICE → el valor de la propiedad (variable numérica dependiente).</p>
+<p>5. 464</p></section><section class='cell'><pre class='code'><code>df[&#x27;TYPE&#x27;] = df[&#x27;TYPE&#x27;].str.replace(&#x27; &#x27;, &#x27;-&#x27;)
+df</code></pre><div class='outputs'>
+  <div id="df-55c39f25-df61-4f44-a376-8b5911dd1b47" class="colab-df-container">
+    <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>BROKERTITLE</th>
+      <th>TYPE</th>
+      <th>PRICE</th>
+      <th>BEDS</th>
+      <th>BATH</th>
+      <th>PROPERTYSQFT</th>
+      <th>ADDRESS</th>
+      <th>STATE</th>
+      <th>MAIN_ADDRESS</th>
+      <th>ADMINISTRATIVE_AREA_LEVEL_2</th>
+      <th>LOCALITY</th>
+      <th>SUBLOCALITY</th>
+      <th>STREET_NAME</th>
+      <th>LONG_NAME</th>
+      <th>FORMATTED_ADDRESS</th>
+      <th>LATITUDE</th>
+      <th>LONGITUDE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Brokered by Douglas Elliman  -111 Fifth Ave</td>
+      <td>Condo-for-sale</td>
+      <td>315000</td>
+      <td>2</td>
+      <td>2.000000</td>
+      <td>1400.000000</td>
+      <td>2 E 55th St Unit 803</td>
+      <td>New York, NY 10022</td>
+      <td>2 E 55th St Unit 803New York, NY 10022</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>Manhattan</td>
+      <td>East 55th Street</td>
+      <td>Regis Residence</td>
+      <td>Regis Residence, 2 E 55th St #803, New York, N...</td>
+      <td>40.761255</td>
+      <td>-73.974483</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Brokered by Serhant</td>
+      <td>Condo-for-sale</td>
+      <td>195000000</td>
+      <td>7</td>
+      <td>10.000000</td>
+      <td>17545.000000</td>
+      <td>Central Park Tower Penthouse-217 W 57th New Yo...</td>
+      <td>New York, NY 10019</td>
+      <td>Central Park Tower Penthouse-217 W 57th New Yo...</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>West 57th Street</td>
+      <td>217 W 57th St, New York, NY 10019, USA</td>
+      <td>40.766393</td>
+      <td>-73.980991</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Brokered by Sowae Corp</td>
+      <td>House-for-sale</td>
+      <td>260000</td>
+      <td>4</td>
+      <td>2.000000</td>
+      <td>2015.000000</td>
+      <td>620 Sinclair Ave</td>
+      <td>Staten Island, NY 10312</td>
+      <td>620 Sinclair AveStaten Island, NY 10312</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>Richmond County</td>
+      <td>Staten Island</td>
+      <td>Sinclair Avenue</td>
+      <td>620 Sinclair Ave, Staten Island, NY 10312, USA</td>
+      <td>40.541805</td>
+      <td>-74.196109</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Brokered by COMPASS</td>
+      <td>Condo-for-sale</td>
+      <td>69000</td>
+      <td>3</td>
+      <td>1.000000</td>
+      <td>445.000000</td>
+      <td>2 E 55th St Unit 908W33</td>
+      <td>Manhattan, NY 10022</td>
+      <td>2 E 55th St Unit 908W33Manhattan, NY 10022</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>East 55th Street</td>
+      <td>2 E 55th St, New York, NY 10022, USA</td>
+      <td>40.761398</td>
+      <td>-73.974613</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Brokered by Sotheby's International Realty - E...</td>
+      <td>Townhouse-for-sale</td>
+      <td>55000000</td>
+      <td>7</td>
+      <td>2.373861</td>
+      <td>14175.000000</td>
+      <td>5 E 64th St</td>
+      <td>New York, NY 10065</td>
+      <td>5 E 64th StNew York, NY 10065</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>East 64th Street</td>
+      <td>5 E 64th St, New York, NY 10065, USA</td>
+      <td>40.767224</td>
+      <td>-73.969856</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>4796</th>
+      <td>Brokered by COMPASS</td>
+      <td>Co-op-for-sale</td>
+      <td>599000</td>
+      <td>1</td>
+      <td>1.000000</td>
+      <td>2184.207862</td>
+      <td>222 E 80th St Apt 3A</td>
+      <td>Manhattan, NY 10075</td>
+      <td>222 E 80th St Apt 3AManhattan, NY 10075</td>
+      <td>New York</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>Manhattan</td>
+      <td>222</td>
+      <td>222 E 80th St #3a, New York, NY 10075, USA</td>
+      <td>40.774350</td>
+      <td>-73.955879</td>
+    </tr>
+    <tr>
+      <th>4797</th>
+      <td>Brokered by Mjr Real Estate Llc</td>
+      <td>Co-op-for-sale</td>
+      <td>245000</td>
+      <td>1</td>
+      <td>1.000000</td>
+      <td>2184.207862</td>
+      <td>97-40 62 Dr Unit Lg</td>
+      <td>Rego Park, NY 11374</td>
+      <td>97-40 62 Dr Unit LgRego Park, NY 11374</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>Queens County</td>
+      <td>Queens</td>
+      <td>62nd Drive</td>
+      <td>97-40 62nd Dr, Rego Park, NY 11374, USA</td>
+      <td>40.732538</td>
+      <td>-73.860152</td>
+    </tr>
+    <tr>
+      <th>4798</th>
+      <td>Brokered by Douglas Elliman - 575 Madison Ave</td>
+      <td>Co-op-for-sale</td>
+      <td>1275000</td>
+      <td>1</td>
+      <td>1.000000</td>
+      <td>2184.207862</td>
+      <td>427 W 21st St Unit Garden</td>
+      <td>New York, NY 10011</td>
+      <td>427 W 21st St Unit GardenNew York, NY 10011</td>
+      <td>United States</td>
+      <td>New York</td>
+      <td>New York County</td>
+      <td>New York</td>
+      <td>West 21st Street</td>
+      <td>427 W 21st St, New York, NY 10011, USA</td>
+      <td>40.745882</td>
+      <td>-74.003398</td>
+    </tr>
+    <tr>
+      <th>4799</th>
+      <td>Brokered by E Realty International Corp</td>
+      <td>Condo-for-sale</td>
+      <td>598125</td>
+      <td>2</td>
+      <td>1.000000</td>
+      <td>655.000000</td>
+      <td>91-23 Corona Ave Unit 4G</td>
+      <td>Elmhurst, NY 11373</td>
+      <td>91-23 Corona Ave Unit 4GElmhurst, NY 11373</td>
+      <td>New York</td>
+      <td>Queens County</td>
+      <td>Queens</td>
+      <td>Flushing</td>
+      <td>91-23</td>
+      <td>91-23 Corona Ave. #4b, Flushing, NY 11373, USA</td>
+      <td>40.742770</td>
+      <td>-73.872752</td>
+    </tr>
+    <tr>
+      <th>4800</th>
+      <td>Brokered by Nyc Realty Brokers Llc</td>
+      <td>Co-op-for-sale</td>
+      <td>349000</td>
+      <td>1</td>
+      <td>1.000000</td>
+      <td>750.000000</td>
+      <td>460 Neptune Ave Apt 14O</td>
+      <td>Brooklyn, NY 11224</td>
+      <td>460 Neptune Ave Apt 14OBrooklyn, NY 11224</td>
+      <td>New York</td>
+      <td>Kings County</td>
+      <td>Brooklyn</td>
+      <td>Coney Island</td>
+      <td>460</td>
+      <td>460 Neptune Ave #14a, Brooklyn, NY 11224, USA</td>
+      <td>40.579147</td>
+      <td>-73.970949</td>
+    </tr>
+  </tbody>
+</table>
+<p>4801 rows × 17 columns</p>
+</div>
+    <div class="colab-df-buttons">
+
+  <div class="colab-df-container">
+    <button class="colab-df-convert" onclick="convertToInteractive('df-55c39f25-df61-4f44-a376-8b5911dd1b47')"
+            title="Convert this dataframe to an interactive table."
+            style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960">
+    <path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"/>
+  </svg>
+    </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    .colab-df-buttons div {
+      margin-bottom: 4px;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+    <script>
+      const buttonEl =
+        document.querySelector('#df-55c39f25-df61-4f44-a376-8b5911dd1b47 button.colab-df-convert');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      async function convertToInteractive(key) {
+        const element = document.querySelector('#df-55c39f25-df61-4f44-a376-8b5911dd1b47');
+        const dataTable =
+          await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                    [key], {});
+        if (!dataTable) return;
+
+        const docLinkHtml = 'Like what you see? Visit the ' +
+          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+          + ' to learn more about interactive tables.';
+        element.innerHTML = '';
+        dataTable['output_type'] = 'display_data';
+        await google.colab.output.renderOutput(dataTable, element);
+        const docLink = document.createElement('div');
+        docLink.innerHTML = docLinkHtml;
+        element.appendChild(docLink);
+      }
+    </script>
+  </div>
+
+
+    <div id="df-d1ccc762-842a-41f8-9e7c-043f73c19d98">
+      <button class="colab-df-quickchart" onclick="quickchart('df-d1ccc762-842a-41f8-9e7c-043f73c19d98')"
+                title="Suggest charts"
+                style="display:none;">
+
+<svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+     width="24px">
+    <g>
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+    </g>
+</svg>
+      </button>
+
+<style>
+  .colab-df-quickchart {
+      --bg-color: #E8F0FE;
+      --fill-color: #1967D2;
+      --hover-bg-color: #E2EBFA;
+      --hover-fill-color: #174EA6;
+      --disabled-fill-color: #AAA;
+      --disabled-bg-color: #DDD;
+  }
+
+  [theme=dark] .colab-df-quickchart {
+      --bg-color: #3B4455;
+      --fill-color: #D2E3FC;
+      --hover-bg-color: #434B5C;
+      --hover-fill-color: #FFFFFF;
+      --disabled-bg-color: #3B4455;
+      --disabled-fill-color: #666;
+  }
+
+  .colab-df-quickchart {
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    fill: var(--fill-color);
+    height: 32px;
+    padding: 0;
+    width: 32px;
+  }
+
+  .colab-df-quickchart:hover {
+    background-color: var(--hover-bg-color);
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    fill: var(--button-hover-fill-color);
+  }
+
+  .colab-df-quickchart-complete:disabled,
+  .colab-df-quickchart-complete:disabled:hover {
+    background-color: var(--disabled-bg-color);
+    fill: var(--disabled-fill-color);
+    box-shadow: none;
+  }
+
+  .colab-df-spinner {
+    border: 2px solid var(--fill-color);
+    border-color: transparent;
+    border-bottom-color: var(--fill-color);
+    animation:
+      spin 1s steps(1) infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+      border-left-color: var(--fill-color);
+    }
+    20% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    30% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+      border-right-color: var(--fill-color);
+    }
+    40% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    60% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+    }
+    80% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-bottom-color: var(--fill-color);
+    }
+    90% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+    }
+  }
+</style>
+
+      <script>
+        async function quickchart(key) {
+          const quickchartButtonEl =
+            document.querySelector('#' + key + ' button');
+          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.
+          quickchartButtonEl.classList.add('colab-df-spinner');
+          try {
+            const charts = await google.colab.kernel.invokeFunction(
+                'suggestCharts', [key], {});
+          } catch (error) {
+            console.error('Error during call to suggestCharts:', error);
+          }
+          quickchartButtonEl.classList.remove('colab-df-spinner');
+          quickchartButtonEl.classList.add('colab-df-quickchart-complete');
+        }
+        (() => {
+          let quickchartButtonEl =
+            document.querySelector('#df-d1ccc762-842a-41f8-9e7c-043f73c19d98 button');
+          quickchartButtonEl.style.display =
+            google.colab.kernel.accessAllowed ? 'block' : 'none';
+        })();
+      </script>
+    </div>
+
+  <div id="id_61b9079c-fa9f-47ec-b65b-5482721315fb">
+    <style>
+      .colab-df-generate {
+        background-color: #E8F0FE;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        fill: #1967D2;
+        height: 32px;
+        padding: 0 0 0 0;
+        width: 32px;
+      }
+
+      .colab-df-generate:hover {
+        background-color: #E2EBFA;
+        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+        fill: #174EA6;
+      }
+
+      [theme=dark] .colab-df-generate {
+        background-color: #3B4455;
+        fill: #D2E3FC;
+      }
+
+      [theme=dark] .colab-df-generate:hover {
+        background-color: #434B5C;
+        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+        fill: #FFFFFF;
+      }
+    </style>
+    <button class="colab-df-generate" onclick="generateWithVariable('df')"
+            title="Generate code using this dataframe."
+            style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z"/>
+  </svg>
+    </button>
+    <script>
+      (() => {
+      const buttonEl =
+        document.querySelector('#id_61b9079c-fa9f-47ec-b65b-5482721315fb button.colab-df-generate');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      buttonEl.onclick = () => {
+        google.colab.notebook.generateWithVariable('df');
+      }
+      })();
+    </script>
+  </div>
+
+    </div>
+  </div>
+</div></section></div></body></html>
