@@ -22,7 +22,7 @@ La intuición es que un ojo no es más que cierta combinación de curvas y manch
 
 ## ¿Cómo sabemos que pasa esto?
 
-Acá viene lo lindo: se puede *mirar*. Hay técnicas de visualización de features que, dada una neurona de una capa, generan la imagen que más la activa. Cuando lo hacés, ves con tus propios ojos cómo las primeras neuronas se prenden con rayitas y las profundas con texturas de pelaje o con caras enteras. Es una de las pruebas más elegantes de que la red no memoriza píxeles: aprende una **jerarquía de representaciones**.
+Lo bueno es que se puede *mirar*. Hay técnicas de visualización de features que, dada una neurona de una capa, generan la imagen que más la activa. Cuando lo hacés, ves con tus propios ojos cómo las primeras neuronas se prenden con rayitas y las profundas con texturas de pelaje o con caras enteras. Es una de las pruebas más elegantes de que la red no memoriza píxeles: aprende una **jerarquía de representaciones**.
 
 ```
 entrada → [bordes] → [texturas] → [partes] → [objetos] → "gato"
@@ -35,4 +35,4 @@ Esta progresión también explica por qué [una red entrenada en gatos sirve par
 
 Saber que la red construye conceptos a partir de texturas y bordes no es trivia: explica sus errores. Si una CNN se apoya demasiado en la textura y poco en la forma global, podés terminar con [ilusiones ópticas de la red](/ia-agentes/vision/ilusiones-redes) donde un elefante con piel de gato se clasifica como gato. Y entender qué features mira cada capa es la puerta a temas más finos, como las [tres tareas distintas de la visión](/ia-agentes/vision/clasificar-detectar-segmentar) o por qué un parche bien diseñado puede romper todo.
 
-La moraleja para mí es casi filosófica: la inteligencia visual de estas redes no es un truco monolítico. Es una pila de abstracciones simples, cada una parándose sobre la anterior. Nadie le enseñó qué es un ojo. Le mostramos millones de imágenes y dejamos que la jerarquía se acomodara sola. Que algo tan ordenado emerja del puro gradiente descendente sigue pareciéndome de las cosas más raras y hermosas del deep learning.
+Lo que me queda dando vueltas es casi filosófico: la inteligencia visual de estas redes no es un truco monolítico. Es una pila de abstracciones simples, cada una parándose sobre la anterior. Nadie le enseñó qué es un ojo. Le mostramos millones de imágenes y dejamos que la jerarquía se acomodara sola. Que algo tan ordenado emerja del puro gradiente descendente sigue pareciéndome de las cosas más raras y hermosas del deep learning.

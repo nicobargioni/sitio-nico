@@ -17,7 +17,7 @@ Lo clave es que Docker **cachea** cada capa. Cuando reconstruís, recorre el Doc
 
 ## El error clásico
 
-Acá está el truco que casi nadie ve la primera vez. Mirá este orden:
+El error que casi nadie ve la primera vez. Mirá este orden:
 
 ```dockerfile
 FROM python:3.11-slim
@@ -54,6 +54,6 @@ En tu laptop esto es comodidad. En un [pipeline de CI/CD](/cloud/cicd/pipeline-r
 
 Y justamente para mantenerla liviana, las capas se combinan con otra técnica: los [multi-stage builds](/cloud/docker/imagen-gigante), que separan el entorno de compilación del de ejecución. Todo esto descansa sobre la misma idea que hizo que [Docker matara el "funciona en mi máquina"](/cloud/docker/funciona-en-mi-maquina): la imagen es un artefacto reproducible, y entender sus capas es entender cómo se arma. Si querés llevar la cebolla al extremo de seguridad, mirá las [imágenes distroless](/cloud/docker/distroless).
 
-## El cierre
+## Un detalle que no lo es
 
-Las capas parecen un detalle de implementación, pero entenderlas cambia cómo escribís Dockerfiles. No es magia ni suerte: el orden de las líneas es una decisión de diseño, y la cache premia a quien la piensa.
+Las capas parecen un detalle de implementación, pero entenderlas cambia cómo escribís Dockerfiles. El orden de las líneas es una decisión de diseño, y la cache premia a quien la piensa.

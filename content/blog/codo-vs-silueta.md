@@ -42,7 +42,7 @@ Cerca de +1, el punto está cómodo en su grupo y lejos del resto. Cerca de 0, e
 
 ## Cuándo discrepan (y a quién creerle)
 
-Acá está lo interesante. El codo solo mira cohesión interna; la silueta también mira separación entre grupos. Por eso:
+Ahí está la diferencia de fondo. El codo solo mira cohesión interna; la silueta también mira separación entre grupos. Por eso:
 
 - Si los clusters son compactos pero **están pegados**, el codo puede sugerir muchos grupos y la silueta pocos: ve que no están bien separados.
 - Si hay un grupo grande y disperso, el codo lo penaliza (mucha inercia) mientras la silueta puede tolerarlo.

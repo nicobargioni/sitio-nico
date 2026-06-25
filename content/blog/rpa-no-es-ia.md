@@ -1,13 +1,13 @@
 ---
 title: "RPA no es IA: el robot que copia y pega (y por qué importa)"
 date: "2026-04-12"
-excerpt: "¿Sabías que el 'robot' de RPA no entiende nada? Solo repite clicks. La diferencia con la IA cambia qué podés automatizar y qué no."
+excerpt: "El 'robot' de RPA no entiende nada: solo repite clicks. La diferencia con la IA cambia qué podés automatizar y qué no."
 tags: ["rpa", "automatizacion", "curiosidades"]
 category: "hiperautomatizacion"
 subcategory: "rpa"
 ---
 
-> ¿Sabías que el "robot" de un proyecto de RPA no entiende absolutamente nada de lo que hace? Abre el sistema, hace click en el botón de la esquina superior derecha, copia el número de la celda 3 y lo pega en otra ventana. Punto. Si mañana movés ese botón un centímetro, el robot queda paralizado.
+> El "robot" de un proyecto de RPA no entiende absolutamente nada de lo que hace. Abre el sistema, hace click en el botón de la esquina superior derecha, copia el número de la celda 3 y lo pega en otra ventana. Punto. Si mañana movés ese botón un centímetro, el robot queda paralizado.
 
 La palabra "robot" en RPA (Robotic Process Automation) genera una confusión enorme. Mucha gente asume que detrás de UiPath, Automation Anywhere o Power Automate hay algún tipo de inteligencia que "aprende" la tarea. No la hay. Hay una grabación de pasos, ejecutada con una fidelidad obsesiva y una flexibilidad nula.
 

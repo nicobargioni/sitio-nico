@@ -43,4 +43,4 @@ En todos los casos, la receta es la misma: medí lo recorrido, estimá lo que fa
 
 A* es elegante porque equilibra dos sesgos opuestos. La parte g lo mantiene con los pies en la tierra, sin olvidar el costo real. La parte h le da ambición, lo empuja hacia el objetivo. Una búsqueda que solo usa g es prudente pero lenta; una que solo usa h es entusiasta pero se choca contra obstáculos.
 
-La próxima vez que el GPS recalcule la ruta en un segundo, acordate de que detrás hay una idea simple: sumar lo que ya hiciste con una estimación honesta de lo que te falta. Casi toda la búsqueda inteligente nace de ese equilibrio.
+Cuando el GPS recalcula la ruta en un segundo, detrás hay una idea simple: sumar lo que ya hiciste con una estimación honesta de lo que te falta. Casi toda la búsqueda inteligente nace de ese equilibrio.

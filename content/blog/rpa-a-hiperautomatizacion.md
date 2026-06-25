@@ -1,13 +1,13 @@
 ---
 title: "De RPA a hiperautomatización: el salto que cambia el ROI"
 date: "2026-04-08"
-excerpt: "¿Sabías que un bot de RPA solo, sin IA ni datos de proceso, suele tocar techo rápido? El salto a hiperautomatización es lo que multiplica el retorno."
+excerpt: "Un bot de RPA solo, sin IA ni datos de proceso, toca techo rápido. El salto a la hiperautomatización es lo que multiplica el retorno."
 tags: ["rpa", "automatizacion", "curiosidades"]
 category: "hiperautomatizacion"
 subcategory: "rpa"
 ---
 
-> ¿Sabías que la mayoría de los proyectos de RPA que decepcionan no fallan por el bot, sino por quedarse en el bot? Automatizan una tarea, recuperan unas horas, y ahí se estancan. El salto que cambia el retorno no es hacer *más* bots: es sumarles cabeza, ojos y un cerebro que coordina.
+> La mayoría de los proyectos de RPA que decepcionan no fallan por el bot, sino por quedarse en el bot. Automatizan una tarea, recuperan unas horas, y ahí se estancan. El salto que cambia el retorno no es hacer *más* bots: es sumarles cabeza, ojos y un cerebro que coordina.
 
 Ese salto tiene nombre: **hiperautomatización**. No es una herramienta nueva, es un enfoque. Gartner acuñó el término para describir lo que pasa cuando dejás de automatizar tareas sueltas y empezás a automatizar **procesos completos**, combinando varias tecnologías que se potencian.
 
@@ -40,4 +40,4 @@ Un error común es comprar toda la pila de golpe y armar un Frankenstein que nad
 3. **Sumá IA solo donde hay criterio.** No metas un LLM donde alcanzaba un `if` —ahí solo agregás costo y una fuente de error, y conviene recordar [cuándo la IA suma de verdad](/ia-agentes/llms-prompting/cuando-la-ia-suma).
 4. **Orquestá y dejá a los humanos las excepciones.** Diseñá el [human-in-the-loop](/hiperautomatizacion/idp/human-in-the-loop) para los casos donde la confianza del modelo no alcanza.
 
-La hiperautomatización no es magia ni una sola herramienta: es la disciplina de combinar lo determinístico con lo probabilístico, cada cosa en su lugar. El bot sigue siendo el caballito de batalla. Solo que ahora deja de trabajar solo —y ese es, exactamente, el salto que cambia el ROI.
+La hiperautomatización no es una sola herramienta: es la disciplina de combinar lo determinístico con lo probabilístico, cada cosa en su lugar. El bot sigue siendo el caballito de batalla. Solo que ahora deja de trabajar solo —y ese es, exactamente, el salto que cambia el ROI.

@@ -27,7 +27,7 @@ Y hay un cuarto nivel, la **segmentación de instancias**, que distingue además
 
 ## El costo está en las etiquetas
 
-Acá viene lo que casi nadie dice en las demos. La dificultad y el precio escalan brutal con la granularidad, sobre todo del lado del **etiquetado humano**:
+Lo que casi nadie dice en las demos: la dificultad y el precio escalan brutal con la granularidad, sobre todo del lado del **etiquetado humano**:
 
 - Clasificar: alguien mira la foto y tipea una palabra. Segundos.
 - Detectar: alguien dibuja cajas alrededor de cada objeto. Minutos.
@@ -43,4 +43,4 @@ Eso explica un patrón muy común: se entrena una red potente para clasificació
 
 Y las tres heredan las mismas fragilidades del medio. Un modelo de detección puede caer en [las ilusiones ópticas de las redes](/ia-agentes/vision/ilusiones-redes) o, peor, ante un parche diseñado a propósito, como [un sticker que engaña a un auto autónomo](/ia-agentes/vision/sticker-adversario) y le hace ver una señal de tránsito donde no la hay.
 
-La moraleja práctica: cuando alguien te dice "necesitamos IA que vea X", la primera pregunta no es qué arquitectura usar. Es cuál de estas tres preguntas estás respondiendo de verdad. La respuesta define el dataset, el presupuesto y la mitad del proyecto.
+En la práctica: cuando alguien te dice "necesitamos IA que vea X", la primera pregunta no es qué arquitectura usar. Es cuál de estas tres preguntas estás respondiendo de verdad. La respuesta define el dataset, el presupuesto y la mitad del proyecto.

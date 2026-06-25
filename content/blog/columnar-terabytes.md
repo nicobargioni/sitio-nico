@@ -33,4 +33,4 @@ Si el costo y la velocidad dependen de **cuántas columnas tocás**, entonces el
 
 El cómputo que hace ese escaneo paralelo no es infinito ni gratis: se mide en una unidad propia que cuento en [slots, la moneda invisible](/cloud/bigquery/slots-moneda). Y todo esto vive dentro del ecosistema más amplio de [Google Cloud](/cloud/gcp/vertex-sin-modelo), donde el mismo principio —pagás por lo que consumís— se repite servicio tras servicio.
 
-La moraleja es simple: BigQuery no es rápido por fuerza bruta. Es rápido porque guarda los datos de la forma en que vos los vas a preguntar. Entender eso es lo que separa una factura de diez dólares de una de mil.
+BigQuery no es rápido por fuerza bruta. Es rápido porque guarda los datos de la forma en que vos los vas a preguntar. Entender eso es lo que separa una factura de diez dólares de una de mil.

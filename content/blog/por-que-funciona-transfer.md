@@ -7,7 +7,7 @@ category: "data-ml"
 subcategory: "transfer-learning"
 ---
 
-Suena absurdo: agarrás una red neuronal entrenada para distinguir gatos de perros y, con poco esfuerzo, la convertís en un detector de neumonías en radiografías de tórax. Funciona. Y no es magia ni casualidad: es una de las propiedades más profundas y útiles del deep learning.
+Suena absurdo: agarrás una red neuronal entrenada para distinguir gatos de perros y, con poco esfuerzo, la convertís en un detector de neumonías en radiografías de tórax. Funciona, y no por casualidad: es una de las propiedades más profundas y útiles del deep learning.
 
 ## Las primeras capas no aprenden gatos
 
@@ -35,6 +35,6 @@ No todo transfiere igual de bien. Cuanto más se parece el dominio nuevo al orig
 
 Ahí aparece la decisión central de todo proyecto de transfer learning: ¿qué capas dejo congeladas y qué capas reentreno? La respuesta depende de cuántos datos tenés y de cuán lejos está tu dominio del original; lo desarrollo en [fine-tuning vs feature extraction](/data-ml/transfer-learning/congelar-o-no). Y si vas a reentrenar, cuidado con borrar lo que la red ya sabía: ese es el problema del [olvido catastrófico](/data-ml/transfer-learning/olvido-catastrofico).
 
-## Por qué importa
+## La razón por la que se democratizó
 
 Que las features de bajo nivel sean universales no es un detalle técnico: es la razón por la que el deep learning se democratizó. Sin transfer learning, entrenar un buen modelo de visión sería un privilegio de unas pocas empresas. Con él, una clínica con tres mil radiografías puede tener un detector decente. La red aprendió a ver gatos, sí, pero en el camino aprendió a *ver*. Y eso, resulta, sirve para casi todo.

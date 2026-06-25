@@ -1,13 +1,13 @@
 ---
 title: "Los LLM no leen palabras: el mundo visto en tokens"
 date: "2026-05-11"
-excerpt: "¿Sabías que un modelo top puede fallar al contar las erres de 'strawberry'? No es tonto: es que nunca vio la palabra como vos."
+excerpt: "Un modelo top puede fallar al contar las erres de 'strawberry'. No es que sea tonto: nunca vio la palabra como la ves vos."
 tags: ["llm", "prompting", "curiosidades"]
 category: "ia-agentes"
 subcategory: "llms-prompting"
 ---
 
-> ¿Sabías que podés pedirle a un LLM enorme que cuente cuántas veces aparece la letra "r" en *strawberry* y te conteste, muy seguro, que dos? La respuesta correcta es tres. Y no es estupidez del modelo: es cómo lee el mundo.
+> Podés pedirle a un LLM enorme que cuente cuántas veces aparece la letra "r" en *strawberry* y te conteste, muy seguro, que dos. La respuesta correcta es tres. Y no es estupidez del modelo: es cómo lee el mundo.
 
 Un LLM no procesa letras ni palabras. Procesa **tokens**: pedazos de texto que un algoritmo definió de antemano. Entender esto explica un montón de rarezas.
 
@@ -38,6 +38,6 @@ Tres consecuencias prácticas, más allá de la curiosidad:
 2. **Para tareas de deletreo, dale una mano.** Si necesitás que cuente o invierta letras, pedile que escriba la palabra separada por guiones primero. Al forzar el deletreo, lo sacás del problema de los tokens.
 3. **Los embeddings nacen de acá.** Esos tokens son el punto de partida que después se convierte en vectores; sobre esa base se construye [la aritmética de los embeddings](/ia-agentes/rag-embeddings/rey-reina-embeddings) y todo el RAG.
 
-## Para llevarte
+## Antes de culpar al modelo
 
-La próxima vez que un modelo falle en algo "obvio" como contar letras, no asumas que es malo: fijate si el problema vive *debajo* del token. Esa misma lógica de elegir el próximo token, uno tras otro, es la que hace que [a veces alucine con seguridad](/ia-agentes/llms-prompting/por-que-alucinan) y la que conviene tener clara antes de evaluar [cuándo la IA suma de verdad](/ia-agentes/llms-prompting/cuando-la-ia-suma) en un proceso real.
+Cuando un modelo falle en algo "obvio" como contar letras, no asumas que es malo: fijate si el problema vive *debajo* del token. Esa misma lógica de elegir el próximo token, uno tras otro, es la que hace que [a veces alucine con seguridad](/ia-agentes/llms-prompting/por-que-alucinan) y la que conviene tener clara antes de evaluar [cuándo la IA suma de verdad](/ia-agentes/llms-prompting/cuando-la-ia-suma) en un proceso real.

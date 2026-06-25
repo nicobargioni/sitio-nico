@@ -7,7 +7,7 @@ category: "data-ml"
 subcategory: "eda"
 ---
 
-> ¿Sabías que el consumo de queso per cápita en Estados Unidos correlaciona casi perfectamente con la cantidad de personas que mueren enredadas en sus sábanas?
+> El consumo de queso per cápita en Estados Unidos correlaciona casi perfectamente con la cantidad de personas que mueren enredadas en sus sábanas.
 
 Suena a chiste, pero el dato es real y famoso. Lo popularizó Tyler Vigen en su proyecto *Spurious Correlations*, donde junta pares de series temporales que se mueven casi idénticas y no tienen absolutamente nada que ver: divorcios en Maine y consumo de margarina, ahogamientos en piscinas y películas de Nicolas Cage, doctorados en ingeniería y consumo de mozzarella. Coeficientes de correlación de 0,99 entre cosas que jamás se causaron una a la otra.
 
@@ -21,7 +21,7 @@ Hay tres mecanismos detrás de casi todas las correlaciones espurias:
 
 ## La trampa estadística del azar
 
-Acá está el corazón del asunto. Si testeás suficientes hipótesis, encontrar una "significativa" por puro azar deja de ser improbable y pasa a ser casi seguro. Es el problema de las comparaciones múltiples: con un umbral del 5%, de cada 20 correlaciones sin sentido que pruebes, **una va a dar significativa de casualidad**.
+Si testeás suficientes hipótesis, encontrar una "significativa" por puro azar deja de ser improbable y pasa a ser casi seguro. Es el problema de las comparaciones múltiples: con un umbral del 5%, de cada 20 correlaciones sin sentido que pruebes, **una va a dar significativa de casualidad**.
 
 Por eso una correlación altísima, sola, no prueba nada. Necesita un mecanismo plausible, idealmente planteado *antes* de mirar los datos, no pescado después entre millones de candidatos. Esta es exactamente la misma trampa que se esconde detrás de [lo que un p-valor NO significa](/data-ml/estadistica/p-valor-malentendido): un valor chiquito no garantiza que el efecto sea real si lo encontraste rastreando a ciegas.
 
@@ -36,9 +36,9 @@ np.corrcoef(a, b)[0, 1]   # ≈ 0,98 — y son independientes
 
 Quitá la tendencia (trabajá con las diferencias entre períodos) y la correlación se desploma. La señal era el calendario, no la relación.
 
-## Qué te llevás
+## Tres reglas para no caer
 
-Correlación no es causalidad: lo escuchaste mil veces. Pero el matiz operativo es más útil:
+Correlación no es causalidad: lo escuchaste mil veces. La parte que sirve en el día a día es más concreta:
 
 - **Una correlación grande puede ser pura casualidad**, sobre todo si las series tienen tendencia o si la pescaste entre muchas.
 - **Detrendeá las series temporales** antes de correlacionarlas, o vas a confundir "crecen juntas" con "se relacionan".

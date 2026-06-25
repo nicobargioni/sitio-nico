@@ -1,7 +1,7 @@
 ---
 title: "Lo que un p-valor NO significa (y casi todos creen que sí)"
 date: "2026-06-12"
-excerpt: "¿Sabías que un p-valor de 0,03 NO quiere decir que hay 97% de chances de que tu hipótesis sea verdadera? El malentendido estadístico más caro."
+excerpt: "Un p-valor de 0,03 no quiere decir que haya 97% de chances de que tu hipótesis sea verdadera. El malentendido estadístico más caro, explicado."
 tags: ["estadistica", "probabilidad", "curiosidades"]
 category: "data-ml"
 subcategory: "estadistica"
@@ -32,7 +32,7 @@ Un p-valor bajo solo dice: "si no pasara nada, sería raro ver estos datos". Pun
 
 ## El p-hacking: el pecado capital
 
-Acá está el daño de verdad. El umbral mágico de 0,05 crea un incentivo perverso: si torturás los datos lo suficiente, *algo* va a dar significativo. Esto es el **p-hacking**, y tiene muchas caras:
+Este es el daño de verdad. El umbral mágico de 0,05 crea un incentivo perverso: si torturás los datos lo suficiente, *algo* va a dar significativo. Esto es el **p-hacking**, y tiene muchas caras:
 
 - Probar 20 variables y reportar solo la que dio p < 0,05 (con 20 tests independientes, esperás ~1 falso positivo por puro azar).
 - Frenar de recolectar datos justo cuando cruzás el umbral.
@@ -62,6 +62,6 @@ Algunas defensas concretas:
 - **Corregí por comparaciones múltiples** (Bonferroni, FDR) cuando hacés muchos tests.
 - Tratá un resultado único como una pista, no como una verdad. La replicación es la que manda.
 
-## El cierre práctico
+## Cómo leerlo sin tropezar
 
-El p-valor es una herramienta útil mal contada. No es un veredicto, es una señal de alarma —con la misma humildad con la que conviene leer [una alerta de detección de anomalías antes de actuar](/data-ml/deteccion-anomalias/costo-falsos-positivos). La próxima vez que veas "p < 0,05" en un informe, preguntá dos cosas: ¿cuántos tests corrieron antes de este?, y ¿de qué tamaño es el efecto? Ahí está la verdad que el p-valor solo no te cuenta.
+El p-valor es una herramienta útil mal contada. No zanja nada por sí solo: es una señal de alarma, y conviene leerlo con la misma humildad con la que se lee [una alerta de detección de anomalías antes de actuar](/data-ml/deteccion-anomalias/costo-falsos-positivos). Cuando veas "p < 0,05" en un informe, preguntá dos cosas: ¿cuántos tests corrieron antes de este?, y ¿de qué tamaño es el efecto? Eso es lo que el p-valor solo no te cuenta.

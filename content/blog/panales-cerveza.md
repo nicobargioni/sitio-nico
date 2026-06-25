@@ -32,4 +32,4 @@ El market basket analysis es una técnica legítima y útil. Lo que no es legít
 
 Si querés entender la maquinaria real detrás de estas reglas, el siguiente paso es saber [cómo se miden con soporte, confianza y lift](/data-ml/mineria-de-datos/soporte-confianza-lift), y entender que [minar patrones no es lo mismo que predecir con machine learning](/data-ml/mineria-de-datos/mineria-vs-ml). Una cosa es describir lo que ya pasó en tus datos; otra muy distinta es afirmar qué va a pasar si tocás algo.
 
-La moraleja es casi un meme, pero aplica: cuando un caso de uso de datos suena demasiado redondo para ser real, probablemente le sacaron la mitad incómoda. El dato existía. La fábula la pusimos nosotros.
+Hay algo acá que ya es casi un meme, pero aplica: cuando un caso de uso de datos suena demasiado redondo para ser real, probablemente le sacaron la mitad incómoda. El dato existía. La fábula la pusimos nosotros.

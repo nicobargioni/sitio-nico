@@ -1,13 +1,13 @@
 ---
 title: "La deuda técnica oculta de los bots de RPA"
 date: "2026-04-11"
-excerpt: "¿Sabías que un simple rediseño de pantalla puede tumbar decenas de bots de RPA a la vez? La automatización por la interfaz es frágil por diseño."
+excerpt: "Un simple rediseño de pantalla puede tumbar decenas de bots de RPA a la vez. La automatización por la interfaz es frágil por diseño."
 tags: ["rpa", "automatizacion", "curiosidades"]
 category: "hiperautomatizacion"
 subcategory: "rpa"
 ---
 
-> ¿Sabías que un equipo puede tener cien bots de RPA funcionando de maravilla un viernes y, el lunes, descubrir que la mitad dejó de andar? No los tocó nadie. Lo único que pasó es que un proveedor SaaS lanzó un rediseño de su interfaz durante el fin de semana.
+> Un equipo puede tener cien bots de RPA funcionando de maravilla un viernes y, el lunes, descubrir que la mitad dejó de andar. No los tocó nadie. Lo único que pasó es que un proveedor SaaS lanzó un rediseño de su interfaz durante el fin de semana.
 
 Esa fragilidad no es un bug: es una propiedad inherente de cómo funciona RPA. Y entenderla te ahorra el dolor de comprar la promesa de "automatizá y olvidate".
 

@@ -1,13 +1,13 @@
 ---
 title: "La temperatura de un LLM: el dial entre el robot y el poeta"
 date: "2026-05-12"
-excerpt: "¿Sabías que un solo número decide si un modelo responde como un manual técnico o como un improvisador? Se llama temperature."
+excerpt: "Un solo número decide si un modelo responde como un manual técnico o como un improvisador. Se llama temperature."
 tags: ["llm", "prompting", "curiosidades"]
 category: "ia-agentes"
 subcategory: "llms-prompting"
 ---
 
-> ¿Sabías que el mismo modelo, con el mismo prompt, puede darte una respuesta distinta cada vez —o exactamente la misma siempre— según un solo número que casi nadie toca?
+> El mismo modelo, con el mismo prompt, puede darte una respuesta distinta cada vez —o exactamente la misma siempre— según un solo número que casi nadie toca.
 
 Ese número es la **temperatura** (`temperature`), y es uno de los pocos diales que de verdad cambia el carácter de un LLM. Te cuento qué hace por debajo, porque entenderlo te ahorra mucho prueba y error.
 

@@ -36,4 +36,4 @@ Cuando ves por primera vez el proceso real al lado del dibujado, la reacción t�
 
 Esto es clave antes de automatizar. Si tomás un [bot de RPA](/hiperautomatizacion/rpa/rpa-vs-api) y lo programás para que siga el diagrama dibujado, vas a fallar el día que aparezca la primera excepción real —es decir, el primer día. Por eso el orden importa: medir el proceso real, modelar el deseado y recién ahí automatizar es la columna vertebral de [los seis pilares de la hiperautomatización](/hiperautomatizacion/bpmn/seis-pilares-hiperautomatizacion).
 
-La próxima vez que veas un flowchart impecable colgado en una oficina, hacé una pregunta simple: ¿esto lo dibujó alguien, o lo descubrieron los datos? La respuesta cambia todo lo que podés confiar en él.
+Frente a un flowchart impecable colgado en una oficina, la pregunta que vale es una: ¿esto lo dibujó alguien, o lo descubrieron los datos? La respuesta cambia todo lo que podés confiar en él.

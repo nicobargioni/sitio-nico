@@ -7,7 +7,7 @@ category: "hiperautomatizacion"
 subcategory: "idp"
 ---
 
-Cuando alguien dice "automaticé la carga de facturas", lo que casi siempre construyó es un pipeline de IDP — Intelligent Document Processing. Suena a caja negra mágica: entra un PDF arrugado y sale, prolijo, un registro listo para el ERP. Pero adentro no hay magia: hay una cadena de etapas bien definidas, donde cada una resuelve un problema distinto y tiene su manera particular de romperse. Vale la pena abrir la caja.
+Cuando alguien dice "automaticé la carga de facturas", lo que casi siempre construyó es un pipeline de IDP — Intelligent Document Processing. Suena a caja negra mágica: entra un PDF arrugado y sale, prolijo, un registro listo para el ERP. Pero adentro hay una cadena de etapas bien definidas, donde cada una resuelve un problema distinto y tiene su manera particular de romperse. Vale la pena abrir la caja.
 
 ## Las cinco etapas
 
@@ -36,6 +36,6 @@ La etapa de validación casi nunca es 100% automática, y está bien que así se
 
 > El objetivo no es automatizar el 100% de los documentos. Es automatizar el 90% fácil con alta confianza y darle al humano solo el 10% difícil.
 
-## El criterio: pipeline antes que modelo
+## Pipeline antes que modelo
 
 La tentación es pensar que IDP es "un buen modelo de IA". No: es una **arquitectura de etapas** donde el modelo es una pieza. La diferencia entre un proyecto que funciona y uno que no suele estar en las partes aburridas — la normalización de la ingesta, los chequeos de validación, el ruteo por confianza — más que en el modelo estrella. Si querés ver por qué este enfoque por etapas escala mejor que un bot que copia y pega, mirá [por qué RPA no es IA](/hiperautomatizacion/rpa/rpa-no-es-ia). El PDF a dato estructurado no es un salto: es una escalera, y cada escalón cuenta.

@@ -38,4 +38,4 @@ No hay bala de plata, pero sí mitigaciones que suman en capas:
 - **Detección de anomalías**: marcar entradas que caen en zonas raras del espacio de features.
 - **Coherencia temporal**: un STOP que de golpe "cambia" a 45 entre frames es sospechoso de por sí.
 
-La moraleja que me llevo es de diseño, no de pánico. Cualquier sistema crítico que dependa de una sola red de visión es atacable por construcción. La robustez no se compra con más exactitud en el dataset limpio: se compra con redundancia, con verificación y con asumir, desde el día uno, que el mundo físico va a tener adversarios.
+Lo que me llevo es de diseño, no de pánico. Cualquier sistema crítico que dependa de una sola red de visión es atacable por construcción. La robustez no se compra con más exactitud en el dataset limpio: se compra con redundancia, con verificación y con asumir, desde el día uno, que el mundo físico va a tener adversarios.

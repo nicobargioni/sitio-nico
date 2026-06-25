@@ -39,4 +39,4 @@ Algunas defensas que se usan:
 - **Aumentar y diversificar datos** para reducir la dependencia de patrones frágiles, en la línea de la [data augmentation](/ia-agentes/vision/data-augmentation).
 - **Destilación y suavizado** de las fronteras de decisión.
 
-Ninguna es una bala de plata: es una carrera armamentista permanente entre ataques y defensas. La moraleja que me queda es más sobria que técnica. Una red puede tener 99% de accuracy y a la vez ser engañada por un ruido que vos ni ves. Confianza alta no es lo mismo que comprensión. Y esa distinción, en sistemas que toman decisiones reales, no es un detalle.
+Ninguna resuelve el problema del todo: es una carrera armamentista permanente entre ataques y defensas. Lo que me queda es más sobrio que técnico. Una red puede tener 99% de accuracy y a la vez ser engañada por un ruido que vos ni ves. Confianza alta no es lo mismo que comprensión. Y esa distinción, en sistemas que toman decisiones reales, no es un detalle.

@@ -25,7 +25,7 @@ Y listo: el sonido se volvió una imagen.
 
 ## Por qué a la red le encanta
 
-Acá aparece lo lindo. Una vez que el audio es una imagen, podés usar todo el arsenal que ya funcionaba para fotos. Las mismas **redes convolucionales** que aprenden a [ver bordes y después conceptos](/ia-agentes/vision/como-ve-una-cnn) en una imagen pueden barrer un espectrograma buscando patrones: una vocal tiene su firma visual, una consonante explosiva otra.
+Una vez que el audio es una imagen, podés usar todo el arsenal que ya funcionaba para fotos. Las mismas **redes convolucionales** que aprenden a [ver bordes y después conceptos](/ia-agentes/vision/como-ve-una-cnn) en una imagen pueden barrer un espectrograma buscando patrones: una vocal tiene su firma visual, una consonante explosiva otra.
 
 En un espectrograma de voz aparecen las **formantes**: bandas horizontales brillantes que son las resonancias del tracto vocal. La diferencia entre una "i" y una "a" es, literalmente, dónde quedan esas bandas. La red no entiende fonética; aprende a reconocer la textura.
 
@@ -35,4 +35,4 @@ Esto explica por qué tanta tecnología de audio convergió hacia la misma recet
 
 El espectrograma "crudo" en hertz no es lo que finalmente come la mayoría de los modelos. Nuestro oído no percibe las frecuencias de forma lineal: distinguimos muy bien entre 200 y 300 Hz, pero apenas entre 8000 y 8100 Hz. Por eso se comprime el eje de frecuencias a una escala que imita esa percepción —la escala mel— y de ahí salen las features que se usan en serio, un tema que merece su propia nota sobre [cómo se imita el oído humano con MFCC](/ia-agentes/procesamiento-habla/mfcc-oido-humano).
 
-La moraleja es casi filosófica: a veces el mayor avance no es un modelo más grande, sino **elegir bien la representación**. Convertir un problema de audio en uno de visión no fue un parche; fue la decisión que destrabó todo lo que vino después. El sonido, para que la máquina lo entienda, primero hay que dejarlo ver.
+Hay algo casi filosófico en esto: a veces el mayor avance no es un modelo más grande, sino **elegir bien la representación**. Convertir un problema de audio en uno de visión no fue un parche; fue la decisión que destrabó todo lo que vino después. El sonido, para que la máquina lo entienda, primero hay que dejarlo ver.

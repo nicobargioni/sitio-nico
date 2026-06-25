@@ -45,6 +45,6 @@ En el RL "completo" esto se vuelve aún más rico, porque las acciones no solo d
 
 De hecho, una exploración bien hecha es lo que permite descubrir jugadas que nadie esperaba — como [la jugada 37 de AlphaGo](/data-ml/reinforcement-learning/alphago-jugada-37). Y cuando la exploración se rompe, aparecen los problemas: un agente que solo explota su recompensa termina haciendo [reward hacking](/data-ml/reinforcement-learning/reward-hacking), exprimiendo un atajo en vez de buscar algo mejor.
 
-## El cierre incómodo
+## Cuánto explorar
 
-No hay una respuesta universal a cuánto explorar. Depende de cuántas tiradas te queden, de qué tan riesgoso sea equivocarte y de qué tan estable sea el mundo. Pero entender que *toda decisión bajo incertidumbre es este dilema* te cambia la cabeza. La próxima vez que dudes entre el restaurante de siempre y el nuevo de la esquina, sabé que estás resolviendo un bandit. Y que quedarte siempre en lo seguro tiene un costo que no ves: todo lo que nunca probaste.
+No hay una respuesta universal a cuánto explorar. Depende de cuántas tiradas te queden, de qué tan riesgoso sea equivocarte y de qué tan estable sea el mundo. Pero entender que *toda decisión bajo incertidumbre es este dilema* te cambia la cabeza. Cuando dudás entre el restaurante de siempre y el nuevo de la esquina, estás resolviendo un bandit. Y quedarte siempre en lo seguro tiene un costo que no ves: todo lo que nunca probaste.

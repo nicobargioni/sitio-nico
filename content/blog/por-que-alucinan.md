@@ -7,7 +7,7 @@ category: "ia-agentes"
 subcategory: "llms-prompting"
 ---
 
-¿Sabías que cuando un LLM "alucina" —te inventa un dato, una cita, un número— no está fallando en algo que normalmente hace bien? Está haciendo exactamente lo mismo de siempre. La alucinación no es un modo defectuoso: es el modo único, visto desde un caso donde no acertó.
+Cuando un LLM "alucina" —te inventa un dato, una cita, un número— no está fallando en algo que normalmente hace bien. Está haciendo exactamente lo mismo de siempre. La alucinación no es un modo defectuoso: es el modo único, visto desde un caso donde no acertó.
 
 > Un LLM no consulta una base de datos de verdades. Predice qué texto es plausible que siga. A veces lo plausible coincide con lo verdadero, y a veces no.
 

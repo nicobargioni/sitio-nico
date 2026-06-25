@@ -23,11 +23,11 @@ Entonces PCA busca, una por una:
 2. La de máxima varianza **perpendicular** a la anterior → segunda componente.
 3. Y así sucesivamente, siempre en ángulo recto con las anteriores.
 
-Cada componente es un eje nuevo. Te quedás con los primeros —los que más varianza capturan— y tirás el resto. Eso es toda la magia.
+Cada componente es un eje nuevo. Te quedás con los primeros —los que más varianza capturan— y tirás el resto. Listo.
 
 ## Varianza no es lo mismo que importancia
 
-Acá viene la trampa que conviene tener presente. PCA asume que **dirección de mayor varianza = dirección más informativa**. Suele ser cierto, pero no siempre.
+PCA asume que **dirección de mayor varianza = dirección más informativa**. Suele ser cierto, pero no siempre, y ahí está la trampa.
 
 - Si tu señal útil está en una dirección de **poca** varianza, PCA la descarta. La varianza grande puede ser puro ruido de medición.
 - PCA es sensible a la **escala**: una variable en pesos (miles) domina a una en proporciones (0 a 1). Por eso casi siempre se estandariza antes; si no, estás midiendo unidades, no estructura.
@@ -43,4 +43,4 @@ PCA gana cuando combinás reducción con otro objetivo:
 - **Para visualizar**: proyectar a 2 o 3 componentes da un mapa honesto y lineal. A diferencia de [t-SNE y UMAP, que deforman distancias](/data-ml/clustering-pca/tsne-umap-mienten), en PCA un eje significa algo concreto.
 - **Para sacar correlación**: las componentes son ortogonales, así que eliminás redundancia entre variables muy correlacionadas —el tipo de relación tramposa que conviene detectar en un [EDA cuidadoso](/data-ml/eda/correlacion-espuria).
 
-Una advertencia para cerrar: PCA es **lineal**. Si la estructura de tus datos vive en una curva o una superficie enroscada, ninguna sombra plana la va a capturar bien. Ahí entran los métodos no lineales. Pero para empezar, para entender qué hay, para limpiar antes de modelar, la sombra que maximiza varianza sigue siendo la primera herramienta que saco de la caja.
+Un punto importante: PCA es **lineal**. Si la estructura de tus datos vive en una curva o una superficie enroscada, ninguna sombra plana la va a capturar bien. Ahí entran los métodos no lineales. Pero para empezar, para entender qué hay, para limpiar antes de modelar, la sombra que maximiza varianza sigue siendo la primera herramienta que saco de la caja.

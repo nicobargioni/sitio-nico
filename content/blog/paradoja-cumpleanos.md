@@ -1,7 +1,7 @@
 ---
 title: "La paradoja del cumpleaños: con 23 personas, apostá a que dos cumplen el mismo día"
 date: "2026-06-16"
-excerpt: "¿Sabías que en un aula de 23 personas hay más del 50% de chances de que dos compartan cumpleaños? La intuición acá miente feo."
+excerpt: "En un aula de 23 personas hay más del 50% de chances de que dos compartan cumpleaños. Acá la intuición miente feo."
 tags: ["estadistica", "probabilidad", "curiosidades"]
 category: "data-ml"
 subcategory: "estadistica"
@@ -49,8 +49,8 @@ Lejos de ser un truco de fiesta, este fenómeno tiene consecuencias serias:
 - **Detección de duplicados**: en bases de datos grandes, las colisiones aparecen mucho antes de lo esperado.
 - **Anomalías**: cuando un patrón "coincidente" salta en los datos, conviene preguntarse si es señal o simplemente el efecto cumpleaños operando. Esa misma sospecha es la que separa una alerta real de un falso positivo, algo que toda buena [estrategia de detección de anomalías tiene que pesar con cuidado](/data-ml/deteccion-anomalias/costo-falsos-positivos).
 
-## El cierre práctico
+## Contá los pares, no los elementos
 
-La lección que me llevo no es la fórmula, sino el reflejo: **cuando algo parece coincidencia improbable, contá los pares, no los elementos**. Es la misma trampa que aparece en el [problema de Monty Hall](/data-ml/estadistica/monty-hall), donde reformular la pregunta cambia por completo la respuesta, o cuando uno se enamora de [un p-valor sin entender qué mide realmente](/data-ml/estadistica/p-valor-malentendido).
+Lo que me llevo de esto no es la fórmula, sino el reflejo: **cuando algo parece coincidencia improbable, contá los pares, no los elementos**. Es la misma trampa que aparece en el [problema de Monty Hall](/data-ml/estadistica/monty-hall), donde reformular la pregunta cambia por completo la respuesta, o cuando uno se enamora de [un p-valor sin entender qué mide realmente](/data-ml/estadistica/p-valor-malentendido).
 
-La próxima vez que estés en una mesa de 25 personas, animate a apostar que dos cumplen el mismo día. La probabilidad —y la combinatoria— juegan a tu favor.
+Si alguna vez te toca una mesa de 25 personas, animate a apostar que dos cumplen el mismo día. La probabilidad —y la combinatoria— juegan a tu favor.

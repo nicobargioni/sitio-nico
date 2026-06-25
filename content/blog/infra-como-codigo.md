@@ -35,7 +35,7 @@ Que la infraestructura sea código no es un detalle estético. Hereda de golpe t
 - **Reproducibilidad.** ¿Necesitás un entorno de staging idéntico a producción? Corrés el mismo código apuntando a otro proyecto. Es la misma promesa que [Docker hace para una aplicación](/cloud/docker/funciona-en-mi-maquina), pero a escala de toda la infraestructura.
 - **Pipeline.** El `apply` puede correr en CI, detrás de los mismos [tests y gates](/cloud/cicd/tests-portero) que el resto del código.
 
-## El concepto que lo sostiene: idempotencia
+## Idempotencia, lo que lo sostiene
 
 Hay una propiedad que hace que todo esto funcione: aplicar la misma descripción dos veces da el mismo resultado que aplicarla una. Si corrés `terraform apply` y todo ya está como pedís, no pasa nada. Esto te deja ejecutar el proceso sin miedo, una y otra vez, hasta que el estado real coincide con el deseado.
 
@@ -43,7 +43,7 @@ Esa propiedad —describir el destino y dejar que la herramienta reconcilie— e
 
 ## El lado oscuro
 
-No es magia gratis. El *state*, el archivo donde Terraform recuerda qué creó, es delicado: si se corrompe o dos personas lo tocan a la vez, la herramienta pierde la noción de qué existe. Y el *drift* —cuando alguien cambia algo a mano por la consola y la realidad deja de coincidir con el código— rompe la promesa entera: el repo dice una cosa, la nube tiene otra.
+Nada de esto sale gratis. El *state*, el archivo donde Terraform recuerda qué creó, es delicado: si se corrompe o dos personas lo tocan a la vez, la herramienta pierde la noción de qué existe. Y el *drift* —cuando alguien cambia algo a mano por la consola y la realidad deja de coincidir con el código— rompe la promesa entera: el repo dice una cosa, la nube tiene otra.
 
 La regla de oro, entonces, es simple y dura: **si está en código, no se toca a mano**. La consola pasa a ser de solo lectura.
 

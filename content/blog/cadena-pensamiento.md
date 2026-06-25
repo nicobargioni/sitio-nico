@@ -1,13 +1,13 @@
 ---
 title: "Chain-of-thought: por qué pedirle que 'piense paso a paso' funciona"
 date: "2026-05-10"
-excerpt: "Una frase de cinco palabras puede mejorar el razonamiento de un LLM. No es magia: tiene que ver con cómo genera texto."
+excerpt: "Una frase de cinco palabras puede mejorar el razonamiento de un LLM, y tiene que ver con cómo genera el texto token a token."
 tags: ["llm", "prompting", "curiosidades"]
 category: "ia-agentes"
 subcategory: "llms-prompting"
 ---
 
-¿Sabías que agregar "pensá paso a paso" al final de un prompt puede subir notablemente la cantidad de respuestas correctas en problemas de razonamiento? No es un truco esotérico ni un easter egg: es una consecuencia directa de cómo un modelo de lenguaje produce su salida.
+Agregar "pensá paso a paso" al final de un prompt puede subir notablemente la cantidad de respuestas correctas en problemas de razonamiento. El efecto no tiene nada de esotérico: sale directo de cómo un modelo de lenguaje produce su salida.
 
 > Un LLM no calcula la respuesta y después la escribe. Escribe, y al escribir, calcula.
 
@@ -33,4 +33,4 @@ Algunas formas prácticas de aprovecharlo:
 
 No todo problema necesita esto. Para una clasificación simple o una extracción de datos, pedir razonamiento solo suma tokens, latencia y costo —recordá que [el modelo cobra por token, no por palabra](/ia-agentes/llms-prompting/tokens-no-palabras)—. La cadena de pensamiento rinde cuando hay varios pasos encadenados: aritmética, lógica, planificación. Por algo es el mecanismo que está debajo de [los agentes que razonan y actúan en bucle](/ia-agentes/agentes/react-razonar-actuar): cada vuelta del ciclo es, en el fondo, un paso de razonamiento explícito.
 
-La moraleja, en clave de [cuándo la IA suma de verdad](/ia-agentes/llms-prompting/cuando-la-ia-suma): el "paso a paso" es una herramienta, no un conjuro. Le das al modelo lugar donde apoyar el cálculo, no una garantía de que el cálculo esté bien. Esa verificación sigue siendo tuya.
+Visto en clave de [cuándo la IA suma de verdad](/ia-agentes/llms-prompting/cuando-la-ia-suma), el "paso a paso" es una herramienta, no un conjuro. Le das al modelo lugar donde apoyar el cálculo, no una garantía de que el cálculo esté bien. Esa verificación sigue siendo tuya.

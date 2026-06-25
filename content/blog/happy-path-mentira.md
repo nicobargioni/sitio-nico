@@ -37,4 +37,4 @@ Esto no significa modelar las 200 variantes. Significa decidir, con datos, cuál
 
 Esa clasificación es, en el fondo, una decisión de negocio informada por el dato. Es la diferencia entre automatizar un dibujo y automatizar un proceso, y es exactamente lo que ordenan [los seis pilares de la hiperautomatización](/hiperautomatizacion/bpmn/seis-pilares-hiperautomatizacion): medir el proceso real, entender su distribución y recién entonces decidir qué se automatiza y qué se deja en manos de una persona.
 
-La próxima vez que alguien te muestre un proceso "simple" en línea recta, hacé la pregunta de oro: ¿qué porcentaje de los casos sigue de verdad este camino? Si la respuesta es "no sé" o "casi todos", desconfiá. El happy path es la historia que nos contamos. El trabajo real vive en los desvíos.
+Cuando alguien te muestre un proceso "simple" en línea recta, preguntá qué porcentaje de los casos sigue de verdad ese camino. Si la respuesta es "no sé" o "casi todos", desconfiá. El happy path es la historia que nos contamos. El trabajo real vive en los desvíos.

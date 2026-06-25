@@ -1,13 +1,13 @@
 ---
 title: "RPA vs API: automatizar por la ventana o por la puerta"
 date: "2026-04-10"
-excerpt: "¿Sabías que RPA y una API resuelven lo mismo, pero uno entra por la ventana y el otro por la puerta? Cuándo el bot es un parche y cuándo la integración real."
+excerpt: "RPA y una API pueden resolver lo mismo, pero uno entra por la ventana y el otro por la puerta. Cuándo el bot es un parche y cuándo la integración real."
 tags: ["rpa", "automatizacion", "curiosidades"]
 category: "hiperautomatizacion"
 subcategory: "rpa"
 ---
 
-> ¿Sabías que cuando un bot de RPA "lee" tu sistema de facturación, está haciendo lo mismo que un ladrón que entra por la ventana en vez de tocar el timbre? Llega al mismo lugar, pero por un camino que nunca fue pensado para él.
+> Cuando un bot de RPA "lee" tu sistema de facturación, está haciendo lo mismo que un ladrón que entra por la ventana en vez de tocar el timbre. Llega al mismo lugar, pero por un camino que nunca fue pensado para él.
 
 La metáfora suena dura, pero captura algo exacto. Una API es la **puerta de entrada oficial** de un sistema: un contrato pensado para que otros programas le hablen. RPA es entrar **por la ventana de la interfaz humana**, simulando que sos una persona usando el mouse y el teclado. Los dos automatizan; lo que cambia es la solidez del camino.
 

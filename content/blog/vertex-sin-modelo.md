@@ -11,7 +11,7 @@ Hay algo medio incómodo en abrir un servicio de Google, subir un CSV, marcar la
 
 ## Qué hace AutoML cuando le das al botón
 
-AutoML no es magia: es **búsqueda de arquitectura y de hiperparámetros automatizada**, corriendo en paralelo sobre la infraestructura de Google. Mientras vos tomás un café, atrás está:
+Lo que hace AutoML es **búsqueda de arquitectura y de hiperparámetros automatizada**, corriendo en paralelo sobre la infraestructura de Google. Mientras vos tomás un café, atrás está:
 
 - Probando decenas de arquitecturas candidatas (para tabular suele combinar árboles tipo gradient boosting con redes).
 - Haciendo búsqueda de hiperparámetros con algo más fino que grid search.
@@ -36,6 +36,6 @@ Cuando lanzás un job de AutoML, entrena en una **región** que vos elegís (o q
 
 Y si lo que querés es algo todavía más directo —entrenar sin salir de donde ya viven tus datos— BigQuery tiene su propia jugada: [entrenar modelos con SQL](/cloud/bigquery/bigquery-ml-sql). Para muchos casos tabulares, un `CREATE MODEL` te resuelve el 80% sin tocar Vertex.
 
-## El cierre honesto
+## Quién pone el criterio
 
 AutoML no te convierte en data scientist, igual que un GPS no te convierte en piloto de rally. Te da un resultado decente rápido y te quita excusas para no tener un baseline. Pero la decisión de *qué* predecir, *con qué datos* y *si el modelo sirve para el negocio* sigue siendo tuya. El botón entrena el modelo. El criterio lo ponés vos.

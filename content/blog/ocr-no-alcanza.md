@@ -30,7 +30,7 @@ Por eso un sistema serio de [procesamiento inteligente de documentos](/hiperauto
 
 ## El layout es información que el OCR tira
 
-Acá está la clave que el texto plano destruye: en un documento, **la posición significa**. El número arriba a la derecha suele ser el total; el bloque de la izquierda, los datos del emisor; la grilla del medio, el detalle. Esa estructura espacial es una señal poderosísima que se pierde apenas convertís todo a una línea de texto. De eso hablo en detalle en [por qué el layout importa](/hiperautomatizacion/idp/layout-importa).
+Hay algo que el texto plano destruye: en un documento, **la posición significa**. El número arriba a la derecha suele ser el total; el bloque de la izquierda, los datos del emisor; la grilla del medio, el detalle. Esa estructura espacial es una señal poderosísima que se pierde apenas convertís todo a una línea de texto. De eso hablo en detalle en [por qué el layout importa](/hiperautomatizacion/idp/layout-importa).
 
 ```python
 # Lo que devuelve un OCR puro: texto plano, sin campos
@@ -40,6 +40,6 @@ Acá está la clave que el texto plano destruye: en un documento, **la posición
 {"tipo": "factura_A", "total": 1250.00, "iva_pct": 21, "cuit_emisor": "30-71234567-8"}
 ```
 
-## El criterio: OCR es el ladrillo, no la casa
+## OCR es el ladrillo, no la casa
 
-Quedate con esto: el OCR es necesario pero nunca suficiente. Es el equivalente a saber leer en voz alta un idioma que no entendés. Para automatizar de verdad —cargar esa factura al ERP sin que nadie la mire— necesitás una capa de comprensión arriba, y casi siempre [un humano que valide los casos dudosos](/hiperautomatizacion/idp/human-in-the-loop). Confundir transcripción con comprensión es la trampa más común: la demo anda bárbaro con la factura modelo, y en producción se cae con la primera que viene torcida.
+El OCR es necesario pero nunca suficiente. Es el equivalente a saber leer en voz alta un idioma que no entendés. Para automatizar de verdad —cargar esa factura al ERP sin que nadie la mire— necesitás una capa de comprensión arriba, y casi siempre [un humano que valide los casos dudosos](/hiperautomatizacion/idp/human-in-the-loop). Confundir transcripción con comprensión es la trampa más común: la demo anda bárbaro con la factura modelo, y en producción se cae con la primera que viene torcida.

@@ -1,7 +1,7 @@
 ---
 title: "El problema del tanque alemán: estimar producción enemiga con números de serie"
 date: "2026-06-13"
-excerpt: "¿Sabías que en la WWII los Aliados estimaron cuántos tanques fabricaban los alemanes mirando los números de serie de los capturados? Y acertaron."
+excerpt: "En la Segunda Guerra, los Aliados estimaron cuántos tanques fabricaban los alemanes mirando los números de serie de los capturados. Y acertaron."
 tags: ["estadistica", "probabilidad", "curiosidades"]
 category: "data-ml"
 subcategory: "estadistica"
@@ -52,6 +52,6 @@ Este caso enseña tres cosas que uso seguido:
 2. **Una muestra chica bien usada vence a mucho ruido**: igual que en [la paradoja del cumpleaños, donde pocos elementos esconden mucha información](/data-ml/estadistica/paradoja-cumpleanos), la cantidad de datos importa menos que entender el proceso que los generó.
 3. **Mirar los datos "secundarios" paga**: los números de serie eran metadata que nadie consideraba. Es la misma actitud que descubre patrones en [lo que los valores faltantes te están gritando](/data-ml/eda/valores-faltantes-gritan).
 
-## El cierre práctico
+## Cómo se aplica hoy
 
-La próxima vez que tengas una muestra y quieras estimar un total —usuarios totales a partir de IDs, tirada de una imprenta a partir de seriales—, no uses el máximo crudo. Corregilo. Y desconfiá del que estima sin entender cómo se generan los números: ese error es primo hermano de [enamorarse de un p-valor sin saber qué mide](/data-ml/estadistica/p-valor-malentendido).
+Cuando tengas una muestra y quieras estimar un total —usuarios totales a partir de IDs, tirada de una imprenta a partir de seriales—, no uses el máximo crudo. Corregilo. Y desconfiá del que estima sin entender cómo se generan los números: ese error es primo hermano de [enamorarse de un p-valor sin saber qué mide](/data-ml/estadistica/p-valor-malentendido).

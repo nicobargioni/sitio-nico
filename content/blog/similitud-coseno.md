@@ -41,4 +41,4 @@ O sea: la pelea "coseno vs distancia" muchas veces ni existe. Lo que importa de 
 
 Cada vez que un [sistema RAG recupera los fragmentos relevantes](/ia-agentes/rag-embeddings/rag-apuntes-examen) para responderte, está rankeando por coseno. Cada vez que [partís un documento en chunks](/ia-agentes/rag-embeddings/chunking-arte), estás cambiando qué vectores van a competir por ese ángulo. Y la pesadilla de fondo —cuando tenés cientos de dimensiones— es que [todo tiende a quedar igual de lejos](/data-ml/clustering-pca/maldicion-dimensionalidad): la maldición de la dimensionalidad le aplasta el contraste a cualquier métrica, coseno incluido.
 
-La moraleja es sencilla: antes de pelearte con qué métrica usar, preguntá si tus vectores están normalizados. La mitad de las discusiones se evaporan ahí.
+Así que antes de pelearte con qué métrica usar, preguntá si tus vectores están normalizados. La mitad de las discusiones se evaporan ahí.

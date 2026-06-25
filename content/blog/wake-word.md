@@ -11,7 +11,7 @@ Decís "Hey Siri" y el teléfono se despierta. Lo cual implica que estaba escuch
 
 ## Dos cerebros, no uno
 
-La clave es que hay **dos sistemas distintos**, y casi nunca trabajan a la vez.
+Lo que pasa es que hay **dos sistemas distintos**, y casi nunca trabajan a la vez.
 
 El primero es un detector minúsculo que solo sabe hacer una cosa: reconocer la *wake word*. No transcribe, no entiende, no manda nada. Vive en un chip de bajísimo consumo y procesa el audio **localmente, on-device**, en una ventanita de pocos segundos que se sobrescribe sin parar. No guarda nada.
 
@@ -25,7 +25,7 @@ Esa restricción de tamaño conecta con una idea linda del deep learning: dentro
 
 ## El dial entre falsos positivos y privacidad
 
-Diseñar esto es elegir un umbral, y ahí no hay magia:
+Diseñar esto es elegir un umbral, y el umbral tiene dos extremos malos:
 
 - **Umbral muy alto**: el asistente no se despierta ni cuando lo llamás. Frustrante.
 - **Umbral muy bajo**: se activa con la tele, con un "oye, siri" de la nada, y empieza a captar audio que no le pediste.

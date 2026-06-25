@@ -13,9 +13,9 @@ Mostrale a un chico de tres años la foto de un animal que nunca vio —un quokk
 
 El aprendizaje profundo clásico es hambriento. Aprender una categoría nueva desde cero implica ajustar millones de parámetros, y para que esos parámetros no memoricen sino que generalicen, hacen falta muchos ejemplos. Con cinco fotos de un quokka, una red entrenada de cero sobreajusta sin remedio: aprende las cinco fotos, no el concepto.
 
-El **few-shot learning** apunta justo a eso: aprender clases nuevas con un puñado de ejemplos —cinco, uno (one-shot), o incluso cero (zero-shot)—. Y la clave para lograrlo es no empezar de cero.
+El **few-shot learning** apunta justo a eso: aprender clases nuevas con un puñado de ejemplos —cinco, uno (one-shot), o incluso cero (zero-shot)—. Y para lograrlo, lo que hay que evitar es empezar de cero.
 
-## El truco: ya saber ver antes de aprender
+## Ya saber ver antes de aprender
 
 El chico no reconoce al quokka desde cero. Trae años de experiencia visual: sabe qué es pelo, orejas, ojos, postura, proporción. Solo tiene que ubicar al quokka *dentro* de un espacio de conceptos que ya domina.
 
@@ -43,4 +43,4 @@ Una ventaja extra del enfoque por métrica: como no reentrenás los pesos del cu
 
 El few-shot es lo que vuelve práctica la IA en el mundo real, donde casi nadie tiene millones de ejemplos etiquetados. Un control de calidad industrial con cinco fotos de cada defecto. Un reconocimiento de especies raras. Un clasificador de documentos con tres muestras por tipo.
 
-La moraleja es elegante: la inteligencia no está solo en aprender rápido, sino en **tener una buena base sobre la cual aprender**. El quokka se reconoce fácil porque ya sabías ver. Y a las máquinas les pasa lo mismo.
+Y ahí está lo elegante: la inteligencia no está solo en aprender rápido, sino en **tener una buena base sobre la cual aprender**. El quokka se reconoce fácil porque ya sabías ver. Y a las máquinas les pasa lo mismo.

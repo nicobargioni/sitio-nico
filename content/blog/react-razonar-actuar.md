@@ -1,7 +1,7 @@
 ---
 title: "ReAct: agentes que razonan y actúan en bucle"
 date: "2026-05-02"
-excerpt: "El patrón pensar→actuar→observar que convierte un LLM en algo que parece decidir solo. Sin magia: solo un loop bien armado."
+excerpt: "El patrón pensar→actuar→observar que convierte un LLM en algo que parece decidir solo. Por dentro es un loop bien armado."
 tags: [agentes, llm, curiosidades]
 category: "ia-agentes"
 subcategory: "agentes"
@@ -21,7 +21,7 @@ Y vuelve a empezar. Cada observación alimenta el próximo pensamiento, hasta qu
 
 ## Por qué importa el bucle
 
-Lo interesante no es la herramienta en sí —eso es [function calling](/ia-agentes/agentes/function-calling)— sino la **iteración**. Un solo paso no alcanza para tareas reales: buscar un dato, usarlo para decidir el siguiente paso, corregir si algo falla.
+Lo que distingue a ReAct no es la herramienta en sí —eso es [function calling](/ia-agentes/agentes/function-calling)— sino la **iteración**. Un solo paso no alcanza para tareas reales: buscar un dato, usarlo para decidir el siguiente paso, corregir si algo falla.
 
 Mirá la diferencia con un razonamiento de un tiro:
 
@@ -39,10 +39,10 @@ Cada paso depende del anterior. El modelo no planeó todo de entrada: fue ajusta
 
 ## El truco está en el contexto
 
-Acá hay algo que se pierde fácil: cada pensamiento, acción y observación se va acumulando en la conversación. El modelo no tiene memoria propia entre llamadas —solo ve lo que está en su [ventana de contexto](/ia-agentes/llms-prompting/ventana-contexto). Por eso el historial completo del loop viaja en cada iteración. Si el bucle se hace muy largo, podés llenar el contexto de basura y el agente empieza a perder el hilo.
+Hay un detalle que se pierde fácil: cada pensamiento, acción y observación se va acumulando en la conversación. El modelo no tiene memoria propia entre llamadas —solo ve lo que está en su [ventana de contexto](/ia-agentes/llms-prompting/ventana-contexto). Por eso el historial completo del loop viaja en cada iteración. Si el bucle se hace muy largo, podés llenar el contexto de basura y el agente empieza a perder el hilo.
 
 Y ojo: ReAct no garantiza nada. El modelo puede razonar mal, elegir la herramienta equivocada o quedar dando vueltas sin converger. Decidir cuánta libertad darle es una decisión de diseño en sí misma, y vale la pena pensar [cuándo conviene un agente y cuándo un pipeline rígido](/ia-agentes/agentes/agente-vs-pipeline).
 
-## Lo que cambia
+## El mismo LLM, conectado al mundo
 
-ReAct no es inteligencia nueva: es el mismo LLM, pero conectado al mundo en un loop. La gracia está en que con un patrón tan simple —pensá, actuá, observá, repetí— un modelo de texto deja de ser un loro elocuente y empieza a resolver cosas que requieren chequear la realidad. No es magia. Es un bucle bien armado, con frenos puestos a tiempo.
+ReAct no es inteligencia nueva: es el mismo LLM, pero conectado al mundo en un loop. La gracia está en que con un patrón tan simple —pensá, actuá, observá, repetí— un modelo de texto deja de ser un loro elocuente y empieza a resolver cosas que requieren chequear la realidad. Todo se reduce a un bucle bien armado, con frenos puestos a tiempo.

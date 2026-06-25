@@ -7,7 +7,7 @@ category: "ia-agentes"
 subcategory: "llms-prompting"
 ---
 
-¿Sabías que un LLM no tiene memoria de la charla que venís teniendo con él? En cada turno relee toda la conversación desde el principio, como si la viera por primera vez. Lo que llamamos "memoria" es en realidad una ventana de texto que se le vuelve a pasar entera cada vez. Esa ventana tiene un nombre: la **ventana de contexto**.
+Un LLM no tiene memoria de la charla que venís teniendo con él. En cada turno relee toda la conversación desde el principio, como si la viera por primera vez. Lo que llamamos "memoria" es en realidad una ventana de texto que se le vuelve a pasar entera cada vez. Esa ventana tiene un nombre: la **ventana de contexto**.
 
 > El modelo no acumula recuerdos. Acumulás vos el texto, y se lo reenviás completo en cada pregunta.
 

@@ -7,7 +7,7 @@ category: "cloud"
 subcategory: "serverless"
 ---
 
-Una de las primeras veces que escuché "serverless" pensé, como casi todos, que el código corría flotando en el aire. Spoiler: hay servidores. Físicos, con CPU, RAM y un ventilador que zumba en un datacenter de Iowa. El nombre es marketing, pero abajo de la abstracción hay fierro como siempre.
+Una de las primeras veces que escuché "serverless" pensé, como casi todos, que el código corría flotando en el aire. Falso: hay servidores. Físicos, con CPU, RAM y un ventilador que zumba en un datacenter de Iowa. El nombre es marketing, pero abajo de la abstracción hay fierro como siempre.
 
 Lo interesante no es el nombre, es qué dejás de administrar cuando lo elegís.
 

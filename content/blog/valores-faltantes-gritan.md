@@ -7,7 +7,7 @@ category: "data-ml"
 subcategory: "eda"
 ---
 
-> ¿Sabías que el solo hecho de que un dato falte puede ser, a veces, más informativo que el dato en sí?
+> El solo hecho de que un dato falte puede ser, a veces, más informativo que el dato en sí.
 
 Cuando abrimos un dataset y vemos huecos, el reflejo es taparlos: rellenar con la media, con cero, con el valor anterior. Pero antes de imputar conviene preguntarse algo incómodo: **¿por qué falta?** Porque el patrón de lo que no está casi nunca es aleatorio, y entenderlo cambia todo lo que viene después.
 
@@ -21,7 +21,7 @@ La estadística clásica —el marco se lo debemos a Donald Rubin— distingue t
 
 ## La señal escondida en el hueco
 
-Acá está la curiosidad de fondo: en MAR y, sobre todo, en MNAR, **la "faltancia" es una variable más**. El hecho de que un cliente no haya completado su nivel de ingresos puede predecir su comportamiento mejor que muchos campos completos.
+Y acá viene lo de fondo: en MAR y, sobre todo, en MNAR, **la "faltancia" es una variable más**. El hecho de que un cliente no haya completado su nivel de ingresos puede predecir su comportamiento mejor que muchos campos completos.
 
 Por eso una técnica simple y a menudo subestimada es crear una **bandera de ausencia**: una columna binaria que vale 1 cuando el dato original faltaba. No tirás la información del hueco; la convertís en feature.
 
@@ -39,7 +39,7 @@ Rellenar todo con la media es cómodo y peligroso. Aplana la varianza, inventa u
 
 Esa disciplina de mirar antes de actuar es la misma que predica [el cuarteto de Anscombe](/data-ml/eda/anscombe-cuarteto): no confíes en el resumen, mirá la forma. Y cuidado con concluir de más, porque el patrón de ausencia agrupado puede invertirse al agregar grupos, tal como pasa en [la paradoja de Simpson](/data-ml/eda/paradoja-simpson). Imputar con la media también es, en el fondo, asumir que el faltante "no aporta", una hipótesis que conviene testear y no dar por sentada —el mismo cuidado que merece [interpretar bien un p-valor](/data-ml/estadistica/p-valor-malentendido).
 
-## Qué te llevás
+## Tres reglas para los huecos
 
 - **Preguntá por qué falta** antes de decidir cómo rellenar. MCAR, MAR y MNAR piden estrategias distintas.
 - **Guardá la ausencia como feature** con una bandera binaria. El hueco puede ser tu mejor predictor.

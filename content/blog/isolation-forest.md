@@ -36,7 +36,7 @@ El parámetro que más vas a tocar es `contamination`: tu estimación de qué pr
 
 ## Las letras chicas
 
-No es magia. En muchas dimensiones, el método sufre el mismo problema que casi todos: cuando hay cientos de features, las nociones de "cerca" y "lejos" se diluyen y los cortes al azar pierden filo. Es la [maldición de la dimensionalidad](/data-ml/clustering-pca/maldicion-dimensionalidad), y conviene reducir variables antes de tirarle todo.
+Tiene su talón de Aquiles. En muchas dimensiones, el método sufre el mismo problema que casi todos: cuando hay cientos de features, las nociones de "cerca" y "lejos" se diluyen y los cortes al azar pierden filo. Es la [maldición de la dimensionalidad](/data-ml/clustering-pca/maldicion-dimensionalidad), y conviene reducir variables antes de tirarle todo.
 
 Además, el Isolation Forest te dice *qué* punto es raro, no *por qué* ni *cuánto cuesta* ignorarlo o tratarlo. Un score alto no es una decisión: marcar algo como anomalía y actuar tiene un precio, y afinar el umbral es un problema de negocio que vale la pena pensar aparte, como discuto en [el costo de los falsos positivos](/data-ml/deteccion-anomalias/costo-falsos-positivos).
 

@@ -7,7 +7,7 @@ category: "data-ml"
 subcategory: "eda"
 ---
 
-> ¿Sabías que una universidad puede admitir, dentro de cada carrera, a un porcentaje mayor de mujeres que de hombres, y aun así parecer que discrimina a las mujeres en el total?
+> Una universidad puede admitir, dentro de cada carrera, a un porcentaje mayor de mujeres que de hombres, y aun así parecer que discrimina a las mujeres en el total.
 
 No es un error de cuentas. Es la **paradoja de Simpson**: una relación que se cumple en cada subgrupo puede invertirse cuando juntás todos los datos en una sola tabla.
 
@@ -37,7 +37,7 @@ Lo inquietante de Simpson no es matemático, es de criterio. Tanto agregar como 
 
 No hay una regla mecánica que te diga "siempre desagregá" o "siempre agregá". Depende de qué causa querés aislar. Por eso esta paradoja es prima hermana de la lección del [cuarteto de Anscombe](/data-ml/eda/anscombe-cuarteto): los números resumen ocultan la estructura, y acá la estructura es un grupo que el promedio aplastó. La misma trampa de "confiá en el agregado" reaparece cuando dos series parecen moverse juntas en [correlaciones espurias](/data-ml/eda/correlacion-espuria) sin ninguna causa común.
 
-## Qué te llevás
+## Tres reflejos para no caer
 
 - **Desconfiá de los promedios globales** sobre poblaciones heterogéneas. Preguntá siempre: ¿qué subgrupos estoy mezclando?
 - **Buscá la variable de confusión.** Si una tendencia te sorprende, casi siempre hay una tercera variable repartida de forma desigual.

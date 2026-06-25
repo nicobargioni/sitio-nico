@@ -26,7 +26,7 @@ Cuando el historial supera la ventana, hay que tirar algo. Y si tirás justo el 
 
 ## Las tres estrategias para no perder el hilo
 
-No hay magia: hay decisiones de ingeniería sobre qué recordar y cómo.
+Lo que hay son decisiones de ingeniería sobre qué recordar y cómo.
 
 - **Ventana deslizante.** Te quedás solo con los últimos N mensajes. Simple y barato, pero olvida lo viejo sin contemplaciones. Sirve para charlas cortas.
 - **Resumen progresivo.** Cada tanto, el modelo comprime lo conversado en un resumen ("el usuario es Nico, quiere cambiar su plan, ya verificamos su identidad") y reemplaza el detalle por esa síntesis. Conserva lo esencial, suelta la paja.
@@ -40,6 +40,6 @@ Hay un costado que se suele pasar por alto. Si el bot recuerda tus datos entre s
 
 Y hay un detalle técnico fino: cuando hacés resumen progresivo, **el modelo decide qué es importante**. Si resume mal, pierde justo el dato que iba a necesitar tres turnos después. La memoria no es solo capacidad de almacenar; es criterio de qué vale la pena retener. Eso vuelve crítico el momento en que el bot escala a un humano: si [el handoff no arrastra el contexto](/hiperautomatizacion/agentes-conversacionales/fallback-humano), toda la memoria construida se tira a la basura.
 
-## El cierre
+## Recordar es diseñar
 
-Que un chatbot "te recuerde" no es que tenga memoria: es que lo diseñaron para arrastrar y comprimir lo justo. La próxima vez que un bot mantenga el hilo de una charla larga, sabé que detrás hay una decisión deliberada sobre qué guardar, qué resumir y qué soltar. Y cuando se le va el nombre que le dijiste recién, ya sabés exactamente qué se cayó de la ventana.
+Que un chatbot "te recuerde" no es que tenga memoria: es que lo diseñaron para arrastrar y comprimir lo justo. Cuando un bot mantiene el hilo de una charla larga, detrás hay una decisión deliberada sobre qué guardar, qué resumir y qué soltar. Y cuando se le va el nombre que le dijiste recién, lo que pasó es que ese dato se cayó de la ventana.

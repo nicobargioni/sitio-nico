@@ -1,13 +1,13 @@
 ---
 title: "El 'swivel chair' que RPA vino a matar"
 date: "2026-04-09"
-excerpt: "¿Sabías que hay un nombre para el trabajo de copiar datos de un sistema a otro a mano? Se llama 'swivel chair' y es la tarea fantasma que RPA ataca primero."
+excerpt: "Copiar datos de un sistema a otro a mano tiene nombre: 'swivel chair'. Es la tarea fantasma que RPA ataca primero."
 tags: ["rpa", "automatizacion", "curiosidades"]
 category: "hiperautomatizacion"
 subcategory: "rpa"
 ---
 
-> ¿Sabías que existe un nombre técnico para esa persona que pasa el día copiando datos de una pantalla a otra? Se llama *swivel chair* —la silla giratoria— porque literalmente gira de un monitor a otro: lee en el sistema A, gira, escribe en el sistema B. Y es probablemente la tarea más cara e invisible de tu empresa.
+> Existe un nombre técnico para esa persona que pasa el día copiando datos de una pantalla a otra. Se llama *swivel chair* —la silla giratoria— porque literalmente gira de un monitor a otro: lee en el sistema A, gira, escribe en el sistema B. Y es probablemente la tarea más cara e invisible de tu empresa.
 
 El nombre nació en los call centers y backoffices, donde un operador tenía dos o tres sistemas que no se hablaban entre sí. Su trabajo no era *decidir* nada: era ser el cable humano entre aplicaciones que nunca se integraron. Mirar un número acá, tipearlo allá. Todo el día.
 

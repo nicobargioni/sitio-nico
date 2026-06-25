@@ -34,7 +34,7 @@ aug = T.Compose([
 
 ## Por qué funciona: invarianzas a mano
 
-Lo interesante es lo que le estás enseñando sin decírselo. Al mostrarle el mismo gato espejado, le marcás que **la orientación no importa** para la clase. Al variarle el brillo, que la iluminación tampoco. Estás inyectando *invarianzas* que querés que el modelo respete, conocimiento del dominio metido por la puerta de atrás.
+Lo que pasa de fondo es que le estás enseñando algo sin decírselo. Al mostrarle el mismo gato espejado, le marcás que **la orientación no importa** para la clase. Al variarle el brillo, que la iluminación tampoco. Estás inyectando *invarianzas* que querés que el modelo respete, conocimiento del dominio metido por la puerta de atrás.
 
 Y hay un detalle fino: las aumentaciones tienen que ser **plausibles**. Espejar un gato horizontalmente está bien; espejar un dígito manuscrito convierte un 2 en algo que no existe, o peor, un 6 en un 9. La rotación de 180° de un auto en una foto de tránsito es ruido, no señal. Elegir mal las transformaciones le enseña al modelo cosas falsas.
 
@@ -46,6 +46,6 @@ Esto se apoya en cómo [una CNN construye su representación de bordes a concept
 
 Aumentar datos cumple un rol parecido al de otras técnicas que combaten el sobreajuste, como [apagar neuronas al azar con dropout](/data-ml/deep-learning/dropout-azar): le ponés ruido controlado al entrenamiento para que el modelo no se aferre a detalles espurios. Es también lo que vuelve viable el [transfer learning con pocos ejemplos](/data-ml/transfer-learning/few-shot): partís de una red preentrenada y, con un puñado de imágenes bien aumentadas, la adaptás a tu problema sin que colapse.
 
-Eso sí, no es magia infinita. Si tu modelo aprende invarianzas falsas —que la textura define la clase más que la forma— podés caer en [las ilusiones ópticas de las redes](/ia-agentes/vision/ilusiones-redes), donde un cambio de textura tira abajo la predicción. La augmentation bien diseñada ayuda justamente a evitar eso, forzando a mirar la forma global.
+Eso sí, tiene un techo. Si tu modelo aprende invarianzas falsas —que la textura define la clase más que la forma— podés caer en [las ilusiones ópticas de las redes](/ia-agentes/vision/ilusiones-redes), donde un cambio de textura tira abajo la predicción. La augmentation bien diseñada ayuda justamente a evitar eso, forzando a mirar la forma global.
 
-La moraleja que me llevo: antes de salir a etiquetar diez mil imágenes más, conviene preguntarse qué transformaciones dejan intacto el significado. Muchas veces, los datos que faltan ya los tenés. Solo hay que mostrarlos de otra manera.
+Antes de salir a etiquetar diez mil imágenes más, conviene preguntarse qué transformaciones dejan intacto el significado. Muchas veces, los datos que faltan ya los tenés. Solo hay que mostrarlos de otra manera.

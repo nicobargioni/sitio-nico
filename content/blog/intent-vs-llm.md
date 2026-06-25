@@ -19,7 +19,7 @@ Funcionaba mientras el usuario dijera algo cercano a lo previsto. El problema es
 - **Mantenimiento.** Cada producto nuevo, cada promoción, cada forma distinta de decir lo mismo era más frases que cargar a mano. El árbol crecía y se volvía frágil.
 - **Rigidez.** El bot no tenía idea de contexto. Cada mensaje se clasificaba aislado, como si la conversación empezara de cero.
 
-Era, básicamente, un trabajo artesanal de adivinar de antemano todo lo que la gente iba a escribir. Spoiler: nunca alcanzaba.
+Era, básicamente, un trabajo artesanal de adivinar de antemano todo lo que la gente iba a escribir. Y nunca alcanzaba.
 
 ## Qué cambió con los LLM
 
@@ -40,6 +40,6 @@ No todo es gratis. El modelo de intents tenía una virtud enorme: era **predecib
 
 Por eso el chatbot moderno rara vez es un LLM suelto. Suele apoyarse en [RAG](/ia-agentes/rag-embeddings/rag-apuntes-examen) para anclar las respuestas en documentación real, y conecta herramientas para pasar de responder a actuar, dando el salto de [chatbot a agente conversacional](/hiperautomatizacion/agentes-conversacionales/chatbot-vs-agente).
 
-## La moraleja
+## Adónde se movió el problema
 
 El árbol de intents no era tonto: era lo mejor que se podía hacer sin modelos que entendieran lenguaje. Hoy delegamos la comprensión al LLM y nos quedamos con el trabajo más importante: decidir **qué puede hacer** el bot y **cómo evitamos que invente**. El cuello de botella se movió de "adivinar lo que dirá el usuario" a "controlar lo que responde el modelo". Mejor problema para tener.

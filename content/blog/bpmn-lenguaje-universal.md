@@ -34,4 +34,4 @@ Una advertencia de rigor: que un diagrama esté en BPMN impecable no lo hace ver
 
 Y hay una tentación a evitar: modelar cada excepción imaginable hasta que el diagrama parezca un plano de subte. Un buen BPMN comunica; uno con doscientos gateways no comunica nada. La regla práctica es que si alguien de negocio no puede seguir el flujo principal de un vistazo, el diagrama falló como lenguaje.
 
-BPMN no es magia ni metodología pesada. Es, literalmente, un alfabeto compartido. Antes de discutir si automatizás con un [bot](/hiperautomatizacion/rpa/rpa-no-es-ia) o con código, conviene poner a todos a hablar el mismo idioma. Es barato, es estándar y evita la mitad de los malentendidos que hunden los proyectos de automatización.
+BPMN no es una metodología pesada. Es, literalmente, un alfabeto compartido. Antes de discutir si automatizás con un [bot](/hiperautomatizacion/rpa/rpa-no-es-ia) o con código, conviene poner a todos a hablar el mismo idioma. Es barato, es estándar y evita la mitad de los malentendidos que hunden los proyectos de automatización.

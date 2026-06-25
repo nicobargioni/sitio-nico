@@ -1,7 +1,7 @@
 ---
 title: "La ley de Benford: por qué el 1 aparece más y cómo atrapa fraudes"
 date: "2026-06-15"
-excerpt: "¿Sabías que en muchos conjuntos de números reales el primer dígito es 1 casi un tercio de las veces? Y que esa rareza desenmascara fraudes."
+excerpt: "En muchos conjuntos de números reales el primer dígito es 1 casi un tercio de las veces. Esa rareza es la que desenmascara fraudes."
 tags: ["estadistica", "probabilidad", "curiosidades"]
 category: "data-ml"
 subcategory: "estadistica"

@@ -7,7 +7,7 @@ category: "data-ml"
 subcategory: "eda"
 ---
 
-> ¿Sabías que existe un dataset que, graficado, dibuja un dinosaurio, y que comparte exactamente las mismas estadísticas que una estrella, una equis y una nube de puntos al azar?
+> Existe un dataset que, graficado, dibuja un dinosaurio, y que comparte exactamente las mismas estadísticas que una estrella, una equis y una nube de puntos al azar.
 
 Si el [cuarteto de Anscombe](/data-ml/eda/anscombe-cuarteto) te voló la cabeza con cuatro datasets engañosos, esperá a conocer su versión moderna y descaradamente más divertida: el **Datasaurus Dozen**.
 
@@ -39,9 +39,9 @@ print(df.groupby("dataset")[["x", "y"]].agg(["mean", "std"]))  # casi idénticos
 sns.relplot(data=df, x="x", y="y", col="dataset", col_wrap=4, height=2)  # un zoológico
 ```
 
-## Qué te llevás
+## Tres ideas para tu trabajo diario
 
-El Datasaurio es una vacuna contra la fe ciega en los estadísticos resumen. Tres ideas concretas para tu trabajo diario:
+El Datasaurio es una vacuna contra la fe ciega en los estadísticos resumen. Lo que conviene tener a mano:
 
 - **Graficá siempre.** Un panel de scatter plots cuesta dos minutos y revela formas que ningún `describe()` va a mostrar.
 - **Pearson no lo es todo.** Si sospechás relaciones no lineales, mirá la nube o probá medidas como la correlación de distancia.

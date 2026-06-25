@@ -17,7 +17,7 @@ Esa es la maquinaria detrás de la velocidad que vimos en el [escaneo columnar p
 
 ## Por qué la misma query a veces tarda más
 
-Acá está la parte que confunde a todo el mundo. Corrés una query a la mañana y vuelve en dos segundos. La misma query, mismos datos, a las tres de la tarde tarda quince. ¿Qué pasó?
+Esta es la parte que confunde a todo el mundo. Corrés una query a la mañana y vuelve en dos segundos. La misma query, mismos datos, a las tres de la tarde tarda quince. ¿Qué pasó?
 
 Los slots son un recurso **compartido y finito**. Si estás en el modo por demanda, BigQuery te da slots de un pool común, sin garantía de cuántos. Si en ese momento hay mucha gente de tu organización corriendo consultas pesadas, hay menos slots libres para vos, y tu query espera o corre con menos paralelismo. No es que tu SQL empeoró: es que la pista estaba más llena.
 
@@ -34,4 +34,4 @@ Para la mayoría de los equipos chicos o medianos, on-demand alcanza y sobra: cu
 
 El consejo práctico es no obsesionarse con los slots antes de tiempo. Primero ordenás lo barato: nombrar columnas, [particionar y clusterizar](/cloud/bigquery/particionar-clusterizar), no dejar `SELECT *` enterrados en vistas. Eso reduce el trabajo que los slots tienen que hacer, lo que mejora velocidad y costo a la vez. Pensar en comprar slots para acelerar una query mal escrita es como comprar un auto más potente para llegar antes a un semáforo en rojo: primero arreglá el camino.
 
-La moraleja: en BigQuery hay dos relojes corriendo. Uno cuenta los bytes que leés —tu factura directa. El otro cuenta los slots que usás —tu velocidad. Optimizar el primero casi siempre mejora el segundo, y por eso conviene empezar siempre por ahí.
+En BigQuery hay dos relojes corriendo. Uno cuenta los bytes que leés —tu factura directa. El otro cuenta los slots que usás —tu velocidad. Optimizar el primero casi siempre mejora el segundo, y por eso conviene empezar siempre por ahí.

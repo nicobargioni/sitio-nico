@@ -11,7 +11,7 @@ Preguntale a un equipo dónde está el cuello de botella de su proceso y casi si
 
 ## Tiempo de proceso vs tiempo de espera
 
-Acá está la confusión clave. Un caso que tarda cinco días no pasó cinco días siendo trabajado. Pasó —pongamos— cuatro horas de trabajo efectivo y el resto esperando: en una bandeja de entrada, en una cola, en un "después lo veo". Conviene separar dos cosas.
+La confusión empieza acá. Un caso que tarda cinco días no pasó cinco días siendo trabajado. Pasó —pongamos— cuatro horas de trabajo efectivo y el resto esperando: en una bandeja de entrada, en una cola, en un "después lo veo". Conviene separar dos cosas.
 
 - **Tiempo de proceso**: lo que realmente se trabaja una tarea. Suele ser corto.
 - **Tiempo de espera**: lo que el caso pasa quieto entre una tarea y la siguiente. Suele ser enorme.
@@ -36,4 +36,4 @@ Hay un cuello de botella todavía más traicionero: el reproceso. Casos que vuel
 
 Encontrar estas esperas es lo que hace al dato accionable. No tiene sentido lanzar un [bot de RPA](/hiperautomatizacion/rpa/rpa-vs-api) a acelerar el paso que ya es rápido. La palanca está en el handoff lento, en la cola que se acumula, en el reproceso que nadie mide. Medir antes de actuar es, otra vez, el espíritu de [los seis pilares de la hiperautomatización](/hiperautomatizacion/bpmn/seis-pilares-hiperautomatizacion).
 
-La moraleja es contraintuitiva pero sólida: para acelerar un proceso casi nunca hay que hacer las tareas más rápido. Hay que eliminar las esperas entre ellas. Y a esas esperas no las vas a encontrar preguntando. Las vas a encontrar midiendo.
+Suena contraintuitivo, pero es sólido: para acelerar un proceso casi nunca hay que hacer las tareas más rápido. Hay que eliminar las esperas entre ellas. Y a esas esperas no las vas a encontrar preguntando. Las vas a encontrar midiendo.

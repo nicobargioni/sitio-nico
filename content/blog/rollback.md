@@ -41,10 +41,10 @@ Si esto te suena a [deploy blue-green](/cloud/cicd/blue-green), es porque son la
 
 ## El cambio cultural
 
-Acá está lo interesante. Un buen rollback no es solo una herramienta técnica: cambia cómo trabaja el equipo. Cuando deshacer cuesta segundos, la gente se anima a desplegar más seguido, en cambios chicos, porque el riesgo de cada uno es bajo y acotado. Y desplegar chico y seguido es, paradójicamente, lo que *menos* rompe.
+Un buen rollback no es solo una herramienta técnica: cambia cómo trabaja el equipo. Cuando deshacer cuesta segundos, la gente se anima a desplegar más seguido, en cambios chicos, porque el riesgo de cada uno es bajo y acotado. Y desplegar chico y seguido es, paradójicamente, lo que *menos* rompe.
 
 Es el mismo motivo por el que [romper el build se trata como emergencia](/cloud/cicd/pipeline-rojo): la prioridad no es castigar el error, es volver a verde cuanto antes. Primero revertís y dejás todo sano; recién después, sin presión y sin usuarios afectados, investigás qué pasó.
 
-## La moraleja
+## El botón de eyección
 
 Construir software no es evitar que se caiga el avión: es tener siempre el botón de eyección a mano. El rollback es ese botón. Un equipo que puede volver atrás en un click duerme tranquilo, despliega seguido y aprende rápido. Uno que no, vive rezándole a cada deploy. Elegí la red de seguridad antes que la promesa de no caerte.
