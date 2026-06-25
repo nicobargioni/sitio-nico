@@ -1,8 +1,34 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
+import GithubSlugger from "github-slugger";
 
 const POSTS_DIR = path.join(process.cwd(), "content", "blog");
+
+/**
+ * Headings de nivel 2 (##) de una nota, con el slug que genera rehype-slug
+ * (mismo github-slugger), para armar una tabla de contenidos con anchors #.
+ */
+export function getHeadings(content: string): { text: string; slug: string }[] {
+  const slugger = new GithubSlugger();
+  const out: { text: string; slug: string }[] = [];
+  let inFence = false;
+  for (const line of content.split("\n")) {
+    if (/^\s*```/.test(line)) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
+    const m = /^##\s+(.+?)\s*#*\s*$/.exec(line);
+    if (!m) continue;
+    const text = m[1]
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1") // [texto](url) -> texto
+      .replace(/[*_`]/g, "") // sacar negrita/itálica/código
+      .trim();
+    out.push({ text, slug: slugger.slug(text) });
+  }
+  return out;
+}
 
 export type PostMeta = {
   slug: string;

@@ -11,8 +11,18 @@ import AuthorBox from "@/app/components/AuthorBox";
 import RelatedPosts from "@/app/components/RelatedPosts";
 import AskAiButtons from "@/app/components/AskAiButtons";
 import ShareButtons from "@/app/components/ShareButtons";
+import TableOfContents from "@/app/components/TableOfContents";
+import RelatedNoteCard from "@/app/components/RelatedNoteCard";
 import JsonLd from "@/app/components/JsonLd";
-import { getPostMetas, getPostBySlug, formatDate, postUrl } from "@/lib/posts";
+import {
+  getPostMetas,
+  getPostBySlug,
+  getHeadings,
+  getPostMetasBySubcategory,
+  getPostMetasByCategory,
+  formatDate,
+  postUrl,
+} from "@/lib/posts";
 import { getSubcategory } from "@/lib/taxonomy";
 import { blogPostingLd, breadcrumbLd } from "@/lib/jsonld";
 
@@ -57,9 +67,28 @@ export default async function PostPage({
 
   const found = getSubcategory(category, subcategory);
   const path = postUrl(post);
-  // Separamos el primer bloque (gancho) del resto para insertar el CTA de Gemini.
-  const [firstBlock, ...restBlocks] = post.content.split(/\n\n+/);
-  const restContent = restBlocks.join("\n\n");
+  const headings = getHeadings(post.content);
+
+  // Bloques del cuerpo. Tras el 1er bloque va el CTA de Gemini + TOC; tras el
+  // 4º párrafo de prosa va la caja de nota relacionada.
+  const blocks = post.content.split(/\n\n+/);
+  const isPara = (b: string) => !/^\s*(#|>|[-*]\s|\d+\.\s|```|\||!\[)/.test(b);
+  let paras = 0;
+  let splitIdx = blocks.length - 1;
+  for (let i = 1; i < blocks.length; i++) {
+    if (isPara(blocks[i]) && ++paras === 4) {
+      splitIdx = i;
+      break;
+    }
+  }
+  const midContent = blocks.slice(1, splitIdx + 1).join("\n\n");
+  const tailContent = blocks.slice(splitIdx + 1).join("\n\n");
+
+  // Nota relacionada: otra del mismo subtema; si no hay, de la misma categoría.
+  const related = [
+    ...getPostMetasBySubcategory(category, subcategory),
+    ...getPostMetasByCategory(category),
+  ].find((p) => p.slug !== slug);
 
   return (
     <article className="pb-20">
@@ -122,14 +151,23 @@ export default async function PostPage({
         />
         <div className="prose">
           <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSlug]}>
-            {firstBlock}
+            {blocks[0]}
           </ReactMarkdown>
         </div>
         <AskAiButtons path={path} chatgpt={false} className="my-8" />
-        {restContent && (
+        <TableOfContents headings={headings} className="my-8" />
+        {midContent && (
           <div className="prose">
             <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSlug]}>
-              {restContent}
+              {midContent}
+            </ReactMarkdown>
+          </div>
+        )}
+        {related && <RelatedNoteCard post={related} className="my-10" />}
+        {tailContent && (
+          <div className="prose">
+            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSlug]}>
+              {tailContent}
             </ReactMarkdown>
           </div>
         )}
