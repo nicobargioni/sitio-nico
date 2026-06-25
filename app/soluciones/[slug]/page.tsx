@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FiArrowLeft, FiCheck, FiArrowUpRight, FiDownload } from "react-icons/fi";
+import { FiArrowLeft, FiCheck, FiArrowUpRight } from "react-icons/fi";
 import HeroSection from "@/app/components/HeroSection";
 import Reveal from "@/app/components/Reveal";
 import ShareButtons from "@/app/components/ShareButtons";
@@ -200,15 +200,8 @@ export default async function SolutionPage({
           prompt="explica esta solución de datos e IA y para qué sirve"
           className="mt-10 max-w-2xl"
         />
-        <div className="mt-8 pt-8 border-t border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="mt-8 pt-8 border-t border-border">
           <ShareButtons path={path} title={s.titulo} />
-          <a
-            href={`/historias/${s.slug}.png`}
-            download
-            className="inline-flex items-center gap-2 text-sm text-muted hover:text-cyan transition-colors"
-          >
-            <FiDownload size={15} /> Bajar imagen para historia
-          </a>
         </div>
       </div>
     </article>
