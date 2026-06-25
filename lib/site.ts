@@ -14,7 +14,7 @@ export const site = {
     "Data Scientist enfocado en IA aplicada y machine learning. Convierto datos en modelos y decisiones para el negocio. Proyectos, casos y blog.",
   // Bajada larga del hero (2-3 líneas)
   intro:
-    "Construyo modelos, automatizaciones e IA aplicada que convierten datos en decisiones. Python, machine learning y LLMs puestos a trabajar en el negocio.",
+    "Soy Nicolás Bargioni, Data Scientist. Construyo modelos, automatizaciones e IA aplicada que convierten datos en decisiones. Python, machine learning y LLMs puestos a trabajar en el negocio.",
   // Bio breve para la caja de autor al pie de las notas
   authorBio:
     "Data Scientist enfocado en IA aplicada, machine learning y automatización. Construyo modelos y herramientas propias que convierten datos en decisiones, y escribo sobre lo que aprendo en el camino.",

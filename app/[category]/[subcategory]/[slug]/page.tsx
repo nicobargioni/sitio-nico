@@ -101,6 +101,11 @@ export default async function PostPage({
           <h1 className="font-display text-4xl md:text-5xl font-medium tracking-tight leading-[1.1]">
             {post.title}
           </h1>
+          {post.excerpt && (
+            <p className="text-lg md:text-xl text-muted leading-relaxed mt-6">
+              {post.excerpt}
+            </p>
+          )}
         </div>
       </HeroSection>
 

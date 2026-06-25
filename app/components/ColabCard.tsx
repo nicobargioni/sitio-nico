@@ -30,7 +30,7 @@ export default function ColabCard({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-center gap-4 rounded-xl border border-border bg-surface/40 p-3.5 hover:border-cyan/40 transition-colors max-w-xl"
+      className="group flex items-center gap-4 rounded-xl border border-border bg-surface/40 p-3.5 hover:border-cyan/40 transition-colors w-full"
     >
       <span className="grid place-items-center w-24 h-16 shrink-0 rounded-lg bg-white">
         <SiGooglecolab size={34} color="#E8710A" />

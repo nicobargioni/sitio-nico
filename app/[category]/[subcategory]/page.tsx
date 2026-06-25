@@ -88,6 +88,15 @@ export default async function SubcategoryPage({
           <h1 className="font-display text-4xl md:text-6xl font-medium tracking-tight">
             {sub.name}
           </h1>
+          {sub.description && (
+            <div className="mt-7 max-w-2xl space-y-4">
+              {sub.description.split("\n\n").map((para, i) => (
+                <p key={i} className="text-muted leading-relaxed">
+                  {para}
+                </p>
+              ))}
+            </div>
+          )}
         </Reveal>
       </HeroSection>
 
@@ -100,7 +109,7 @@ export default async function SubcategoryPage({
                 Notebooks
               </h2>
             </Reveal>
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {sub.colabs.map((c, i) => (
                 <Reveal key={c.url} delay={i * 70}>
                   <ColabCard title={c.title} url={c.url} />

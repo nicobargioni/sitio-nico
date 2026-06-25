@@ -45,9 +45,9 @@ export default function Hero() {
               <br />
               <span className="accent-cyan">IA aplicada.</span>
             </h1>
-            <p className="text-muted leading-relaxed max-w-md mt-7 mb-8">
+            <h2 className="text-muted leading-relaxed max-w-md mt-7 mb-8">
               {site.intro}
-            </p>
+            </h2>
             <div className="flex flex-wrap items-center gap-5">
               <a
                 href={`mailto:${site.email}`}
