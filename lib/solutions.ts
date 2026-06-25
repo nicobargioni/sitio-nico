@@ -1324,3 +1324,18 @@ export const featuredSlugs = [
 export const featuredSolutions: Solution[] = featuredSlugs
   .map((slug) => solutions.find((s) => s.slug === slug))
   .filter((s): s is Solution => Boolean(s));
+
+/**
+ * Soluciones cuya "prueba" apunta a este silo (categoría o subcategoría).
+ * Sirve para cross-linkear desde los posts del blog hacia la oferta comercial.
+ */
+export function solutionsForSilo(
+  category: string,
+  subcategory?: string
+): Solution[] {
+  const cat = `/${category}`;
+  const full = subcategory ? `/${category}/${subcategory}` : null;
+  return solutions.filter(
+    (s) => s.prueba && (s.prueba.href === full || s.prueba.href === cat)
+  );
+}

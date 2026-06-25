@@ -8,7 +8,12 @@ import ShareButtons from "@/app/components/ShareButtons";
 import AskAiButtons from "@/app/components/AskAiButtons";
 import JsonLd from "@/app/components/JsonLd";
 import { SOLUTION_ICONS } from "@/app/components/SolutionCard";
+import PostCard from "@/app/components/PostCard";
 import { solutions, getSolution } from "@/lib/solutions";
+import {
+  getPostMetasBySubcategory,
+  getPostMetasByCategory,
+} from "@/lib/posts";
 import { site } from "@/lib/site";
 import { serviceLd, faqLd, breadcrumbLd } from "@/lib/jsonld";
 
@@ -42,6 +47,16 @@ export default async function SolutionPage({
   if (!s) notFound();
   const path = `/soluciones/${s.slug}`;
   const Icon = SOLUTION_ICONS[s.icon];
+
+  // Posts del blog del mismo silo que la "prueba" técnica de la solución.
+  const proof = s.prueba?.href.split("/").filter(Boolean) ?? [];
+  const relatedPosts = (
+    proof.length >= 2
+      ? getPostMetasBySubcategory(proof[0], proof[1])
+      : proof.length === 1
+        ? getPostMetasByCategory(proof[0])
+        : []
+  ).slice(0, 3);
 
   return (
     <article className="pb-24">
@@ -173,6 +188,23 @@ export default async function SolutionPage({
             </div>
           </Reveal>
         </section>
+
+        {relatedPosts.length > 0 && (
+          <section className="mt-14">
+            <Reveal>
+              <h2 className="font-display text-2xl font-medium tracking-tight mb-6">
+                Del blog
+              </h2>
+            </Reveal>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {relatedPosts.map((p, i) => (
+                <Reveal key={p.slug} delay={i * 70}>
+                  <PostCard post={p} />
+                </Reveal>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* CTA */}
         <section className="mt-12">

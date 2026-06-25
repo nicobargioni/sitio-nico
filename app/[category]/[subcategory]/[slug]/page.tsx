@@ -13,6 +13,8 @@ import AskAiButtons from "@/app/components/AskAiButtons";
 import ShareButtons from "@/app/components/ShareButtons";
 import TableOfContents from "@/app/components/TableOfContents";
 import RelatedNoteCard from "@/app/components/RelatedNoteCard";
+import SolutionCard from "@/app/components/SolutionCard";
+import { solutionsForSilo } from "@/lib/solutions";
 import JsonLd from "@/app/components/JsonLd";
 import {
   getPostMetas,
@@ -89,6 +91,9 @@ export default async function PostPage({
     ...getPostMetasBySubcategory(category, subcategory),
     ...getPostMetasByCategory(category),
   ].find((p) => p.slug !== slug);
+
+  // Soluciones comerciales del mismo silo (cross-link blog → oferta).
+  const relatedSolutions = solutionsForSilo(category, subcategory).slice(0, 2);
 
   return (
     <article className="pb-20">
@@ -175,6 +180,17 @@ export default async function PostPage({
           <ShareButtons path={path} title={post.title} />
         </div>
         <AuthorBox />
+
+        {relatedSolutions.length > 0 && (
+          <section className="mt-14 pt-10 border-t border-border">
+            <p className="eyebrow mb-6">¿Lo necesitás en tu negocio?</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {relatedSolutions.map((s) => (
+                <SolutionCard key={s.slug} s={s} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       <RelatedPosts post={post} />
