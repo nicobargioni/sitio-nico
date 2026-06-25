@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = site.url;
   const entries: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: "weekly", priority: 1 },
+    { url: `${base}/nico-bargioni/`, changeFrequency: "monthly", priority: 0.9 },
   ];
 
   // Categorías y subcategorías (silos)

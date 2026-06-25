@@ -18,6 +18,7 @@ export function personLd() {
     email: `mailto:${site.email}`,
     jobTitle: "Data Scientist",
     description: site.authorBio ?? site.description,
+    worksFor: { "@type": "Organization", name: "Nomadic" },
     sameAs,
     knowsAbout: [
       "Data Science",
@@ -30,8 +31,17 @@ export function personLd() {
       "Python",
     ],
     alumniOf: [
-      { "@type": "CollegeOrUniversity", name: "ISSD — Ingeniería en IA y Robótica" },
-      { "@type": "EducationalOrganization", name: "EBIS Business Techschool" },
+      {
+        "@type": "CollegeOrUniversity",
+        name: "ISSD",
+        description: "Carrera: Ciencia de Datos e Inteligencia Artificial",
+      },
+      {
+        "@type": "EducationalOrganization",
+        name: "EBIS Business Techschool",
+        description:
+          "Máster en Hiperautomatización de Procesos de Negocio y Agentes de IA",
+      },
     ],
   };
 }

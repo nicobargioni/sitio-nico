@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
 import { site } from "@/lib/site";
 
@@ -24,7 +25,12 @@ export default function AuthorBox() {
         <p className="font-mono text-[0.62rem] uppercase tracking-widest text-coral mb-1">
           Escrito por
         </p>
-        <p className="font-display text-lg font-medium">{site.name}</p>
+        <Link
+          href="/nico-bargioni"
+          className="font-display text-lg font-medium hover:text-cyan transition-colors"
+        >
+          {site.name}
+        </Link>
         <p className="text-sm text-muted leading-relaxed mt-1.5">
           {site.authorBio}
         </p>
