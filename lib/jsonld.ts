@@ -4,7 +4,11 @@ const PERSON_ID = `${site.url}/#person`;
 const SITE_ID = `${site.url}/#website`;
 const IMAGE = `${site.url}/nico.jpg`;
 
-const sameAs = [site.social.twitter, site.social.linkedin].filter(Boolean);
+const sameAs = [
+  site.social.twitter,
+  site.social.linkedin,
+  site.social.github,
+].filter(Boolean);
 
 /** Person (Nico) — entidad central del sitio. */
 export function personLd() {
@@ -85,6 +89,29 @@ export function serviceLd(s: { titulo: string; resumen: string; slug: string }) 
     provider: { "@id": PERSON_ID },
     areaServed: "AR",
     serviceType: "Ciencia de datos e IA aplicada",
+  };
+}
+
+/** FAQPage para una solución — ayuda a que IAs y buscadores entiendan la oferta. */
+export function faqLd(s: {
+  titulo: string;
+  problema: string;
+  resultados: string[];
+  paraQuien: string;
+}) {
+  const qa = [
+    { q: `¿Qué problema resuelve ${s.titulo}?`, a: s.problema },
+    { q: "¿Qué obtengo con esta solución?", a: s.resultados.join(". ") + "." },
+    { q: "¿Para quién es?", a: s.paraQuien },
+  ];
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: qa.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
   };
 }
 

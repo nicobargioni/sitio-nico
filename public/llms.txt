@@ -1,0 +1,73 @@
+# Nicolás Bargioni — Data Scientist · IA aplicada
+
+> Nicolás Bargioni es Data Scientist y AI & Automations Analyst en Nomadic. Construye modelos de machine learning, automatizaciones e IA aplicada (LLMs) que convierten datos en decisiones de negocio. Este archivo lista las soluciones que ofrece y las páginas clave de su sitio.
+
+## Soluciones que ofrece Nicolás Bargioni
+- [Predecir cuánto vas a vender](https://nicolasbargioni.com/soluciones/prediccion-de-demanda): Modelos que estiman la demanda de las próximas semanas para que compres y produzcas con datos, no con corazonadas.
+- [Anticipar qué clientes están por irse](https://nicolasbargioni.com/soluciones/retencion-de-clientes): Detecto señales tempranas de abandono para que actúes antes de perder al cliente, no después.
+- [Detectar lo raro antes de que cueste caro](https://nicolasbargioni.com/soluciones/deteccion-de-anomalias): Sistemas que avisan cuando algo se sale del patrón —un gasto, una transacción, una máquina— antes de que escale.
+- [Entender a tus clientes en grupos reales](https://nicolasbargioni.com/soluciones/segmentacion-de-clientes): Descubro los grupos naturales de tu base —sin suponerlos de antemano— para que comuniques y vendas distinto a cada uno.
+- [Un asistente que responde con la info de tu empresa](https://nicolasbargioni.com/soluciones/asistente-con-tu-conocimiento): Un chatbot que contesta con tus documentos, manuales y procesos —no con lo que “sabe” un modelo genérico—, citando de dónde sacó cada respuesta.
+- [Automatizar el trabajo repetitivo](https://nicolasbargioni.com/soluciones/automatizacion-de-procesos): Conecto tus herramientas y armo flujos que hacen solos las tareas manuales y repetitivas, de punta a punta.
+- [Leer facturas y documentos en automático](https://nicolasbargioni.com/soluciones/lectura-de-documentos): Extraigo los datos de tus documentos —facturas, remitos, formularios— y los paso a una planilla o sistema, sin carga manual.
+- [Sacar conclusiones claras de tus números](https://nicolasbargioni.com/soluciones/analisis-de-datos): Ordeno y analizo tus datos para responder preguntas concretas de negocio, y te lo dejo en un tablero que entendés de un vistazo.
+- [Poner el precio justo, no a ojo](https://nicolasbargioni.com/soluciones/pricing-dinamico): Modelos que calculan el precio que más te conviene para cada producto, según cómo responde tu demanda y qué hace la competencia.
+- [Recomendar lo que cada cliente querría comprar](https://nicolasbargioni.com/soluciones/recomendador-de-productos): Un recomendador que aprende de lo que cada cliente mira y compra para mostrarle lo que más probablemente quiera llevar.
+- [Anticipar cuánta plata vas a cobrar](https://nicolasbargioni.com/soluciones/prevision-de-cobros): Modelos que proyectan tus cobros de los próximos meses según el comportamiento histórico de pago de tus clientes.
+- [Ordenar solas las consultas que entran](https://nicolasbargioni.com/soluciones/clasificacion-de-tickets): Un clasificador que lee cada consulta que entra, la etiqueta por tema y urgencia, y la manda directo a quien corresponde.
+- [Saber qué dicen de tu marca, a escala](https://nicolasbargioni.com/soluciones/sentimiento-de-marca): Análisis automático de reseñas, comentarios y menciones para saber qué se valora, qué molesta y cómo cambia el ánimo en el tiempo.
+- [Priorizar los leads que de verdad compran](https://nicolasbargioni.com/soluciones/lead-scoring): Un sistema que le pone puntaje a cada lead según su probabilidad de comprar, para que tu equipo arranque por los que valen la pena.
+- [Resúmenes y tareas de cada reunión, solos](https://nicolasbargioni.com/soluciones/resumen-de-reuniones): Un sistema que escucha la reunión y te devuelve un resumen claro con los temas tratados y las tareas que quedaron, sin que nadie tome nota.
+- [Optimizar rutas de reparto y visitas](https://nicolasbargioni.com/soluciones/optimizacion-de-rutas): Un sistema que arma el mejor orden de paradas para tus repartos o visitas, recortando kilómetros, horas y combustible.
+- [Predecir fallas antes de que paren la producción](https://nicolasbargioni.com/soluciones/mantenimiento-predictivo): Un sistema que vigila tus máquinas y avisa cuando algo empieza a comportarse raro, para que repares antes de que se rompa.
+- [Que encuentren lo que buscan en tu sitio](https://nicolasbargioni.com/soluciones/buscador-semantico): Un buscador que entiende la intención detrás de las palabras, así la gente encuentra lo que busca aunque no use el término exacto.
+- [Generar descripciones de producto a escala](https://nicolasbargioni.com/soluciones/descripciones-de-producto): Genero descripciones que venden para todo tu catálogo, en tu tono y a la velocidad que necesitás.
+- [Vigilar precios y movidas de la competencia](https://nicolasbargioni.com/soluciones/monitoreo-de-competencia): Un sistema que mira a tus competidores todos los días y te avisa cuando algo cambia.
+- [Leer todas las respuestas abiertas de tus encuestas](https://nicolasbargioni.com/soluciones/analisis-de-encuestas): Convierto montañas de respuestas escritas en los temas concretos que tus clientes te están diciendo.
+- [Detectar y recuperar carritos que no se compran](https://nicolasbargioni.com/soluciones/recuperacion-de-carritos): Detecto quién está por abandonar la compra y te marco a quién conviene contactar para cerrarla.
+- [Un agente que no solo responde: hace](https://nicolasbargioni.com/soluciones/agente-que-actua): Un asistente que entiende lo que le pedís y lo ejecuta de verdad en tus sistemas.
+- [Control de calidad por imagen](https://nicolasbargioni.com/soluciones/control-de-calidad-visual): Una cámara que mira cada pieza y marca las que tienen fallas, sin frenar la línea.
+- [Entender qué pasa en tus llamadas](https://nicolasbargioni.com/soluciones/analisis-de-llamadas): Convierto tus llamadas en texto y las analizo para ver qué funciona y qué se traba.
+- [Aparecer en Google y cuando le preguntan a la IA](https://nicolasbargioni.com/soluciones/visibilidad-en-buscadores): Trabajo tu presencia para que te encuentren en Google y te mencionen los asistentes de IA.
+- [Categorizar y etiquetar tu catálogo solo](https://nicolasbargioni.com/soluciones/clasificacion-de-catalogo): Un sistema que ordena, categoriza y etiqueta tu catálogo automáticamente.
+- [Que te avisen cuando un número se sale de control](https://nicolasbargioni.com/soluciones/alertas-de-kpis): Un sistema que vigila tus números clave y te avisa apenas algo se desvía.
+- [Evaluar el riesgo de que no te paguen](https://nicolasbargioni.com/soluciones/scoring-crediticio): Le pongo un puntaje a cada cliente para que sepas, antes de fiar, qué tan probable es que te cumpla.
+- [Anticipar quién no va a venir al turno](https://nicolasbargioni.com/soluciones/prediccion-de-no-show): Calculo qué tan probable es que cada turno se caiga, así podés recordarlo o sobrevenderlo antes de quedarte con el lugar vacío.
+- [Saber cuánto vale cada cliente en el tiempo](https://nicolasbargioni.com/soluciones/prediccion-de-ltv): Estimo cuánto te va a dejar cada cliente a lo largo de la relación, así sabés en quién vale la pena invertir.
+- [Cuánta gente necesitás cada día](https://nicolasbargioni.com/soluciones/prevision-de-personal): Proyecto la demanda de cada día y franja horaria para que armes los turnos del equipo con números, no con corazonadas.
+- [Cuánto stock tener de cada cosa](https://nicolasbargioni.com/soluciones/optimizacion-de-inventario): Calculo cuánto conviene tener de cada producto para que no se te clave plata en el depósito ni se te agote lo que más sale.
+- [Anticipar qué empleados están por renunciar](https://nicolasbargioni.com/soluciones/churn-de-empleados): Detecto con anticipación qué personas tienen más chances de irse, para que puedas actuar antes de que presenten la renuncia.
+- [Saber qué canal te trae ventas de verdad](https://nicolasbargioni.com/soluciones/atribucion-de-marketing): Analizo el recorrido completo de tus clientes para mostrarte qué canales empujan las ventas reales y cuáles solo se llevan el crédito.
+- [Poner la plata de ads donde rinde](https://nicolasbargioni.com/soluciones/optimizacion-de-campanas): Modelo el retorno real de cada campaña para que la plata vaya a lo que rinde y dejes de financiar lo que no.
+- [Entender si tus clientes se quedan o se van](https://nicolasbargioni.com/soluciones/analisis-de-cohortes): Agrupo a tus clientes por el momento en que entraron y te muestro cuántos siguen activos mes a mes, para ver si tu negocio retiene o se vacía por abajo.
+- [Filtrar y rankear CVs en segundos](https://nicolasbargioni.com/soluciones/matching-de-cv): Proceso automáticamente todos los CVs de una búsqueda y te los devuelvo ordenados según qué tan bien encajan con el puesto.
+- [Resumir contratos e informes largos](https://nicolasbargioni.com/soluciones/resumen-de-documentos): Tomo tus documentos extensos y te devuelvo un resumen claro con los puntos que importan, listo para decidir.
+- [Traducir tu catálogo y contenido a varios idiomas](https://nicolasbargioni.com/soluciones/traduccion-de-contenido): Traduzco tu catálogo, tus fichas y tu contenido a los idiomas que necesites, cuidando el tono de tu marca.
+- [Filtrar comentarios tóxicos y spam](https://nicolasbargioni.com/soluciones/moderacion-de-contenido): Filtro automáticamente el spam, los insultos y los mensajes tóxicos antes de que ensucien tu comunidad.
+- [Un bot que califica y atiende ventas 24/7](https://nicolasbargioni.com/soluciones/chatbot-de-ventas): Un asistente que atiende, responde y califica consultas de venta a cualquier hora, y te pasa los leads listos.
+- [Agrupar las consultas y temas que se repiten](https://nicolasbargioni.com/soluciones/clustering-de-temas): Junto miles de mensajes sueltos y los agrupo en los temas reales, para que veas de qué habla tu gente.
+- [Unir tus datos de todas las fuentes](https://nicolasbargioni.com/soluciones/integracion-de-datos): Conecto las islas de información de tu negocio para que veas todo en un solo lugar y sin copiar y pegar a mano.
+- [Encontrar dónde tirás plata en la nube](https://nicolasbargioni.com/soluciones/reduccion-de-costos-cloud): Reviso tu gasto en la nube línea por línea y encuentro qué estás pagando de más para que la factura baje sin tocar lo que funciona.
+- [Que tu infraestructura crezca y baje sola](https://nicolasbargioni.com/soluciones/autoescalado): Configuro tu sistema para que se agrande solo cuando llega mucha gente y se achique cuando no hay nadie, así pagás solo por lo que usás.
+- [Enterarte vos primero si algo se cae](https://nicolasbargioni.com/soluciones/monitoreo-de-uptime): Pongo un vigilante que prueba tu sitio todo el tiempo y te avisa al instante si algo deja de funcionar, antes de que se entere un cliente.
+- [Encontrar la causa de un error rápido](https://nicolasbargioni.com/soluciones/analisis-de-logs): Ordeno el registro de todo lo que pasa en tu sistema para que, cuando algo falla, la causa salte a la vista en minutos y no en horas.
+- [Que tus datos lleguen limpios y solos al tablero](https://nicolasbargioni.com/soluciones/pipelines-de-datos): Conecto tus fuentes, ordeno los datos automáticamente y los dejo listos en un tablero que se actualiza solo.
+- [Contar e inventariar con una foto](https://nicolasbargioni.com/soluciones/conteo-por-imagen): Saco una foto y el sistema cuenta lo que aparece, sin contar uno por uno.
+- [Leer patentes y matrículas en automático](https://nicolasbargioni.com/soluciones/lectura-de-patentes): Una cámara lee la patente de cada vehículo y la registra sola, sin que nadie tipee nada.
+- [Cargar datos y controlar por voz](https://nicolasbargioni.com/soluciones/comandos-de-voz): Tu equipo dicta lo que tiene que cargar y el sistema lo registra, sin soltar lo que está haciendo.
+- [Separar el tráfico real de los bots](https://nicolasbargioni.com/soluciones/deteccion-de-bots): Distingo a las personas de los bots para que tus números reflejen visitas de verdad.
+- [Juntar datos de la web de forma estructurada](https://nicolasbargioni.com/soluciones/extraccion-de-datos-web): Recolecto información publicada en sitios web y te la entrego ordenada en una planilla o base de datos, lista para usar.
+- [Estimar el precio de mercado de algo](https://nicolasbargioni.com/soluciones/tasacion-automatica): Construyo una herramienta que estima el precio de mercado de un bien a partir de sus características y de lo que pasó con casos parecidos.
+- [Mostrarle a cada visitante lo que le interesa](https://nicolasbargioni.com/soluciones/personalizacion-web): Hago que tu sitio adapte lo que muestra según el interés de cada visitante, para acercarlo a lo que realmente busca.
+- [Reportes escritos que se arman solos](https://nicolasbargioni.com/soluciones/generacion-de-reportes): Automatizo los informes que hacés siempre, para que se generen solos con los números actualizados y un texto que los explica.
+- [Detectar qué empieza a crecer antes que el resto](https://nicolasbargioni.com/soluciones/deteccion-de-tendencias): Analizo tus datos en el tiempo para señalar qué está empezando a crecer, mientras todavía hay margen para aprovecharlo.
+
+## Sobre Nicolás Bargioni
+- [Perfil y trayectoria](https://nicolasbargioni.com/nico-bargioni): Data Scientist y AI & Automations Analyst en Nomadic; antes SEO técnico. Formación en Ciencia de Datos e IA (ISSD) e Hiperautomatización (EBIS).
+- [Todas las soluciones](https://nicolasbargioni.com/soluciones): catálogo completo de lo que resuelve con datos e IA.
+- [Inicio](https://nicolasbargioni.com): Data Science, machine learning, IA aplicada y automatización.
+
+## Enlaces
+- LinkedIn: https://www.linkedin.com/in/nicolas-bargioni/
+- X: https://x.com/barshioni
+- GitHub: https://github.com/nicobargioni

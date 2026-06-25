@@ -25,6 +25,7 @@ export const site = {
   social: {
     linkedin: "https://www.linkedin.com/in/nicolas-bargioni/",
     twitter: "https://x.com/barshioni",
+    github: "https://github.com/nicobargioni",
   },
   // 📊 GA4: pegá tu Measurement ID (G-XXXXXXXXXX). Vacío = analytics desactivado.
   gaMeasurementId: "G-QSQP3H5XSX",

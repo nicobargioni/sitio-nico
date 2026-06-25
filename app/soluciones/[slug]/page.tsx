@@ -10,7 +10,7 @@ import JsonLd from "@/app/components/JsonLd";
 import { SOLUTION_ICONS } from "@/app/components/SolutionCard";
 import { solutions, getSolution } from "@/lib/solutions";
 import { site } from "@/lib/site";
-import { serviceLd, breadcrumbLd } from "@/lib/jsonld";
+import { serviceLd, faqLd, breadcrumbLd } from "@/lib/jsonld";
 
 export function generateStaticParams() {
   return solutions.map((s) => ({ slug: s.slug }));
@@ -46,6 +46,7 @@ export default async function SolutionPage({
   return (
     <article className="pb-24">
       <JsonLd data={serviceLd(s)} />
+      <JsonLd data={faqLd(s)} />
       <JsonLd
         data={breadcrumbLd([
           { name: "Inicio", path: "/" },

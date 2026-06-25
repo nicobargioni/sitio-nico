@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "gen:stories": "node scripts/gen-stories.mjs"
+    "gen:stories": "node scripts/gen-stories.mjs",
+    "gen:llms": "node scripts/gen-llms.mjs"
   },
   "dependencies": {
     "geist": "^1.7.2",
