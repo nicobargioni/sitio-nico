@@ -1,19 +1,23 @@
 /**
  * Notifica a Google (Web Search Indexing API) que crawlee/actualice URLs.
- * Lee la clave de la service account desde la variable de entorno
- * GOOGLE_APPLICATION_CREDENTIALS (ruta a un JSON que NO se versiona).
+ * Lee la clave de la service account desde GOOGLE_APPLICATION_CREDENTIALS.
  *
- * Uso:
- *   export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.secrets/indexing-sa.json"
- *   node scripts/ping-indexing.mjs https://nicolasbargioni.com/soluciones/   # URLs puntuales
- *   node scripts/ping-indexing.mjs --all                                     # todas las del sitemap
+ * Modos:
+ *   node scripts/ping-indexing.mjs <url> [<url>...]   # URLs puntuales
+ *   node scripts/ping-indexing.mjs --all              # todas las del sitemap (máx 200/día)
+ *   node scripts/ping-indexing.mjs --new              # solo las que no se pinearon antes (cron)
+ *   node scripts/ping-indexing.mjs --seed             # marca el sitemap actual como conocido, sin pinear
  *
+ * Estado (URLs ya notificadas): ~/.secrets/indexed-state.json (override con INDEX_STATE).
  * Cuota por defecto de la API: 200 URLs/día.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import crypto from "node:crypto";
 
 const SITEMAP = "https://nicolasbargioni.com/sitemap.xml";
+const STATE = process.env.INDEX_STATE || join(homedir(), ".secrets", "indexed-state.json");
 
 const keyPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 if (!keyPath) {
@@ -53,23 +57,56 @@ async function getToken() {
   return j.access_token;
 }
 
-async function getUrls() {
-  const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
-  if (args.length) return args;
+async function sitemapUrls() {
   const xml = await (await fetch(SITEMAP)).text();
   return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 }
 
-const token = await getToken();
-let urls = await getUrls();
-if (urls.length > 200) {
-  console.warn(`⚠ ${urls.length} URLs; la cuota diaria es 200. Pineo las primeras 200.`);
-  urls = urls.slice(0, 200);
+function loadState() {
+  try {
+    return new Set(JSON.parse(readFileSync(STATE, "utf8")));
+  } catch {
+    return new Set();
+  }
+}
+const saveState = (set) => writeFileSync(STATE, JSON.stringify([...set]));
+
+const flags = process.argv.slice(2).filter((a) => a.startsWith("--"));
+const explicit = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+
+// --seed: marca el sitemap actual como ya conocido, sin notificar nada.
+if (flags.includes("--seed")) {
+  const u = await sitemapUrls();
+  saveState(new Set(u));
+  console.log(`Estado sembrado: ${u.length} URLs marcadas como conocidas (no se pineó nada).`);
+  process.exit(0);
 }
 
+let list;
+if (explicit.length) list = explicit;
+else if (flags.includes("--all")) list = await sitemapUrls();
+else if (flags.includes("--new")) {
+  const state = loadState();
+  list = (await sitemapUrls()).filter((u) => !state.has(u));
+} else {
+  console.error("Uso: ping-indexing.mjs <url...> | --all | --new | --seed");
+  process.exit(1);
+}
+
+if (list.length === 0) {
+  console.log("Nada nuevo para pinear.");
+  process.exit(0);
+}
+if (list.length > 200) {
+  console.warn(`⚠ ${list.length} URLs; la cuota diaria es 200. Pineo las primeras 200.`);
+  list = list.slice(0, 200);
+}
+
+const token = await getToken();
+const state = loadState();
 let ok = 0,
   fail = 0;
-for (const url of urls) {
+for (const url of list) {
   const res = await fetch("https://indexing.googleapis.com/v3/urlNotifications:publish", {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -77,10 +114,12 @@ for (const url of urls) {
   });
   if (res.ok) {
     ok++;
+    state.add(url);
     console.log("✓", url);
   } else {
     fail++;
     console.log("✗", res.status, url, (await res.text()).slice(0, 140));
   }
 }
+saveState(state);
 console.log(`\nListo: ${ok} ok · ${fail} con error.`);
