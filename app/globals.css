@@ -171,3 +171,20 @@ body.restyle-bare > footer {
 body.restyle-bare {
   background: #0a0a0a;
 }
+
+/* ===== Animaciones de los previews (/lab) — objetos IA/data en movimiento ===== */
+@keyframes lab-floaty   { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
+@keyframes lab-floaty-b { 0%,100% { transform: translateY(0) rotate(0deg) } 50% { transform: translateY(12px) rotate(8deg) } }
+@keyframes lab-spin     { to { transform: rotate(360deg) } }
+@keyframes lab-dash     { to { stroke-dashoffset: -200 } }
+@keyframes lab-pulse    { 0%,100% { opacity: .35 } 50% { opacity: 1 } }
+@keyframes lab-grow     { from { transform: scaleY(0) } to { transform: scaleY(1) } }
+.lab-floaty   { animation: lab-floaty 6s ease-in-out infinite; }
+.lab-floaty-b { animation: lab-floaty-b 8s ease-in-out infinite; }
+.lab-spin     { animation: lab-spin 26s linear infinite; }
+.lab-pulse    { animation: lab-pulse 3s ease-in-out infinite; }
+.lab-flow     { stroke-dasharray: 6 8; animation: lab-dash 3s linear infinite; }
+.lab-grow     { transform-origin: bottom; animation: lab-grow 1.4s cubic-bezier(.22,1,.36,1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .lab-floaty,.lab-floaty-b,.lab-spin,.lab-pulse,.lab-flow,.lab-grow { animation: none; }
+}
