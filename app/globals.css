@@ -188,3 +188,38 @@ body.restyle-bare {
 @media (prefers-reduced-motion: reduce) {
   .lab-floaty,.lab-floaty-b,.lab-spin,.lab-pulse,.lab-flow,.lab-grow { animation: none; }
 }
+
+/* ===== Slider de la calculadora de ROI (/servicios) ===== */
+.roi-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-border, #e4eaf0);
+  outline: none;
+  cursor: pointer;
+}
+.roi-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0e90b0;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.18);
+  transition: transform .12s ease;
+}
+.roi-range::-webkit-slider-thumb:hover { transform: scale(1.12); }
+.roi-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0e90b0;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.18);
+}
+.roi-range:focus-visible {
+  outline: 2px solid #0e90b0;
+  outline-offset: 4px;
+}

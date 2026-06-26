@@ -15,6 +15,7 @@ import JsonLd from "@/app/components/JsonLd";
 import { site } from "@/lib/site";
 import { breadcrumbLd } from "@/lib/jsonld";
 import { casos } from "@/lib/cases";
+import ROICalculator from "@/app/components/ROICalculator";
 
 export const metadata: Metadata = {
   title: "Servicios — Cómo trabajo con tu negocio",
@@ -213,6 +214,23 @@ export default function ServiciosPage() {
               </Reveal>
             ))}
           </div>
+        </section>
+
+        {/* Calculadora de ROI */}
+        <section className="mt-24">
+          <Reveal>
+            <p className="eyebrow mb-4">Calculadora</p>
+            <h2 className="font-display text-3xl md:text-4xl font-medium tracking-tight mb-3">
+              ¿Cuánto te haría ahorrar?
+            </h2>
+            <p className="text-muted max-w-2xl mb-10">
+              Movés los valores y ves el ahorro estimado de automatizar una tarea
+              repetitiva. Después lo confirmamos sobre tus números reales.
+            </p>
+          </Reveal>
+          <Reveal>
+            <ROICalculator />
+          </Reveal>
         </section>
 
         {/* Diagnóstico gratis + garantías */}
