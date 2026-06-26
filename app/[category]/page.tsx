@@ -22,7 +22,11 @@ export async function generateMetadata({
   const { category } = await params;
   const cat = getCategory(category);
   if (!cat) return {};
-  return { title: cat.name, description: cat.description };
+  return {
+    title: cat.name,
+    description: cat.description,
+    alternates: { canonical: `/${cat.slug}` },
+  };
 }
 
 export default async function CategoryPage({

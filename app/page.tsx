@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
 import { FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
@@ -186,6 +187,10 @@ const stack = [
   { Icon: SiN8N, name: "n8n" },
   { Icon: SiOpenai, name: "OpenAI" },
 ];
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   // Una nota por categoría (la más reciente), para la fila del blog

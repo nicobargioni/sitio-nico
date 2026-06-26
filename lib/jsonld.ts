@@ -4,6 +4,17 @@ const PERSON_ID = `${site.url}/#person`;
 const SITE_ID = `${site.url}/#website`;
 const IMAGE = `${site.url}/nico.jpg`;
 
+/**
+ * URL absoluta canónica con exactamente una barra final.
+ * Coincide con `trailingSlash: true` (export estático + Firebase Hosting) y con
+ * el canonical que emite Next, para que el JSON-LD no cite URLs que redirigen.
+ */
+export function abs(path: string = "/"): string {
+  if (/^https?:\/\//i.test(path)) return path;
+  const trimmed = path.replace(/^\/+|\/+$/g, "");
+  return trimmed ? `${site.url}/${trimmed}/` : `${site.url}/`;
+}
+
 const sameAs = [
   site.social.twitter,
   site.social.linkedin,
@@ -17,7 +28,7 @@ export function personLd() {
     "@type": "Person",
     "@id": PERSON_ID,
     name: site.name,
-    url: site.url,
+    url: abs(),
     image: IMAGE,
     email: `mailto:${site.email}`,
     jobTitle: "Data Scientist",
@@ -56,7 +67,7 @@ export function websiteLd() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": SITE_ID,
-    url: site.url,
+    url: abs(),
     name: site.name,
     description: site.description,
     inLanguage: "es",
@@ -70,7 +81,7 @@ export function profilePageLd() {
   return {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
-    url: site.url,
+    url: abs(),
     name: site.title,
     inLanguage: "es",
     isPartOf: { "@id": SITE_ID },
@@ -85,7 +96,7 @@ export function serviceLd(s: { titulo: string; resumen: string; slug: string }) 
     "@type": "Service",
     name: s.titulo,
     description: s.resumen,
-    url: `${site.url}/soluciones/${s.slug}`,
+    url: abs(`/soluciones/${s.slug}`),
     provider: { "@id": PERSON_ID },
     areaServed: "AR",
     serviceType: "Ciencia de datos e IA aplicada",
@@ -126,7 +137,7 @@ export function breadcrumbLd(crumbs: Crumb[]) {
       "@type": "ListItem",
       position: i + 1,
       name: c.name,
-      item: `${site.url}${c.path}`,
+      item: abs(c.path),
     })),
   };
 }
@@ -150,8 +161,8 @@ export function blogPostingLd(post: {
     dateModified: post.date,
     inLanguage: "es",
     image: [IMAGE],
-    mainEntityOfPage: `${site.url}${post.path}`,
-    url: `${site.url}${post.path}`,
+    mainEntityOfPage: abs(post.path),
+    url: abs(post.path),
     author: { "@id": PERSON_ID },
     publisher: { "@id": PERSON_ID },
     isPartOf: { "@id": SITE_ID },
@@ -168,7 +179,7 @@ export function collectionLd(c: { name: string; description: string; path: strin
     "@type": "CollectionPage",
     name: c.name,
     description: c.description,
-    url: `${site.url}${c.path}`,
+    url: abs(c.path),
     inLanguage: "es",
     isPartOf: { "@id": SITE_ID },
     about: { "@id": PERSON_ID },
@@ -186,7 +197,7 @@ export function itemListLd(name: string, items: { name: string; path: string }[]
       "@type": "ListItem",
       position: i + 1,
       name: it.name,
-      url: it.path.startsWith("http") ? it.path : `${site.url}${it.path}`,
+      url: abs(it.path),
     })),
   };
 }
@@ -197,7 +208,7 @@ export function softwareSourceCodeLd(nb: { title: string; url: string }) {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
     name: nb.title,
-    codeRepository: nb.url.startsWith("http") ? nb.url : `${site.url}${nb.url}`,
+    codeRepository: abs(nb.url),
     programmingLanguage: "Python",
     runtimePlatform: "Google Colab / Jupyter",
     author: { "@id": PERSON_ID },

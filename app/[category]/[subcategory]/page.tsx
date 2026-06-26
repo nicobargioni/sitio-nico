@@ -34,6 +34,7 @@ export async function generateMetadata({
   return {
     title: `${found.subcategory.name} · ${found.category.name}`,
     description: `${found.subcategory.name} — notebooks y posts de ${found.category.name}.`,
+    alternates: { canonical: `/${found.category.slug}/${found.subcategory.slug}` },
   };
 }
 

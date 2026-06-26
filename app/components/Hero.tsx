@@ -41,7 +41,7 @@ export default function Hero() {
           <div className="lg:col-span-7">
             <p className="eyebrow mb-5">Data Science · ML · IA</p>
             <h1 className="font-display font-medium text-[clamp(2.6rem,6.5vw,5rem)] leading-[1.02] tracking-tight">
-              Data Science &
+              Data Science &{" "}
               <br />
               <span className="accent-cyan">IA aplicada.</span>
             </h1>
@@ -66,14 +66,21 @@ export default function Hero() {
 
           {/* Columna derecha: retrato circular + botón LinkedIn */}
           <div className="lg:col-span-5 flex flex-col items-center lg:items-end gap-7">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/nico-hero.png"
-              alt={site.name}
-              width={760}
-              height={760}
-              className="w-full max-w-[340px] aspect-square rounded-full ring-1 ring-cyan/25 ring-offset-[6px] ring-offset-bg shadow-[0_30px_60px_-18px_rgba(8,145,178,0.35)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-16px_rgba(240,82,31,0.32)]"
-            />
+            {/* Retrato = elemento LCP del home: AVIF/WebP optimizados + carga prioritaria */}
+            <picture className="contents">
+              <source srcSet="/nico-hero.avif" type="image/avif" />
+              <source srcSet="/nico-hero.webp" type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/nico-hero.png"
+                alt={site.name}
+                width={760}
+                height={760}
+                fetchPriority="high"
+                decoding="async"
+                className="w-full max-w-[340px] aspect-square rounded-full ring-1 ring-cyan/25 ring-offset-[6px] ring-offset-bg shadow-[0_30px_60px_-18px_rgba(8,145,178,0.35)] transition-shadow duration-500 hover:shadow-[0_36px_70px_-16px_rgba(240,82,31,0.32)]"
+              />
+            </picture>
             <LinkedInCard className="w-full max-w-[340px]" />
           </div>
         </div>

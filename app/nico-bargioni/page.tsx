@@ -104,14 +104,20 @@ export default function AuthorPage() {
             </Reveal>
           </div>
           <div className="lg:col-span-4 flex justify-center lg:justify-end">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/nico-hero.png"
-              alt="Nicolás Bargioni"
-              width={760}
-              height={760}
-              className="w-full max-w-[260px] aspect-square rounded-2xl object-cover ring-1 ring-cyan/25 ring-offset-[6px] ring-offset-bg shadow-[0_30px_60px_-18px_rgba(8,145,178,0.35)]"
-            />
+            <picture className="contents">
+              <source srcSet="/nico-hero.avif" type="image/avif" />
+              <source srcSet="/nico-hero.webp" type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/nico-hero.png"
+                alt="Nicolás Bargioni"
+                width={760}
+                height={760}
+                fetchPriority="high"
+                decoding="async"
+                className="w-full max-w-[260px] aspect-square rounded-2xl object-cover ring-1 ring-cyan/25 ring-offset-[6px] ring-offset-bg shadow-[0_30px_60px_-18px_rgba(8,145,178,0.35)]"
+              />
+            </picture>
           </div>
         </div>
       </HeroSection>
