@@ -42,3 +42,8 @@ next-env.d.ts
 
 # firebase deploy cache
 /.firebase/
+
+# claves de service account (nunca versionar)
+*-sa.json
+*service-account*.json
+*-*.iam.gserviceaccount.com.json
