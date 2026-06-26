@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/nico-bargioni/`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/servicios/`, changeFrequency: "monthly", priority: 0.95 },
     { url: `${base}/soluciones/`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/blog/`, changeFrequency: "weekly", priority: 0.7 },
   ];

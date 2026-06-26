@@ -9,6 +9,7 @@ import { categories } from "@/lib/taxonomy";
 
 const links = [
   { href: "/#sobre-mi", label: "Sobre mí" },
+  { href: "/servicios", label: "Servicios" },
   { href: "/soluciones", label: "Soluciones" },
   { href: "/blog", label: "Blog" },
   { href: "/#use-cases", label: "Casos" },
