@@ -1,15 +1,25 @@
 import Link from "next/link";
 import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
 import { FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
+import {
+  SiPython,
+  SiScikitlearn,
+  SiPytorch,
+  SiPandas,
+  SiGooglecloud,
+  SiN8N,
+  SiOpenai,
+} from "react-icons/si";
 import Hero from "./components/Hero";
 import AskAiButtons from "./components/AskAiButtons";
 import Reveal from "./components/Reveal";
+import CountUp from "./components/CountUp";
 import ColabCard from "./components/ColabCard";
 import PostCard from "./components/PostCard";
 import SolutionCard from "./components/SolutionCard";
 import JsonLd from "./components/JsonLd";
-import { getPostMetasByCategory } from "@/lib/posts";
-import { featuredSolutions } from "@/lib/solutions";
+import { getPostMetas, getPostMetasByCategory } from "@/lib/posts";
+import { featuredSolutions, solutions } from "@/lib/solutions";
 import { categories } from "@/lib/taxonomy";
 import { site } from "@/lib/site";
 import { profilePageLd, itemListLd } from "@/lib/jsonld";
@@ -167,11 +177,32 @@ const verticals = [
   "Agencias",
 ];
 
+const stack = [
+  { Icon: SiPython, name: "Python" },
+  { Icon: SiScikitlearn, name: "scikit-learn" },
+  { Icon: SiPytorch, name: "PyTorch" },
+  { Icon: SiPandas, name: "pandas" },
+  { Icon: SiGooglecloud, name: "Google Cloud" },
+  { Icon: SiN8N, name: "n8n" },
+  { Icon: SiOpenai, name: "OpenAI" },
+];
+
 export default function Home() {
   // Una nota por categoría (la más reciente), para la fila del blog
   const blogRow = categories
     .map((cat) => getPostMetasByCategory(cat.slug)[0])
     .filter(Boolean);
+
+  // Cifras reales para la prueba cuantificada
+  const notebooksCount = categories
+    .flatMap((c) => c.subcategories)
+    .reduce((acc, s) => acc + s.colabs.length, 0);
+  const stats = [
+    { to: solutions.length, suffix: "", label: "soluciones de negocio" },
+    { to: getPostMetas().length, suffix: "", label: "notas en el blog" },
+    { to: notebooksCount, suffix: "", label: "notebooks abiertos" },
+    { to: categories.length, suffix: "", label: "áreas: datos, IA, automatización, cloud" },
+  ];
 
   return (
     <>
@@ -183,6 +214,38 @@ export default function Home() {
         )}
       />
       <Hero />
+
+      {/* ── Prueba cuantificada + stack técnico ── */}
+      <section className="px-6 py-16 border-t border-border">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+            {stats.map((s) => (
+              <Reveal key={s.label}>
+                <div>
+                  <p className="font-display text-4xl md:text-5xl font-bold tracking-tight text-coral leading-none">
+                    <CountUp to={s.to} suffix={s.suffix} />
+                  </p>
+                  <p className="text-sm text-muted mt-2 leading-snug">{s.label}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <div className="mt-14 pt-10 border-t border-border">
+            <Reveal>
+              <p className="eyebrow mb-6">Trabajo con</p>
+              <div className="flex flex-wrap items-center gap-x-9 gap-y-5 text-muted">
+                {stack.map(({ Icon, name }) => (
+                  <span key={name} className="inline-flex items-center gap-2.5 hover:text-fg transition-colors">
+                    <Icon size={22} className="text-cyan" />
+                    <span className="text-sm font-medium">{name}</span>
+                  </span>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
 
       {/* ── Del blog: una nota por categoría ── */}
       {blogRow.length > 0 && (
