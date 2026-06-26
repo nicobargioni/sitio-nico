@@ -162,3 +162,12 @@ body {
   }
   html { scroll-behavior: auto; }
 }
+
+/* Preview de restyle (/lab/restyle): oculta el header/footer globales y fondo oscuro */
+body.restyle-bare > header,
+body.restyle-bare > footer {
+  display: none !important;
+}
+body.restyle-bare {
+  background: #0a0a0a;
+}
