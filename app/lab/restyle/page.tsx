@@ -1,37 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FiArrowUpRight, FiArrowRight, FiPlus } from "react-icons/fi";
+import { FiArrowUpRight, FiArrowRight } from "react-icons/fi";
 import HideChrome from "./HideChrome";
 import DotField from "./DotField";
-import { featuredSolutions } from "@/lib/solutions";
+import LabSections from "../LabSections";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Restyle preview · Nicolás Bargioni",
   robots: { index: false, follow: false },
 };
-
-const SERVICIOS = [
-  ["01", "Estrategia de IA & ROI", "Dónde la IA genera valor real en tu negocio — y dónde no."],
-  ["02", "Prototipado rápido", "Validar un caso con un modelo mínimo antes de invertir de más."],
-  ["03", "Modelos & MLOps", "Modelos entrenados, evaluados y puestos en producción, no en un cajón."],
-  ["04", "Arquitectura de datos", "Unir y ordenar tus fuentes para que los datos lleguen limpios."],
-  ["05", "Automatización de procesos", "Sacar de encima el trabajo repetitivo entre sistemas."],
-  ["06", "Análisis & dashboards", "Convertir planillas dispersas en decisiones claras."],
-];
-
-const FASES = [
-  ["Diagnóstico", "Encontramos dónde los datos y la IA generan valor real, sin humo. Salís con una hoja de ruta priorizada por retorno."],
-  ["Prototipo", "Validamos rápido con un modelo o automatización mínima que prueba el caso sobre tus datos."],
-  ["Producción", "Lo que funciona, lo llevamos a escala: monitoreado, mantenible e integrado a tu operación."],
-];
-
-const FAQ = [
-  ["¿Cómo sé si la IA sirve para mi negocio?", "Arrancamos por el problema, no por la tecnología. Si no hay un caso con retorno claro, te lo digo de entrada."],
-  ["¿Qué incluye el diagnóstico inicial?", "Una revisión de tus datos y procesos, los casos de mayor impacto y una hoja de ruta priorizada por ROI."],
-  ["¿Necesitás acceso a todos mis datos?", "Para el diagnóstico alcanza con una muestra. Trabajo con lo mínimo necesario y bajo acuerdo de confidencialidad."],
-  ["¿Cómo priorizás los casos de uso?", "Por impacto sobre esfuerzo: primero lo que mueve la aguja y se puede entregar rápido."],
-];
 
 export default function RestylePreview() {
   return (
@@ -58,26 +36,21 @@ export default function RestylePreview() {
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#0a0a0a]" />
 
-        {/* Objetos IA/data flotando (glifos vectoriales) */}
+        {/* Objetos IA/data flotando */}
         <div className="absolute inset-0 z-[1] pointer-events-none text-white/[0.13]">
-          {/* nodo-grafo */}
           <svg className="absolute left-[8%] top-[24%] w-14 h-14 lab-floaty" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="14" r="4" /><circle cx="52" cy="20" r="4" /><circle cx="30" cy="50" r="4" />
             <path d="M14 17 L48 19 M14 16 L29 46 M50 23 L31 47" strokeWidth="1.2" />
           </svg>
-          {/* brackets </> */}
           <svg className="absolute right-[11%] top-[19%] w-12 h-12 lab-floaty-b" style={{ animationDelay: "1.2s" }} viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <path d="M24 18 L10 32 L24 46 M40 18 L54 32 L40 46" />
           </svg>
-          {/* barras */}
           <svg className="absolute left-[13%] bottom-[22%] w-12 h-12 lab-floaty" style={{ animationDelay: "0.6s" }} viewBox="0 0 64 64" fill="currentColor">
             <rect x="8" y="34" width="9" height="22" /><rect x="22" y="24" width="9" height="32" /><rect x="36" y="14" width="9" height="42" /><rect x="50" y="28" width="9" height="28" />
           </svg>
-          {/* chispa IA */}
           <svg className="absolute right-[9%] bottom-[26%] w-12 h-12 lab-floaty-b" style={{ animationDelay: "2s" }} viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
             <path d="M32 8 C34 24 40 30 56 32 C40 34 34 40 32 56 C30 40 24 34 8 32 C24 30 30 24 32 8 Z" />
           </svg>
-          {/* órbita */}
           <svg className="absolute left-1/2 top-[12%] -translate-x-1/2 w-16 h-16 lab-spin" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.4">
             <circle cx="32" cy="32" r="26" strokeDasharray="3 6" /><circle cx="32" cy="6" r="3" fill="currentColor" stroke="none" />
           </svg>
@@ -96,158 +69,24 @@ export default function RestylePreview() {
             en producción.
           </p>
           <div className="mt-10 flex items-center justify-center gap-5">
-            <a
-              href={`mailto:${site.email}`}
-              className="inline-flex items-center gap-2 rounded-full bg-white text-black px-7 py-3.5 font-medium hover:bg-white/85 transition-colors"
-            >
+            <a href={`mailto:${site.email}`} className="inline-flex items-center gap-2 rounded-full bg-white text-black px-7 py-3.5 font-medium hover:bg-white/85 transition-colors">
               Hablemos <FiArrowRight size={16} />
             </a>
-            <a href="#servicios" className="text-white/60 hover:text-white transition-colors text-sm">
-              Ver servicios
-            </a>
+            <a href="#soluciones" className="text-white/60 hover:text-white transition-colors text-sm">Ver soluciones</a>
           </div>
         </div>
         <span className="absolute top-24 right-8 z-10 text-[0.6rem] uppercase tracking-widest text-white/30 border border-white/15 rounded-full px-3 py-1">
-          Preview · restyle
+          Preview · restyle (mono)
         </span>
       </section>
 
-      {/* Servicios */}
-      <section id="servicios" className="bg-white text-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto px-8 py-28">
-          <div className="grid md:grid-cols-12 gap-10">
-            <div className="md:col-span-4">
-              <p className="text-xs uppercase tracking-[0.25em] text-black/40 mb-4">Servicios</p>
-              <h2 className="font-medium tracking-tight text-3xl md:text-4xl leading-tight">
-                Cómo ayudo a tu negocio
-              </h2>
-              <p className="text-black/50 mt-5 leading-relaxed max-w-sm">
-                Del primer diagnóstico al modelo corriendo en producción. Simple y
-                directo: probar valor rápido, después industrializar.
-              </p>
-            </div>
-            <div className="md:col-span-8 divide-y divide-black/10 border-t border-black/10">
-              {SERVICIOS.map(([n, t, d]) => (
-                <div key={n} className="group grid grid-cols-[auto_1fr_auto] items-center gap-6 py-6">
-                  <span className="font-mono text-sm text-black/30">{n}</span>
-                  <div>
-                    <p className="text-xl md:text-2xl font-medium tracking-tight">{t}</p>
-                    <p className="text-black/50 mt-1 leading-relaxed">{d}</p>
-                  </div>
-                  <FiArrowUpRight className="text-black/20 group-hover:text-black transition-colors" size={22} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <LabSections theme="mono" />
 
-      {/* Enfoque 3 fases */}
-      <section className="bg-[#0a0a0a] text-white">
-        <div className="max-w-7xl mx-auto px-8 py-28">
-          <p className="text-xs uppercase tracking-[0.25em] text-white/40 mb-4">El enfoque</p>
-          <h2 className="font-medium tracking-tight text-3xl md:text-5xl leading-tight max-w-2xl">
-            Un proceso en 3 fases
-          </h2>
-          <div className="grid md:grid-cols-3 gap-px bg-white/10 mt-14 border border-white/10">
-            {FASES.map(([t, d], i) => (
-              <div key={t} className="bg-[#0a0a0a] p-8">
-                <span className="font-mono text-sm text-white/30">0{i + 1}</span>
-                <h3 className="text-2xl font-medium tracking-tight mt-4 mb-3">{t}</h3>
-                <p className="text-white/55 leading-relaxed">{d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Casos / Soluciones */}
-      <section className="bg-white text-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto px-8 py-28">
-          <div className="flex items-end justify-between gap-6 mb-12">
-            <div>
-              <p className="text-xs uppercase tracking-[0.25em] text-black/40 mb-3">Soluciones</p>
-              <h2 className="font-medium tracking-tight text-3xl md:text-5xl leading-tight">
-                Problemas que resuelvo
-              </h2>
-            </div>
-            <Link
-              href="/soluciones"
-              className="hidden sm:inline-flex shrink-0 items-center gap-2 rounded-full bg-[#0a0a0a] text-white px-5 py-3 text-sm font-medium hover:bg-black/80 transition-colors"
-            >
-              Ver todas <FiArrowRight size={15} />
-            </Link>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {featuredSolutions.slice(0, 3).map((s) => (
-              <div key={s.slug} className="rounded-2xl border border-black/10 overflow-hidden">
-                <div
-                  className="aspect-[16/10] bg-[#0a0a0a] relative"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px)",
-                    backgroundSize: "16px 16px",
-                  }}
-                />
-                <div className="p-6">
-                  <p className="text-lg font-medium tracking-tight">{s.titulo}</p>
-                  <p className="text-black/50 mt-2 leading-relaxed text-sm">{s.dolor}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="bg-[#0a0a0a] text-white">
-        <div className="max-w-7xl mx-auto px-8 py-28 grid md:grid-cols-12 gap-12">
-          <div className="md:col-span-4">
-            <p className="text-xs uppercase tracking-[0.25em] text-white/40 mb-4">FAQ</p>
-            <h2 className="font-medium tracking-tight text-3xl md:text-4xl leading-tight">
-              Preguntas frecuentes
-            </h2>
-            <a
-              href={`mailto:${site.email}`}
-              className="inline-flex items-center gap-2 mt-8 rounded-full border border-white/20 px-5 py-3 text-sm hover:border-white/50 transition-colors"
-            >
-              ¿Otra duda? Escribime
-            </a>
-          </div>
-          <div className="md:col-span-8 border-t border-white/10">
-            {FAQ.map(([q, a]) => (
-              <details key={q} className="group border-b border-white/10 py-5">
-                <summary className="flex items-center justify-between cursor-pointer list-none text-lg font-medium tracking-tight">
-                  {q}
-                  <FiPlus className="text-white/40 group-open:rotate-45 transition-transform shrink-0" size={20} />
-                </summary>
-                <p className="text-white/55 leading-relaxed mt-3 max-w-2xl">{a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA / footer */}
-      <section className="bg-white text-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto px-8 py-28 text-center">
-          <h2 className="font-medium tracking-tight text-[clamp(2rem,5vw,4rem)] leading-tight">
-            ¿Tenés un problema de datos?
-          </h2>
-          <a
-            href={`mailto:${site.email}`}
-            className="inline-flex items-center gap-2 mt-8 rounded-full bg-[#0a0a0a] text-white px-8 py-4 font-medium hover:bg-black/80 transition-colors"
-          >
-            Hablemos <FiArrowRight size={16} />
-          </a>
-          <p className="mt-12 text-black/40 text-sm">
-            Preview de restyle ·{" "}
-            <Link href="/" className="underline hover:text-black">
-              volver al sitio actual
-            </Link>
-          </p>
-        </div>
-      </section>
+      <div className="text-center pb-16 text-white/40 text-sm">
+        Preview ·{" "}
+        <Link href="/" className="underline hover:text-white">sitio actual</Link> ·{" "}
+        <Link href="/lab/restyle-2" className="underline hover:text-white">ver versión navy</Link>
+      </div>
     </div>
   );
 }
