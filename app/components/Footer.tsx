@@ -56,7 +56,13 @@ export default function Footer() {
       <div className="border-t border-border">
         <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-2 order-2 sm:order-1">
-            © {new Date().getFullYear()} {site.name}. Hecho con Next.js.
+            © {new Date().getFullYear()} {site.name}.{" "}
+            <Link
+              href="/mapa-del-sitio"
+              className="hover:text-cyan transition-colors underline-offset-2 hover:underline"
+            >
+              Mapa del sitio
+            </Link>
           </p>
           <div className="flex items-center gap-3 order-1 sm:order-2">
             {site.email && (

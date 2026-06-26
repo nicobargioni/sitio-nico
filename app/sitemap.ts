@@ -3,6 +3,7 @@ import { site } from "@/lib/site";
 import { categories } from "@/lib/taxonomy";
 import { getPostMetas } from "@/lib/posts";
 import { solutions } from "@/lib/solutions";
+import extraPages from "@/data/sitemap-extra.json";
 
 export const dynamic = "force-static";
 
@@ -29,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/servicios/`, lastModified: siteLastMod, changeFrequency: "monthly", priority: 0.95 },
     { url: `${base}/soluciones/`, lastModified: siteLastMod, changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/blog/`, lastModified: siteLastMod, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${base}/mapa-del-sitio/`, lastModified: siteLastMod, changeFrequency: "monthly", priority: 0.3 },
   ];
 
   // Soluciones (páginas de negocio)
@@ -70,6 +72,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     });
+  }
+
+  // Páginas extra detectadas por el crawler diario (data/sitemap-extra.json)
+  const known = new Set(entries.map((e) => e.url));
+  for (const p of extraPages as string[]) {
+    const rel = p.startsWith("/") ? p : `/${p}`;
+    const url = `${base}${rel.replace(/\/?$/, "/")}`;
+    if (!known.has(url)) {
+      entries.push({
+        url,
+        lastModified: siteLastMod,
+        changeFrequency: "monthly",
+        priority: 0.5,
+      });
+    }
   }
 
   return entries;

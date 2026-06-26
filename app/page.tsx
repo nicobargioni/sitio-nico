@@ -2,16 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FiArrowRight, FiArrowUpRight } from "react-icons/fi";
 import { FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
-import {
-  SiPython,
-  SiScikitlearn,
-  SiPytorch,
-  SiPandas,
-  SiGooglecloud,
-  SiN8N,
-  SiOpenai,
-} from "react-icons/si";
 import Hero from "./components/Hero";
+import TechMarquee from "./components/TechMarquee";
 import AskAiButtons from "./components/AskAiButtons";
 import Reveal from "./components/Reveal";
 import CountUp from "./components/CountUp";
@@ -178,16 +170,6 @@ const verticals = [
   "Agencias",
 ];
 
-const stack = [
-  { Icon: SiPython, name: "Python" },
-  { Icon: SiScikitlearn, name: "scikit-learn" },
-  { Icon: SiPytorch, name: "PyTorch" },
-  { Icon: SiPandas, name: "pandas" },
-  { Icon: SiGooglecloud, name: "Google Cloud" },
-  { Icon: SiN8N, name: "n8n" },
-  { Icon: SiOpenai, name: "OpenAI" },
-];
-
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
@@ -220,9 +202,9 @@ export default function Home() {
       />
       <Hero />
 
-      {/* ── Prueba cuantificada + stack técnico ── */}
-      <section className="px-6 py-16 border-t border-border">
-        <div className="max-w-6xl mx-auto">
+      {/* ── Prueba cuantificada + cinta de tecnologías ── */}
+      <section className="py-16 border-t border-border">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
             {stats.map((s) => (
               <Reveal key={s.label}>
@@ -235,20 +217,12 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
+        </div>
 
-          <div className="mt-14 pt-10 border-t border-border">
-            <Reveal>
-              <p className="eyebrow mb-6">Trabajo con</p>
-              <div className="flex flex-wrap items-center gap-x-9 gap-y-5 text-muted">
-                {stack.map(({ Icon, name }) => (
-                  <span key={name} className="inline-flex items-center gap-2.5 hover:text-fg transition-colors">
-                    <Icon size={22} className="text-cyan" />
-                    <span className="text-sm font-medium">{name}</span>
-                  </span>
-                ))}
-              </div>
-            </Reveal>
-          </div>
+        {/* Cinta de tecnologías, a todo el ancho */}
+        <div className="mt-14 pt-10 border-t border-border">
+          <p className="eyebrow mb-6 max-w-6xl mx-auto px-6">Trabajo con</p>
+          <TechMarquee />
         </div>
       </section>
 
