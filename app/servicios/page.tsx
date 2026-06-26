@@ -14,6 +14,7 @@ import Reveal from "@/app/components/Reveal";
 import JsonLd from "@/app/components/JsonLd";
 import { site } from "@/lib/site";
 import { breadcrumbLd } from "@/lib/jsonld";
+import { casos } from "@/lib/cases";
 
 export const metadata: Metadata = {
   title: "Servicios — Cómo trabajo con tu negocio",
@@ -135,6 +136,49 @@ export default function ServiciosPage() {
                   <span className="font-mono text-sm text-cyan">0{i + 1}</span>
                   <h3 className="font-display text-xl font-medium tracking-tight mt-3 mb-2">{f.n}</h3>
                   <p className="text-muted leading-relaxed">{f.d}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* Resultados / casos con ROI */}
+        <section className="mt-24">
+          <Reveal>
+            <p className="eyebrow mb-4">Resultados</p>
+            <h2 className="font-display text-3xl md:text-4xl font-medium tracking-tight mb-3">
+              Lo que suele cambiar
+            </h2>
+            <p className="text-muted max-w-2xl mb-12">
+              Casos ilustrativos del tipo de retorno que genera cada servicio.
+              Cifras representativas y anonimizadas.
+            </p>
+          </Reveal>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {casos.map((c, i) => (
+              <Reveal key={c.slug} delay={(i % 2) * 70}>
+                <div className="h-full rounded-2xl border border-border bg-surface/40 p-7 flex flex-col">
+                  <p className="font-mono text-xs text-cyan mb-4">{c.sector}</p>
+                  <div className="flex items-end gap-2 mb-5">
+                    <span className="font-display text-4xl font-bold tracking-tight text-coral tabular-nums leading-none">
+                      {c.metricaValor}
+                    </span>
+                    <span className="text-sm text-muted leading-tight pb-0.5">{c.metricaLabel}</span>
+                  </div>
+                  <dl className="space-y-3 text-sm leading-relaxed flex-1">
+                    <div>
+                      <dt className="font-display font-medium text-fg">El problema</dt>
+                      <dd className="text-muted">{c.problema}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-display font-medium text-fg">Qué hice</dt>
+                      <dd className="text-muted">{c.queHice}</dd>
+                    </div>
+                  </dl>
+                  <div className="mt-5 pt-4 border-t border-border flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs">
+                    <span className="text-muted">Inversión: <span className="text-fg tabular-nums">{c.inversion}</span></span>
+                    <span className="text-muted">Se paga en: <span className="text-fg">{c.payback}</span></span>
+                  </div>
                 </div>
               </Reveal>
             ))}
