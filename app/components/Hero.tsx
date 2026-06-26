@@ -1,3 +1,4 @@
+import { preload } from "react-dom";
 import Link from "next/link";
 import { FiArrowRight, FiActivity, FiCpu, FiZap, FiCloud } from "react-icons/fi";
 import EmbeddingField from "./EmbeddingField";
@@ -28,6 +29,10 @@ const features = [
 ];
 
 export default function Hero() {
+  // LCP: el retrato es la imagen principal del home; lo precargamos con prioridad
+  // alta para que el navegador lo descubra al parsear el <head>.
+  preload("/nico-hero.avif", { as: "image", type: "image/avif", fetchPriority: "high" });
+
   return (
     <section className="relative overflow-hidden px-6 pt-36 pb-24">
       {/* Firma: campo de embeddings, a todo el ancho detrás del contenido */}

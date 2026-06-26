@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { preconnect, prefetchDNS } from "react-dom";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
@@ -60,6 +61,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // CWV: calentamos la conexión a Google Analytics (tercero) para que su carga
+  // diferida (lazyOnload) no pague DNS + TLS en el camino crítico.
+  preconnect("https://www.googletagmanager.com");
+  prefetchDNS("https://www.google-analytics.com");
+
   return (
     <html
       lang="es"

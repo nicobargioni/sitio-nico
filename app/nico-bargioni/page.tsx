@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { preload } from "react-dom";
 import Link from "next/link";
 import { FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
 import { SiGooglegemini, SiOpenai } from "react-icons/si";
@@ -38,6 +39,9 @@ const askButtons = [
 ];
 
 export default function AuthorPage() {
+  // LCP: el retrato es la imagen principal de esta página.
+  preload("/nico-hero.avif", { as: "image", type: "image/avif", fetchPriority: "high" });
+
   return (
     <div className="pb-24">
       <JsonLd data={personLd()} />
