@@ -894,5 +894,19 @@
   "category": "hiperautomatizacion",
   "subcategory": "bpmn",
   "url": "/hiperautomatizacion/bpmn/seis-pilares-hiperautomatizacion"
+ },
+ {
+  "slug": "catalogo-trampas-ds",
+  "title": "El catálogo de trampas de Data Science: 20 formas de que un modelo mienta con cara de éxito",
+  "category": "data-ml",
+  "subcategory": "eda",
+  "url": "/data-ml/eda/catalogo-trampas-ds"
+ },
+ {
+  "slug": "obliteracion-llm",
+  "title": "Obliteración: le apagué el 'no' a un LLM con una resta vectorial",
+  "category": "ia-agentes",
+  "subcategory": "llms-prompting",
+  "url": "/ia-agentes/llms-prompting/obliteracion-llm"
  }
 ]
