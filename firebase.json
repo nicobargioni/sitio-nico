@@ -4,6 +4,13 @@
     "trailingSlash": true,
     "cleanUrls": false,
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "redirects": [
+      {
+        "source": "/ia-agentes/rag-embeddings/rag-lazy-loading-cloud",
+        "destination": "/ia-agentes/rag-embeddings/costo-oculto-rag-cloud",
+        "type": 301
+      }
+    ],
     "headers": [
       {
         "source": "**",

@@ -350,11 +350,11 @@
   "url": "/ia-agentes/rag-embeddings/sesgos-embeddings"
  },
  {
-  "slug": "rag-lazy-loading-cloud",
+  "slug": "costo-oculto-rag-cloud",
   "title": "Por qué el índice de tu RAG se arma de nuevo en cada arranque (y no es un bug)",
   "category": "ia-agentes",
   "subcategory": "rag-embeddings",
-  "url": "/ia-agentes/rag-embeddings/rag-lazy-loading-cloud"
+  "url": "/ia-agentes/rag-embeddings/costo-oculto-rag-cloud"
  },
  {
   "slug": "react-razonar-actuar",
