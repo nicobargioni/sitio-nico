@@ -124,7 +124,10 @@ for (const f of readdirSync(BLOG).filter((x) => x.endsWith(".md"))) {
 await render("home", "DATA SCIENCE · ML · IA", "Nicolás Bargioni — Data Scientist e IA aplicada");
 await render("soluciones", "SOLUCIONES · DATOS & IA", "Qué resuelvo con datos e inteligencia artificial");
 await render("blog", "BLOG · DATOS & IA", "Notas sobre datos, IA y automatización");
-await render("nico-bargioni", "SOBRE MÍ", "Nicolás Bargioni — Data Scientist · IA aplicada");
-n += 4;
+await render("sobre-mi", "SOBRE MÍ", "Nicolás Bargioni — Data Scientist y Head of Data");
+await render("investigacion", "INVESTIGACIÓN", "Publicaciones y estudios de Nicolás Bargioni");
+await render("investigacion-recomendar-no-es-citar", "INVESTIGACIÓN · PREPRINT 2026", "Recommending Is Not Citing");
+await render("investigacion-top-of-ai", "INVESTIGACIÓN · ESTUDIO 2026", "Top of AI: Estudio GEO Latam 2026");
+n += 7;
 
 console.log(`${n} imágenes OG (1200×630) generadas → public/og/`);

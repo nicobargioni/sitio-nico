@@ -26,7 +26,7 @@ export default function AuthorBox() {
           Escrito por
         </p>
         <Link
-          href="/nico-bargioni"
+          href="/sobre-mi"
           className="font-display text-lg font-medium hover:text-cyan transition-colors"
         >
           {site.name}

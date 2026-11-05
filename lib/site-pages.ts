@@ -1,5 +1,6 @@
 import { categories } from "./taxonomy";
 import { solutions } from "./solutions";
+import { studies } from "./research";
 import { getPostMetas, postUrl } from "./posts";
 import extraPages from "../data/sitemap-extra.json";
 
@@ -19,12 +20,21 @@ export function getSitePages(): PageGroup[] {
     title: "Principales",
     pages: [
       { url: "/", label: "Inicio" },
-      { url: "/nico-bargioni", label: "Sobre mí" },
+      { url: "/sobre-mi", label: "Sobre mí" },
+      { url: "/investigacion", label: "Investigación" },
       { url: "/servicios", label: "Servicios" },
       { url: "/soluciones", label: "Soluciones" },
       { url: "/blog", label: "Blog" },
       { url: "/mapa-del-sitio", label: "Mapa del sitio" },
     ],
+  });
+
+  groups.push({
+    title: "Investigación",
+    pages: studies.map((s) => ({
+      url: `/investigacion/${s.slug}`,
+      label: s.title,
+    })),
   });
 
   groups.push({

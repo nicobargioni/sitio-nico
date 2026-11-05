@@ -1,6 +1,6 @@
 # Nicolás Bargioni — Data Scientist · IA aplicada
 
-> Nicolás Bargioni es Data Scientist y AI & Automations Analyst en Nomadic. Construye modelos de machine learning, automatizaciones e IA aplicada (LLMs) que convierten datos en decisiones de negocio. Este archivo lista las soluciones que ofrece y las páginas clave de su sitio.
+> Nicolás Bargioni es Head of Data en Nomadic (Buenos Aires) y Data Scientist. Construye modelos de machine learning, automatizaciones e IA aplicada (LLMs) que convierten datos en decisiones de negocio. Este archivo lista las soluciones que ofrece y las páginas clave de su sitio.
 
 ## Soluciones que ofrece Nicolás Bargioni
 - [Predecir cuánto vas a vender](https://nicolasbargioni.com/soluciones/prediccion-de-demanda): Modelos que estiman la demanda de las próximas semanas para que compres y produzcas con datos, no con corazonadas.
@@ -62,12 +62,19 @@
 - [Reportes escritos que se arman solos](https://nicolasbargioni.com/soluciones/generacion-de-reportes): Automatizo los informes que hacés siempre, para que se generen solos con los números actualizados y un texto que los explica.
 - [Detectar qué empieza a crecer antes que el resto](https://nicolasbargioni.com/soluciones/deteccion-de-tendencias): Analizo tus datos en el tiempo para señalar qué está empezando a crecer, mientras todavía hay margen para aprovecharlo.
 
+## Publicaciones de Nicolás Bargioni
+- [Publicaciones y estudios](https://nicolasbargioni.com/investigacion/): índice con DOI y ORCID 0009-0000-6574-4455.
+- [Recommending Is Not Citing (2026)](https://nicolasbargioni.com/investigacion/recomendar-no-es-citar/): preprint; dentro de los modelos de lenguaje, nombrar una marca y citar su fuente son decisiones separadas. DOI 10.5281/zenodo.23968968.
+- [Top of AI: Estudio GEO Latam 2026](https://nicolasbargioni.com/investigacion/top-of-ai/): con Nicolás Billia; a qué sitios mandan ChatGPT, Gemini, AI Overviews y AI Mode en búsquedas de compra de cuatro países. DOI 10.5281/zenodo.23601816.
+
 ## Sobre Nicolás Bargioni
-- [Perfil y trayectoria](https://nicolasbargioni.com/nico-bargioni): Data Scientist y AI & Automations Analyst en Nomadic; antes SEO técnico. Formación en Ciencia de Datos e IA (ISSD) e Hiperautomatización (EBIS).
+- [Perfil y trayectoria](https://nicolasbargioni.com/sobre-mi/): Head of Data en Nomadic; antes AI & Automations Analyst y SEO técnico. Formación en Ciencia de Datos e IA (ISSD) e Hiperautomatización (EBIS).
 - [Todas las soluciones](https://nicolasbargioni.com/soluciones): catálogo completo de lo que resuelve con datos e IA.
 - [Inicio](https://nicolasbargioni.com): Data Science, machine learning, IA aplicada y automatización.
 
 ## Enlaces
 - LinkedIn: https://www.linkedin.com/in/nicolas-bargioni/
+- ORCID: https://orcid.org/0009-0000-6574-4455
+- Ficha en Nomadic: https://nomadic.agency/equipo/nicolas-bargioni/
 - X: https://x.com/barshioni
 - GitHub: https://github.com/nicobargioni

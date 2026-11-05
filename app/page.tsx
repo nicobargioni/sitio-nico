@@ -150,26 +150,6 @@ const recs = [
   },
 ];
 
-// Capacidades (de la bio) para "Sobre mí"
-const capabilities = [
-  "Hiperautomatización de procesos y pipelines de datos (ETL)",
-  "Análisis exploratorio y visualización de datos",
-  "Machine Learning: modelado predictivo, clustering, análisis semántico y segmentación",
-  "Integración de IA y LLMs en flujos de trabajo reales",
-  "Cloud computing",
-  "Big Data",
-  "Bases de datos",
-  "BI y Data Storytelling",
-  "SEO",
-];
-
-const verticals = [
-  "eCommerce (B2B / B2C)",
-  "SaaS",
-  "Medios de comunicación",
-  "Agencias",
-];
-
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
@@ -257,7 +237,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* ── Sobre mí ── */}
+      {/* ── Sobre mí (resumen; la página completa es /sobre-mi/) ── */}
       <section id="sobre-mi" className="px-6 py-24 border-t border-border">
         <div className="max-w-6xl mx-auto">
           <Reveal>
@@ -269,43 +249,13 @@ export default function Home() {
               insights accionables, modelos predictivos y procesos automatizados
               que ahorran horas de trabajo manual.
             </p>
+            <Link
+              href="/sobre-mi"
+              className="mt-10 inline-flex items-center gap-2 px-6 py-3 rounded-full border border-border text-sm font-medium hover:border-cyan/50 hover:text-cyan transition-colors"
+            >
+              Más sobre mí <FiArrowRight size={15} />
+            </Link>
           </Reveal>
-
-          <div className="grid lg:grid-cols-3 gap-x-10 gap-y-12 mt-16">
-            {/* Trabajo con */}
-            <div className="lg:col-span-2">
-              <p className="font-mono text-xs uppercase tracking-widest text-coral mb-6">
-                Trabajo con
-              </p>
-              <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
-                {capabilities.map((c, i) => (
-                  <Reveal key={c} delay={i * 40}>
-                    <li className="flex gap-3 text-muted leading-relaxed">
-                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-cyan shrink-0" />
-                      <span>{c}</span>
-                    </li>
-                  </Reveal>
-                ))}
-              </ul>
-            </div>
-
-            {/* Sectores */}
-            <div>
-              <p className="font-mono text-xs uppercase tracking-widest text-coral mb-6">
-                Sectores
-              </p>
-              <ul className="flex flex-wrap gap-2.5">
-                {verticals.map((v) => (
-                  <li
-                    key={v}
-                    className="text-sm text-muted border border-border rounded-full px-3.5 py-1.5"
-                  >
-                    {v}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
         </div>
       </section>
 

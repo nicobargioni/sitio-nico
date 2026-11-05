@@ -50,7 +50,26 @@ export default function Hero() {
               <br />
               <span className="accent-cyan">IA aplicada.</span>
             </h1>
-            <h2 className="text-muted leading-relaxed max-w-md mt-7 mb-8">
+            <p className="text-fg/90 leading-relaxed max-w-md mt-7">
+              <a
+                href="https://nomadic.agency/equipo/nicolas-bargioni/"
+                target="_blank"
+                rel="noopener"
+                className="font-medium underline underline-offset-4 decoration-cyan/50 hover:text-cyan transition-colors"
+              >
+                Head of Data en Nomadic
+              </a>
+              , Buenos Aires. Publicó los estudios{" "}
+              <Link href="/investigacion/top-of-ai" className="underline underline-offset-4 decoration-cyan/50 hover:text-cyan transition-colors">
+                Top of AI
+              </Link>{" "}
+              (2026) y{" "}
+              <Link href="/investigacion/recomendar-no-es-citar" className="underline underline-offset-4 decoration-cyan/50 hover:text-cyan transition-colors">
+                Recommending Is Not Citing
+              </Link>{" "}
+              (2026).
+            </p>
+            <h2 className="text-muted leading-relaxed max-w-md mt-4 mb-8">
               {site.intro}
             </h2>
             <div className="flex flex-wrap items-center gap-5">
