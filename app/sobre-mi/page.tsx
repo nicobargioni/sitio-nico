@@ -311,7 +311,11 @@ export default function AboutPage() {
               <p className="text-muted leading-relaxed mt-4">
                 Agencia de marketing y datos. Diseñé automatizaciones y soluciones de IA
                 aplicada para el equipo y los clientes; antes lideré el SEO técnico de
-                medios.{" "}
+                medios. Trabajé con marcas como{" "}
+                <span className="text-fg">
+                  Megatone, Casa del Audio, Style Store, Chilevisión, Univisión y Artear
+                </span>
+                .{" "}
                 <a href={NOMADIC_PROFILE} target="_blank" rel="noopener" className={linkCls}>
                   Mi ficha en Nomadic
                 </a>
