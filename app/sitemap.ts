@@ -3,6 +3,7 @@ import { site } from "@/lib/site";
 import { categories } from "@/lib/taxonomy";
 import { getPostMetas } from "@/lib/posts";
 import { solutions } from "@/lib/solutions";
+import { studies } from "@/lib/research";
 import extraPages from "@/data/sitemap-extra.json";
 
 export const dynamic = "force-static";
@@ -24,9 +25,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return ds[ds.length - 1] || siteLastMod;
   };
 
+  const researchLastMod = studies.map((s) => s.date).sort().at(-1);
+
   const entries: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: siteLastMod, changeFrequency: "weekly", priority: 1 },
-    { url: `${base}/nico-bargioni/`, lastModified: siteLastMod, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/sobre-mi/`, lastModified: siteLastMod, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/investigacion/`, lastModified: researchLastMod, changeFrequency: "monthly", priority: 0.9 },
+    ...studies.map((s) => ({
+      url: `${base}/investigacion/${s.slug}/`,
+      lastModified: s.date,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    })),
     { url: `${base}/servicios/`, lastModified: siteLastMod, changeFrequency: "monthly", priority: 0.95 },
     { url: `${base}/soluciones/`, lastModified: siteLastMod, changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/blog/`, lastModified: siteLastMod, changeFrequency: "weekly", priority: 0.7 },

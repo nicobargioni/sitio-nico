@@ -8,7 +8,8 @@ import { site } from "@/lib/site";
 import { categories } from "@/lib/taxonomy";
 
 const links = [
-  { href: "/#sobre-mi", label: "Sobre mí" },
+  { href: "/sobre-mi", label: "Sobre mí" },
+  { href: "/investigacion", label: "Investigación" },
   { href: "/servicios", label: "Servicios" },
   { href: "/soluciones", label: "Soluciones" },
   { href: "/blog", label: "Blog" },
@@ -57,7 +58,7 @@ export default function Header() {
 
         <nav className="hidden md:flex items-center gap-7" aria-label="Principal">
           <Link
-            href="/#sobre-mi"
+            href="/sobre-mi"
             className="text-sm text-muted hover:text-fg transition-colors"
           >
             Sobre mí

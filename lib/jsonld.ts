@@ -1,6 +1,7 @@
 import { site } from "./site";
+import { ORCID, NOMADIC_PROFILE, NOMADIC_URL, doiUrl, type Study } from "./research";
 
-const PERSON_ID = `${site.url}/#person`;
+export const PERSON_ID = `${site.url}/#person`;
 const SITE_ID = `${site.url}/#website`;
 const IMAGE = `${site.url}/nico.jpg`;
 
@@ -16,10 +17,19 @@ export function abs(path: string = "/"): string {
 }
 
 const sameAs = [
-  site.social.twitter,
+  ORCID,
   site.social.linkedin,
+  NOMADIC_PROFILE,
+  site.social.twitter,
   site.social.github,
 ].filter(Boolean);
+
+/** Nomadic, la organización donde trabaja Nico. */
+const NOMADIC_ORG = {
+  "@type": "Organization",
+  name: "Nomadic",
+  url: NOMADIC_URL,
+};
 
 /** Person (Nico) — entidad central del sitio. */
 export function personLd() {
@@ -27,13 +37,21 @@ export function personLd() {
     "@context": "https://schema.org",
     "@type": "Person",
     "@id": PERSON_ID,
-    name: site.name,
+    name: "Nicolás Bargioni",
+    alternateName: site.name,
     url: abs(),
     image: IMAGE,
     email: `mailto:${site.email}`,
-    jobTitle: "Data Scientist",
+    jobTitle: "Head of Data",
     description: site.authorBio ?? site.description,
-    worksFor: { "@type": "Organization", name: "Nomadic" },
+    worksFor: NOMADIC_ORG,
+    homeLocation: { "@type": "Place", name: "Buenos Aires, Argentina" },
+    identifier: {
+      "@type": "PropertyValue",
+      propertyID: "ORCID",
+      value: "0009-0000-6574-4455",
+      url: ORCID,
+    },
     sameAs,
     knowsAbout: [
       "Data Science",
@@ -76,13 +94,13 @@ export function websiteLd() {
   };
 }
 
-/** ProfilePage — el home es la página de perfil de Nico. */
-export function profilePageLd() {
+/** ProfilePage — el home y /sobre-mi/ son páginas de perfil de Nico. */
+export function profilePageLd(path: string = "/", name: string = site.title) {
   return {
     "@context": "https://schema.org",
     "@type": "ProfilePage",
-    url: abs(),
-    name: site.title,
+    url: abs(path),
+    name,
     inLanguage: "es",
     isPartOf: { "@id": SITE_ID },
     mainEntity: { "@id": PERSON_ID },
@@ -212,5 +230,81 @@ export function softwareSourceCodeLd(nb: { title: string; url: string }) {
     programmingLanguage: "Python",
     runtimePlatform: "Google Colab / Jupyter",
     author: { "@id": PERSON_ID },
+  };
+}
+
+/**
+ * Referencia completa a Nico como autor: con @id (para que se una al Person del
+ * layout) y con los datos mínimos para que el autor se entienda aislado.
+ */
+function authorPersonLd() {
+  return {
+    "@type": "Person",
+    "@id": PERSON_ID,
+    name: "Nicolás Bargioni",
+    url: abs(),
+    jobTitle: "Head of Data",
+    worksFor: NOMADIC_ORG,
+    sameAs: [ORCID, site.social.linkedin, NOMADIC_PROFILE],
+  };
+}
+
+/** ScholarlyArticle para un estudio de /investigacion/. */
+export function scholarlyArticleLd(s: Study) {
+  const path = `/investigacion/${s.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "@id": `${abs(path)}#article`,
+    headline: s.title.length <= 110 ? s.title : s.shortTitle,
+    name: s.title,
+    description: s.excerpt,
+    abstract: s.citable,
+    datePublished: s.date,
+    inLanguage: s.language,
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    keywords: s.keywords.join(", "),
+    url: abs(path),
+    mainEntityOfPage: abs(path),
+    author: s.authors.map((a) =>
+      a.self ? authorPersonLd() : { "@type": "Person", name: a.name, ...(a.role ? { jobTitle: a.role } : {}) }
+    ),
+    identifier: {
+      "@type": "PropertyValue",
+      propertyID: "DOI",
+      value: s.doi,
+      url: doiUrl(s.doi),
+    },
+    sameAs: [doiUrl(s.doi), ...(s.relatedDois ?? []).map((r) => doiUrl(r.doi))],
+    isPartOf: {
+      "@type": "CreativeWork",
+      name: s.title,
+      sameAs: doiUrl(s.relatedDois?.[0]?.doi ?? s.doi),
+    },
+    publisher: { "@type": "Organization", name: "Zenodo", url: "https://zenodo.org/" },
+    isAccessibleForFree: true,
+  };
+}
+
+/** CollectionPage del índice /investigacion/, con la lista de estudios. */
+export function researchCollectionLd(list: Study[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Publicaciones y estudios de Nicolás Bargioni",
+    url: abs("/investigacion"),
+    inLanguage: "es",
+    isPartOf: { "@id": SITE_ID },
+    about: { "@id": PERSON_ID },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: list.length,
+      itemListElement: list.map((s, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: abs(`/investigacion/${s.slug}`),
+        name: s.title,
+      })),
+    },
   };
 }

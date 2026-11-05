@@ -17,7 +17,7 @@ export const site = {
     "Soy Nicolás Bargioni, Data Scientist. Construyo modelos, automatizaciones e IA aplicada que convierten datos en decisiones. Python, machine learning y LLMs puestos a trabajar en el negocio.",
   // Bio breve para la caja de autor al pie de las notas
   authorBio:
-    "Data Scientist enfocado en IA aplicada, machine learning y automatización. Construyo modelos y herramientas propias que convierten datos en decisiones, y escribo sobre lo que aprendo en el camino.",
+    "Head of Data en Nomadic (Buenos Aires). Data Scientist enfocado en IA aplicada, machine learning y automatización. Construyo modelos y herramientas propias que convierten datos en decisiones, y escribo sobre lo que aprendo en el camino.",
   // Cambialo cuando tengas el dominio definitivo
   url: "https://nicolasbargioni.com",
   email: "nicobargioni@gmail.com",
