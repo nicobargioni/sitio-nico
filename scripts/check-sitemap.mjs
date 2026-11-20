@@ -19,7 +19,7 @@ const ORIGIN = new URL(BASE).origin;
 const MAX_PAGES = 2000;
 
 // Rutas que NO deben entrar al sitemap (experimentales / técnicas).
-const EXCLUDE = [/^\/lab(\/|$)/];
+const EXCLUDE = [/^\/lab(\/|$)/, /^\/privado(\/|$)/];
 const ASSET_RE =
   /\.(png|jpe?g|gif|svg|webp|avif|ico|xml|json|txt|webmanifest|html|pdf|css|js|woff2?)$/i;
 

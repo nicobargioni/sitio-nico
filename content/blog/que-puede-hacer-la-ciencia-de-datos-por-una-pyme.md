@@ -1,7 +1,7 @@
 ---
 title: "¿Qué puede hacer la ciencia de datos por una PyME?"
 date: "2026-06-26"
-excerpt: "Sin equipo de data, sin presupuesto de multinacional y sin humo: qué problemas reales resuelve la ciencia de datos en una empresa chica o mediana, cuánto cuesta y por dónde conviene empezar."
+excerpt: "Sin equipo de data, sin presupuesto de multinacional y sin humo: qué problemas reales resuelve la ciencia de datos en una empresa chica o mediana, en cuánto se recupera y por dónde conviene empezar."
 tags: ["ciencia-de-datos", "pymes", "negocio", "machine-learning"]
 category: "data-ml"
 subcategory: "mineria-de-datos"
@@ -49,14 +49,14 @@ Menos de los que pensás. Si vendés hace un par de años y tenés ese históric
 
 Y si los datos están desordenados, eso no es un freno, es la primera parte del trabajo. Ordenarlos y conectarlos suele ser el paso que destraba todo lo demás.
 
-## Cuánto cuesta y en cuánto se paga
+## En cuánto se paga
 
-Acá es donde la mayoría se queda con la duda, así que voy con números. Un primer caso acotado —un modelo, un dashboard o una automatización— arranca alrededor de **USD 1.500**, y llevarlo a producción suele moverse en el orden de los **USD 4.000**. Son cifras de PyME, no de corporación.
+Acá es donde la mayoría se queda con la duda. Cada proyecto se arma a medida, según el caso: un primer caso acotado —un modelo, un dashboard o una automatización— tiene una escala de PyME, pensada para que una empresa chica lo pueda encarar.
 
-Lo que importa no es el costo sino el recupero. Si una automatización te ahorra 10 horas por semana, o un modelo de demanda te baja el stock inmovilizado un 15%, el proyecto se paga en semanas, no en años. Tengo algunos [casos con esas cifras](/servicios) y armé una [calculadora](/servicios) para que estimes tu propio ahorro en dos minutos.
+Lo que más pesa en la decisión es el recupero. Si una automatización te ahorra 10 horas por semana, o un modelo de demanda te baja el stock inmovilizado un 15%, el proyecto se paga en semanas, no en años. Tengo algunos [casos con esas cifras](/servicios) y armé una [calculadora](/servicios) para que estimes tu propio ahorro en dos minutos.
 
 ## Cómo empezar sin arriesgar plata
 
 La forma más sana de arrancar no es con un proyecto grande: es con un **diagnóstico**. Miro tus datos y tus procesos y te digo, por escrito, dónde hay valor real y dónde no. Si no hay un caso con retorno claro, te lo digo y listo —no tiene sentido que gastes.
 
-A partir de ahí, lo que valida bien se lleva a producción, y lo que no, se descarta antes de invertir de más. Probar barato primero, escalar después. Si querés ver cómo trabajo, está todo en la [página de servicios](/servicios); y si querés empezar por el diagnóstico, es gratis.
+A partir de ahí, lo que valida bien se lleva a producción, y lo que no, se descarta antes de invertir de más. Probar barato primero, escalar después. Si querés ver cómo trabajo, está todo en la [página de servicios](/servicios); y si querés empezar por el diagnóstico, escribime.

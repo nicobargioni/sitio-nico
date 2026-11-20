@@ -11,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
       // Payloads internos de RSC para prefetch client-side (__next._tree.txt, etc).
       // El contenido real ya está en el HTML estático de cada ruta; esto solo
       // evita que Googlebot desperdicie crawl budget en duplicados.
-      disallow: ["/*_rsc=*", "/*__next.*.txt"],
+      disallow: ["/*_rsc=*", "/*__next.*.txt", "/privado/"],
     },
     sitemap: `${site.url}/sitemap.xml`,
     host: site.url,

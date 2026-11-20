@@ -20,12 +20,12 @@ import ROICalculator from "@/app/components/ROICalculator";
 export const metadata: Metadata = {
   title: "Servicios — Cómo trabajo con tu negocio",
   description:
-    "Diagnóstico de datos gratis, modelos predictivos, automatización y dashboards para PyMEs. Paquetes con precio claro y un método de 3 fases: Diagnóstico → Prototipo → Producción.",
+    "Diagnóstico de datos, modelos predictivos, automatización y dashboards para PyMEs. Trabajo con un método de 3 fases: Diagnóstico → Prototipo → Producción.",
   alternates: { canonical: `${site.url}/servicios` },
   openGraph: {
     title: "Servicios — Nicolás Bargioni",
     description:
-      "Datos e IA para PyMEs, con precio claro y un primer paso gratis.",
+      "Datos e IA para PyMEs, con un método claro y un primer paso chico.",
     images: ["/og/soluciones.png"],
   },
 };
@@ -44,18 +44,18 @@ const fases = [
 ];
 
 const paquetes = [
-  { t: "Diagnóstico de datos", price: "Gratis", per: "", d: "30 min + un informe de 1 página con 3 oportunidades concretas para tu negocio.", featured: true },
-  { t: "Prototipo / 1 caso", price: "desde USD 1.500", per: "", d: "Un modelo, un dashboard o una automatización, validado sobre tus datos." },
-  { t: "Implementación", price: "desde USD 4.000", per: "", d: "La solución a producción: integrada, monitoreada y documentada." },
-  { t: "Acompañamiento", price: "desde USD 400", per: "/mes", d: "Mantenimiento del modelo, mejoras y soporte continuo." },
-  { t: "Proyecto a medida", price: "A conversar", per: "", d: "Casos más grandes o a varios meses: lo armamos juntos." },
+  { t: "Diagnóstico de datos", d: "30 min + un informe de 1 página con 3 oportunidades concretas para tu negocio.", featured: true },
+  { t: "Prototipo / 1 caso", d: "Un modelo, un dashboard o una automatización, validado sobre tus datos." },
+  { t: "Implementación", d: "La solución a producción: integrada, monitoreada y documentada." },
+  { t: "Acompañamiento", d: "Mantenimiento del modelo, mejoras y soporte continuo." },
+  { t: "Proyecto a medida", d: "Casos más grandes o a varios meses: lo armamos juntos." },
 ];
 
 const garantias = [
   "Respondo en menos de 24 horas.",
   "Alcance y entregables acordados por escrito antes de empezar.",
   "Una ronda de revisión incluida en cada entrega.",
-  "Si en el diagnóstico no encuentro al menos una oportunidad clara, no seguimos. Sin costo.",
+  "Si en el diagnóstico no encuentro al menos una oportunidad clara, no seguimos.",
 ];
 
 export default function ServiciosPage() {
@@ -82,10 +82,10 @@ export default function ServiciosPage() {
           </p>
           <div className="flex flex-wrap items-center gap-5 mt-9">
             <a
-              href={`mailto:${site.email}?subject=Diagn%C3%B3stico%20de%20datos%20gratis`}
+              href={`mailto:${site.email}?subject=Diagn%C3%B3stico%20de%20datos`}
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-coral text-bg font-medium hover:bg-coral-soft transition-colors"
             >
-              Pedí tu diagnóstico gratis <FiArrowRight size={16} />
+              Pedí tu diagnóstico <FiArrowRight size={16} />
             </a>
             <Link href="/soluciones" className="text-sm text-muted hover:text-cyan transition-colors inline-flex items-center gap-1">
               Ver las 58 soluciones <FiArrowUpRight size={14} />
@@ -176,10 +176,6 @@ export default function ServiciosPage() {
                       <dd className="text-muted">{c.queHice}</dd>
                     </div>
                   </dl>
-                  <div className="mt-5 pt-4 border-t border-border flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs">
-                    <span className="text-muted">Inversión: <span className="text-fg tabular-nums">{c.inversion}</span></span>
-                    <span className="text-muted">Se paga en: <span className="text-fg">{c.payback}</span></span>
-                  </div>
                 </div>
               </Reveal>
             ))}
@@ -191,24 +187,18 @@ export default function ServiciosPage() {
           <Reveal>
             <p className="eyebrow mb-4">Paquetes</p>
             <h2 className="font-display text-3xl md:text-4xl font-medium tracking-tight mb-3">
-              Con precio claro, de entrada
+              Cada propuesta, armada a medida
             </h2>
             <p className="text-muted max-w-2xl mb-12">
-              Sabés desde dónde arranca cada cosa. El primer paso —el diagnóstico—
-              es gratis.
+              El alcance y el valor de cada etapa los definimos juntos, según el
+              caso, y quedan por escrito antes de empezar.
             </p>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {paquetes.map((p, i) => (
               <Reveal key={p.t} delay={(i % 2) * 70}>
                 <div className={`h-full rounded-2xl border p-7 ${p.featured ? "border-coral/40 bg-coral/[0.04]" : "border-border bg-surface/40"}`}>
-                  <div className="flex items-baseline justify-between gap-4 mb-2">
-                    <h3 className="font-display text-xl font-medium tracking-tight">{p.t}</h3>
-                    <span className={`shrink-0 font-display font-bold tracking-tight ${p.featured ? "text-coral" : ""}`}>
-                      {p.price}
-                      {p.per && <span className="font-normal text-sm text-muted">{p.per}</span>}
-                    </span>
-                  </div>
+                  <h3 className="font-display text-xl font-medium tracking-tight mb-2">{p.t}</h3>
                   <p className="text-sm text-muted leading-relaxed">{p.d}</p>
                 </div>
               </Reveal>
@@ -233,13 +223,13 @@ export default function ServiciosPage() {
           </Reveal>
         </section>
 
-        {/* Diagnóstico gratis + garantías */}
+        {/* Diagnóstico + garantías */}
         <section className="mt-24">
           <Reveal>
             <div className="rounded-3xl border border-cyan/30 bg-surface/40 p-8 md:p-12">
               <p className="eyebrow mb-4">Cómo trabajamos</p>
               <h2 className="font-display text-2xl md:text-4xl font-medium tracking-tight max-w-2xl mb-8">
-                Empezá sin riesgo, con un diagnóstico gratis
+                Empezá con un paso chico: un diagnóstico
               </h2>
               <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-4 max-w-3xl">
                 {garantias.map((g) => (
@@ -250,10 +240,10 @@ export default function ServiciosPage() {
                 ))}
               </ul>
               <a
-                href={`mailto:${site.email}?subject=Diagn%C3%B3stico%20de%20datos%20gratis`}
+                href={`mailto:${site.email}?subject=Diagn%C3%B3stico%20de%20datos`}
                 className="inline-flex items-center gap-2 mt-9 px-7 py-3.5 rounded-full bg-coral text-bg font-medium hover:bg-coral-soft transition-colors"
               >
-                Pedí tu diagnóstico gratis <FiArrowRight size={16} />
+                Pedí tu diagnóstico <FiArrowRight size={16} />
               </a>
             </div>
           </Reveal>

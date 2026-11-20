@@ -11,9 +11,6 @@ const usd = (n: number) =>
     maximumFractionDigits: 0,
   }).format(Math.round(n));
 
-// Inversión de referencia: el paquete "Prototipo / 1 caso".
-const INVERSION_REF = 1500;
-
 function Slider({
   label,
   value,
@@ -59,12 +56,11 @@ export default function ROICalculator() {
   const [costo, setCosto] = useState(15);
   const [auto, setAuto] = useState(70);
 
-  const { ahorroMensual, ahorroAnual, semanas } = useMemo(() => {
+  const { ahorroMensual, ahorroAnual } = useMemo(() => {
     const ahorroSemanal = horas * costo * (auto / 100);
     const mensual = ahorroSemanal * 4.33;
     const anual = mensual * 12;
-    const sem = ahorroSemanal > 0 ? INVERSION_REF / ahorroSemanal : 0;
-    return { ahorroMensual: mensual, ahorroAnual: anual, semanas: sem };
+    return { ahorroMensual: mensual, ahorroAnual: anual };
   }, [horas, costo, auto]);
 
   return (
@@ -112,16 +108,10 @@ export default function ROICalculator() {
               <span className="text-muted">Ahorro mensual</span>
               <span className="font-medium tabular-nums">{usd(ahorroMensual)}</span>
             </p>
-            <p className="flex justify-between">
-              <span className="text-muted">Un prototipo ({usd(INVERSION_REF)}) se paga en</span>
-              <span className="font-medium tabular-nums">
-                {semanas < 1 ? "<1" : Math.ceil(semanas)} sem
-              </span>
-            </p>
           </div>
 
           <a
-            href={`mailto:${site.email}?subject=Diagn%C3%B3stico%20de%20datos%20gratis`}
+            href={`mailto:${site.email}?subject=Diagn%C3%B3stico%20de%20datos`}
             className="inline-flex items-center justify-center gap-2 mt-7 px-6 py-3 rounded-full bg-coral text-bg font-medium hover:bg-coral-soft transition-colors"
           >
             Validémoslo con tus datos <FiArrowRight size={16} />
