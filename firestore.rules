@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Preguntas que la gente le hace al chat de las propuestas privadas.
+    // La página solo puede AGREGAR. Leer, editar o borrar: solo desde la consola.
+    match /chat_preguntas/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['texto', 'respuesta', 'coincidio', 'sesion', 'pagina', 'fecha'])
+        && request.resource.data.texto is string && request.resource.data.texto.size() > 0 && request.resource.data.texto.size() <= 500
+        && request.resource.data.respuesta is string && request.resource.data.respuesta.size() <= 200
+        && request.resource.data.coincidio is bool
+        && request.resource.data.sesion is string && request.resource.data.sesion.size() <= 40
+        && request.resource.data.pagina is string && request.resource.data.pagina.size() <= 60
+        && request.resource.data.fecha is timestamp;
+      allow read, update, delete: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

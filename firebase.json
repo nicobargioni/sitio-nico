@@ -3,7 +3,11 @@
     "public": "out",
     "trailingSlash": true,
     "cleanUrls": false,
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "redirects": [
       {
         "source": "/ia-agentes/rag-embeddings/rag-lazy-loading-cloud",
@@ -41,5 +45,8 @@
         ]
       }
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
   }
 }
